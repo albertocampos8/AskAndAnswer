@@ -1,0 +1,36 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/SiteMain.Master" AutoEventWireup="true" CodeBehind="TestDBMaster.master.cs" Inherits="InvTracker.TestDBMaster" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <!--js file for Testing the Ajax Page Method-->
+    <script src="/js/TestAjaxPageMethod.js"> </script>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+        <div id="header">
+	    <!--Sub header -->
+	    </div>
+    <div class="colmask leftmenu">
+	    <div class="colleft">
+		    <div class="col1">
+			    <!-- Column 1 start -->
+                <asp:ContentPlaceHolder ID="DisplayContentPlaceHolder" runat="server">
+                    <p>This is Column 1 area.</p>
+                </asp:ContentPlaceHolder>                   
+			    <!-- Column 1 end -->
+		    </div>
+		    <div class="col2">
+			    <!-- Column 2 start -->
+                <p><a href="TestDBConnection.aspx" class="MenuLink">Test Database</a></p>
+                <p><a href="TestAjaxPageMethod.aspx" class="MenuLink">Ajax with Page Method</a></p>
+                <!--<asp:HyperLink class="MenuLink" ID="lnkAddObject" runat="server" href="AddObject.aspx">Add Object (asp Tag)</asp:HyperLink>-->
+                <p>This is Column 2 Area</p>
+			    <!-- Column 2 end -->
+		    </div>
+	    </div>
+    </div>
+    <div id="footer">
+	    <!--Sub footer -->
+    </div>
+    <div>
+
+    </div>
+</asp:Content>

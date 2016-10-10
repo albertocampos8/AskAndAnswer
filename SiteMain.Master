@@ -1,0 +1,50 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="SiteMain.master.cs" Inherits="AskAndAnswer.SiteMain" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Ask And Answer Demo</title>
+    <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />-->
+    <link href="/stylesheets/2colscreen.css" rel="stylesheet" type="text/css" />
+    <!--Reference to jQuery-->
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <asp:ScriptManager ID="scmMain" runat="server" ClientIDMode="Static"></asp:ScriptManager>
+    <div id="header">
+	    <h1>This header is in div id=Header</h1>
+	    </div>
+    <div class="colmask leftmenu">
+	    <div class="colleft">
+		    <div class="col1">
+			    <!-- Column 1 start -->
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                    <p>This is Column 1 area.</p>
+                </asp:ContentPlaceHolder>                   
+			    <!-- Column 1 end -->
+		    </div>
+		    <div class="col2">
+			    <!-- Column 2 start -->
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                    <p>This is Column 2 area.</p>
+                </asp:ContentPlaceHolder>   
+
+			    <!-- Column 2 end -->
+		    </div>
+	    </div>
+    </div>
+    <div id="footer">
+	    <p>THIS IS THE FOOTER SECTION</p>
+    </div>
+    <div>
+
+    </div>
+    </form>
+</body>
+</html>
