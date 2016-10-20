@@ -233,6 +233,48 @@ namespace AskAndAnswer.ClassCode
             }
         }
 
+        /// <summary>
+        /// Returns an html button
+        /// </summary>
+        /// <param name="cntlID">Button ID</param>
+        /// <param name="displayText">Text to show on the button face, e.g., 'Submit'</param>
+        /// <param name="cssclass">CSS Class of button</param>
+        /// <param name="blEncloseInSpan">Set TRUE and button will be enclosed in span, allowing it to fill up entire space.</param>
+        /// <param name="canSee">Leave True to make button visible.</param>
+        /// <returns></returns>
+        public static LiteralControl html_button(string cntlID, string displayText, string cssclass = "", Boolean blEncloseInSpan = false,
+            Boolean canSee = true)
+        {
+            string controlText = "";
+            try
+            {
+                string qID = encodeProperty("id", cntlID);
+                string qcssclass = encodeProperty("class", cssclass);
+                string qDisplayValue = encodeProperty("value", displayText);
+                string qVisible = "";
+                if (!canSee)
+                {
+                    qVisible = encodeProperty("style", "display:none");
+                }
+                controlText = "<input " +
+                    qID +
+                    encodeProperty("type", "button") +
+                    qcssclass +
+                    qDisplayValue + "/>";
+
+                if (blEncloseInSpan)
+                {
+                    controlText = "<span style=" + AAAK.DQ + "display:table-cell;" + AAAK.DQ + ">" + controlText + "</span>";
+                }
+                return new LiteralControl(controlText);
+            }
+            catch (Exception ex)
+            {
+                return renderLiteralControlError(ex, controlText);
+            }
+
+        }
+
 
         public static void GenerateControlsFromDatabase(int appID, System.Web.UI.Control cntlContainer)
         {

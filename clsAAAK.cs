@@ -26,7 +26,7 @@ namespace AskAndAnswer
         public const string lblPROMPT = "lblPrompt";
         public const string lblHELPMESSAGE = "lblHelpMessage";
         public const string txtDEFAULTVALUE = "txtDefaultValue";
-        public const string fkKVPGROUPID = "fkKVPGroupID";
+        public const string fkKVPGROUPIDDecoder = "fkKVPGroupIDDecoder";
         public const string blINITVISIBLE = "blInitVisible";
         public const string blINITENABLED = "blInitEnabled";
         public const string blSELECTIONREQUIRED = "blSelectionRequired";

@@ -18,6 +18,7 @@ namespace AskAndAnswer
             //be a truly generic solution
             if (m_useDB) {
                 DynControls.GenerateControlsFromDatabase(1,pnlInput);
+                pnlInput.Controls.Add(DynControls.html_button("btnSubmit", "SUBMIT", "inputButton", true));
             } else {
                 pnlInput.Controls.Add(DynControls.html_label("lbl_1", "Enter Board Name:", "fldlabel","txt_1"));
                 pnlInput.Controls.Add(DynControls.html_linebreak());

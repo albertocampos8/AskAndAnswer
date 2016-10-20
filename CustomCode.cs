@@ -35,7 +35,7 @@ namespace AskAndAnswer
         public static string lblPROMPT = AAAK.lblPROMPT;
         public static string lblHELPMESSAGE = AAAK.lblHELPMESSAGE;
         public static string txtDEFAULTVALUE = AAAK.txtDEFAULTVALUE;
-        public static string fkKVPGROUPID = AAAK.fkKVPGROUPID;
+        public static string fkKVPGROUPIDDecoder = AAAK.fkKVPGROUPIDDecoder;
         public static string blINITVISIBLE = AAAK.blINITVISIBLE;
         public static string blINITENABLED = AAAK.blINITENABLED;
         public static string blSELECTIONREQUIRED = AAAK.blSELECTIONREQUIRED;
@@ -112,8 +112,11 @@ namespace AskAndAnswer
                                                                         (Boolean)dR[DBK.blINITVISIBLE])
                                                   );
                         //Add linebreak
-                        cntlContainer.Controls.Add(DynControls.html_linebreak());
-
+                        if ((Boolean)dR[DBK.blINITVISIBLE])
+                        {
+                            cntlContainer.Controls.Add(DynControls.html_linebreak());
+                        }
+                        
                         //Next, the actual input element
                         switch ((System.Byte)dR[AAAK.fkCONTROLTYPE])
                         {
@@ -139,7 +142,7 @@ namespace AskAndAnswer
                                 List<SqlParameter> ps = new List<SqlParameter>();
 
                                 List<string> lstKVPs = new List<string>();
-                                ps.Add(new SqlParameter("@" + DBK.fkGROUPID, dR[DBK.fkKVPGROUPID]));
+                                ps.Add(new SqlParameter("@" + DBK.fkGROUPID, dR[DBK.fkKVPGROUPIDDecoder]));
                                 using (myDB.OpenConnection())
                                 {
                                     using (SqlDataReader dRdr = (SqlDataReader)myDB.ExecuteSP(DBK.spGET_WEB_KEYVALUEPAIR_INFO,
@@ -177,7 +180,10 @@ namespace AskAndAnswer
                                 break;
                         }
                         //Add linebreak
-                        cntlContainer.Controls.Add(DynControls.html_linebreak());
+                        if ((Boolean)dR[DBK.blINITVISIBLE])
+                        {
+                            cntlContainer.Controls.Add(DynControls.html_linebreak());
+                        }
 
                         //Control for error label
                         cntlContainer.Controls.Add(DynControls.html_label("lblError_" + index,
@@ -201,9 +207,12 @@ namespace AskAndAnswer
                         {
                             cntlContainer.Controls.Add(DynControls.html_linebreak());
                         }
-                        
+
                         //Add separating linebreak
-                        cntlContainer.Controls.Add(DynControls.html_linebreak());
+                        if ((Boolean)dR[DBK.blINITVISIBLE])
+                        {
+                            cntlContainer.Controls.Add(DynControls.html_linebreak());
+                        }
 
                         break;
                     default:

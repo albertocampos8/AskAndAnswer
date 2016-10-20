@@ -5,8 +5,10 @@
 </asp:Content>
 <asp:Content ID="rightColContent" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="pnlOutput" runat="server">
-        <input id="btnSubmit" type="button" class="inputButton" value="Click To Submit" />
-        <div id="response"></div>
+        <div id="response">
+            <p>Instructions:</p>
+            <p>Answer the questions on the left and press 'Submit' after scrolling to the bottom of the form.</p>
+        </div>
     </asp:Panel>
 </asp:Content>
 <asp:Content ID="leftColContent" ContentPlaceHolderID="ContentPlaceHolder2" runat="server">
