@@ -68,6 +68,27 @@ $(document).ready(function () {
             }
         });
 
+        //Toggle dropdown visibility depending on value of selected dropdown
+        $(".cboinput").on("change", function () {
+            try {
+                var currIndex = getCntlIndex($(this).attr('id'));
+                var selVal = $(this).val();
+                //NOTE: selVal = 0 means 'NO', meaning the related control should not be displayed.
+                //This is consistent with the definition of the parameters of changeControlVisibility
+                if (currIndex == 4) {
+                    changeControlVisibility(5, selVal == 1)
+                    //6 and 7 depend on 5 and 4; should they be visible if the value for 4 and 5 is 1?
+                    changeControlVisibility(6, $("#cbo_4").val() == 1 && $("#cbo_5").val() == 1);
+                    changeControlVisibility(7, $("#cbo_4").val() == 1 && $("#cbo_5").val() == 1);
+                } else if (currIndex == 5) {
+                    changeControlVisibility(6, $("#cbo_5").val() == 1);
+                    changeControlVisibility(7, $("#cbo_5").val() == 1);
+                }
+            } catch (err) {
+                alert('ERROR: ' + err);
+            }
+        });
+
 
     } catch(err) {
         alert(err.message)

@@ -64,3 +64,23 @@ function synthesizeData() {
     }
 
 };
+
+function getCntlIndex(cntlID) {
+    try {
+        return cntlID.split("_")[1];
+    } catch (err) {
+        alert("getCntlIndex: " + err.message)
+    }
+};
+
+function changeControlVisibility(controlID, blMakeVisible) {
+    try {
+        if (blMakeVisible) {
+            $("#visdiv_" + controlID).css('display', 'block');
+        } else {
+            $("#visdiv_" + controlID).css('display', 'none');
+        }
+    } catch (err) {
+
+    }
+};
