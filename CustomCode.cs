@@ -200,10 +200,10 @@ namespace AskAndAnswer
                                                                         (string)dR[DBK.lblHELPMESSAGE],
                                                                         "helplabel",
                                                                         "",
-                                                                        !dR[DBK.lblHELPMESSAGE].Equals(""))
+                                                                        !dR[DBK.lblHELPMESSAGE].Equals("") && (Boolean)dR[DBK.blINITVISIBLE])
                                                    );
-                        //Add linebreak after the label, if it's visible
-                        if (!dR[DBK.lblHELPMESSAGE].Equals(""))
+                        //Add linebreak after the label, if the control is visible AND the help message is <> ""
+                        if (!dR[DBK.lblHELPMESSAGE].Equals("") && (Boolean)dR[DBK.blINITVISIBLE])
                         {
                             cntlContainer.Controls.Add(DynControls.html_linebreak());
                         }

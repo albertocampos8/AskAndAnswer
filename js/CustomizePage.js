@@ -42,7 +42,7 @@ $(document).ready(function () {
             }
         });
 
-        $(".txtinput,.cboInput").on("focus", function () {
+        $(".txtinput,.cboinput").on("focus", function () {
             try {
                 $(this).css({"background-color": "yellow"});
             } catch (err) {
@@ -50,7 +50,7 @@ $(document).ready(function () {
             }
         });
 
-        $(".txtinput,.cboInput").on("focusout", function () {
+        $(".txtinput,.cboinput").on("focusout", function () {
             try {
                 $(this).css({ "background-color": "white" });
             } catch (err) {

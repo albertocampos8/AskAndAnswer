@@ -1,0 +1,6 @@
+C:\WebProjects\Repository\AskAndAnswer\bin\AskAndAnswer.dll.config
+C:\WebProjects\Repository\AskAndAnswer\bin\AskAndAnswer.dll
+C:\WebProjects\Repository\AskAndAnswer\bin\AskAndAnswer.pdb
+C:\WebProjects\Repository\AskAndAnswer\obj\Debug\AskAndAnswer.csprojResolveAssemblyReference.cache
+C:\WebProjects\Repository\AskAndAnswer\obj\Debug\AskAndAnswer.dll
+C:\WebProjects\Repository\AskAndAnswer\obj\Debug\AskAndAnswer.pdb

@@ -293,6 +293,8 @@ namespace AskAndAnswer.ClassCode
                 {
                     if ((dR != null) && (dR.HasRows))
                     {
+                        //Make a DIV for the set of controls; whether or not the Div is initially visible
+                        //depends on the value taken from the database.
                         CustomCode.ConstructInputControls(dR, cntlContainer);
                     }
                 }
