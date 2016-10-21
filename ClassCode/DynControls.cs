@@ -46,7 +46,8 @@ namespace AskAndAnswer.ClassCode
         /// <param name="assocCtl">The control on the page that this label is for</param>
         /// <param name="canSee">Set true if the control should be visible</param>
         /// <returns></returns>
-        public static string html_label_string(string cntlID, string lblText, string cssclass = "", string assocCtl = "", Boolean canSee = true)
+        public static string html_label_string(string cntlID, string lblText, string cssclass = "", string assocCtl = "", 
+            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
             try {
                 //Enclose values in double (escaped) quotes
@@ -57,7 +58,7 @@ namespace AskAndAnswer.ClassCode
                 {
                     qFor = encodeProperty("for", assocCtl);
                 }
-                string qVisible = "";
+                string qVisible = DecodeDisplayValue(dType);
                 if (!canSee)
                 {
                     qVisible = encodeProperty("style", "display:none");
@@ -81,9 +82,10 @@ namespace AskAndAnswer.ClassCode
         /// <param name="assocCtl">The control on the page that this label is for</param>
         /// <param name="canSee">Set true if the control should be visible</param>
         /// <returns></returns>
-        public static LiteralControl html_label(string cntlID, string lblText,  string cssclass = "", string assocCtl = "", Boolean canSee = true)
+        public static LiteralControl html_label(string cntlID, string lblText,  string cssclass = "", string assocCtl = "", 
+            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
-            string controlText = html_label_string(cntlID, lblText, cssclass, assocCtl, canSee);
+            string controlText = html_label_string(cntlID, lblText, cssclass, assocCtl, canSee, dType);
             try
             {
                 return new LiteralControl(controlText);
@@ -102,7 +104,8 @@ namespace AskAndAnswer.ClassCode
         /// <param name="cssclass">CSS class of the text box</param>
         /// <param name="defaultValue">default value text box should contain when displayed; leave blank and box will be empty</param>
         /// <returns></returns>
-        public static string html_txtbox_string(string cntlID, string cssclass = "", string defaultValue = "", Boolean canSee = true)
+        public static string html_txtbox_string(string cntlID, string cssclass = "", string defaultValue = "", Boolean canSee = true,
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
             try
             {
@@ -110,7 +113,7 @@ namespace AskAndAnswer.ClassCode
                 string qID = encodeProperty("id", cntlID);
                 string qCssClass = encodeProperty("class", cssclass);
                 string qDefaultValue = encodeProperty("value", defaultValue);
-                string qVisible = "";
+                string qVisible = DecodeDisplayValue(dType);
                 if (!canSee)
                 {
                     qVisible = encodeProperty("style", "display:none");
@@ -134,9 +137,10 @@ namespace AskAndAnswer.ClassCode
         /// <param name="cssclass">CSS class of the text box</param>
         /// <param name="defaultValue">default value text box should contain when displayed; leave blank and box will be empty</param>
         /// <returns></returns>
-        public static LiteralControl html_txtbox(string cntlID, string cssclass = "", string defaultValue = "", Boolean canSee = true)
+        public static LiteralControl html_txtbox(string cntlID, string cssclass = "", string defaultValue = "", 
+            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
-            string controlText = html_txtbox_string(cntlID, cssclass, defaultValue, canSee);
+            string controlText = html_txtbox_string(cntlID, cssclass, defaultValue, canSee, dType);
             try
             {
                 return new LiteralControl(controlText);
@@ -158,7 +162,8 @@ namespace AskAndAnswer.ClassCode
         /// This has no effect if selectionRequired = true</param>
         /// <returns></returns>
         public static String html_combobox_YESNO_string(string cntlID, string cssclass = "",
-            Boolean selectionRequired = false, Boolean defaultValueIsNo = true, Boolean canSee = true)
+            Boolean selectionRequired = false, Boolean defaultValueIsNo = true, Boolean canSee = true,
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
             try
             {
@@ -178,7 +183,7 @@ namespace AskAndAnswer.ClassCode
                 //Enclose values in double (escaped) quotes
                 string qID = encodeProperty("id", cntlID);
                 string qCssClass = encodeProperty("class", cssclass);
-                string qVisible = "";
+                string qVisible = DecodeDisplayValue(dType);
                 if (!canSee)
                 {
                     qVisible = encodeProperty("style", "display:none");
@@ -205,9 +210,10 @@ namespace AskAndAnswer.ClassCode
         /// This has no effect if selectionRequired = true</param>
         /// <returns></returns>
         public static LiteralControl html_combobox_YESNO(string cntlID, string cssclass = "", 
-            Boolean selectionRequired = false, Boolean defaultValueIsNo = true, Boolean canSee = true)
+            Boolean selectionRequired = false, Boolean defaultValueIsNo = true, Boolean canSee = true,
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
-            string controlText = html_combobox_YESNO_string(cntlID, cssclass, selectionRequired, defaultValueIsNo, canSee);
+            string controlText = html_combobox_YESNO_string(cntlID, cssclass, selectionRequired, defaultValueIsNo, canSee, dType);
             try
             {
                 return new LiteralControl(controlText);
@@ -237,7 +243,8 @@ namespace AskAndAnswer.ClassCode
         /// <param name="canSee">Set TRUE to make the control visible</param>
         /// <returns></returns>
         public static string html_combobox_string(string cntlID, List<string> lstKVP, string cssclass = "",
-            Boolean selectionRequired = false, string defaultValue = "", Boolean canSee = true)
+            Boolean selectionRequired = false, string defaultValue = "", Boolean canSee = true,
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
             try
             {
@@ -275,7 +282,7 @@ namespace AskAndAnswer.ClassCode
                 //Enclose values in double (escaped) quotes
                 string qID = encodeProperty("id", cntlID);
                 string qCssClass = encodeProperty("class", cssclass);
-                string qVisible = "";
+                string qVisible = DecodeDisplayValue(dType);
                 if (!canSee)
                 {
                     qVisible = encodeProperty("style", "display:none");
@@ -310,9 +317,10 @@ namespace AskAndAnswer.ClassCode
         /// <param name="canSee">Set TRUE to make the control visible</param>
         /// <returns></returns>
         public static LiteralControl html_combobox(string cntlID, List<string> lstKVP, string cssclass = "",
-            Boolean selectionRequired = false, string defaultValue="", Boolean canSee = true)
+            Boolean selectionRequired = false, string defaultValue="", Boolean canSee = true,
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
-            string controlText = html_combobox_string(cntlID, lstKVP, cssclass, selectionRequired, defaultValue, canSee);
+            string controlText = html_combobox_string(cntlID, lstKVP, cssclass, selectionRequired, defaultValue, canSee, dType);
             try
             {
                 return new LiteralControl(controlText);
@@ -329,18 +337,17 @@ namespace AskAndAnswer.ClassCode
         /// <param name="cntlID">Button ID</param>
         /// <param name="displayText">Text to show on the button face, e.g., 'Submit'</param>
         /// <param name="cssclass">CSS Class of button</param>
-        /// <param name="blEncloseInSpan">Set TRUE and button will be enclosed in span, allowing it to fill up entire space.</param>
         /// <param name="canSee">Leave True to make button visible.</param>
         /// <returns></returns>
-        public static string html_button_string(string cntlID, string displayText, string cssclass = "", Boolean blEncloseInSpan = false,
-            Boolean canSee = true)
+        public static string html_button_string(string cntlID, string displayText, string cssclass = "",
+            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
             try
             {
                 string qID = encodeProperty("id", cntlID);
                 string qcssclass = encodeProperty("class", cssclass);
                 string qDisplayValue = encodeProperty("value", displayText);
-                string qVisible = "";
+                string qVisible = DecodeDisplayValue(dType);
                 if (!canSee)
                 {
                     qVisible = encodeProperty("style", "display:none");
@@ -365,9 +372,10 @@ namespace AskAndAnswer.ClassCode
         /// <param name="blEncloseInSpan">Set TRUE and button will be enclosed in span, allowing it to fill up entire space.</param>
         /// <param name="canSee">Leave True to make button visible.</param>
         /// <returns></returns>
-        public static LiteralControl html_button(string cntlID, string displayText, string cssclass = "", Boolean canSee = true)
+        public static LiteralControl html_button(string cntlID, string displayText, string cssclass = "", Boolean canSee = true,
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
         {
-            string controlText = html_button_string(cntlID, displayText, cssclass, canSee);
+            string controlText = html_button_string(cntlID, displayText, cssclass, canSee, dType);
             try
             {
                 return new LiteralControl(controlText);
@@ -456,6 +464,32 @@ namespace AskAndAnswer.ClassCode
             return l;
         }
 
+        /// <summary>
+        /// Returns a display: <VALUE> string to affect a component's display
+        /// </summary>
+        /// <param name="dType"></param>
+        /// <returns></returns>
+        public static string DecodeDisplayValue(AAAK.DISPLAYTYPES dType)
+        {
+            try
+            {
+                switch (dType) { 
+                    case AAAK.DISPLAYTYPES.UNDEFINED:
+                        return "";
+                    case AAAK.DISPLAYTYPES.BLOCK:
+                        return encodeProperty("style", "display:block");
+                    case AAAK.DISPLAYTYPES.INLINE:
+                        return encodeProperty("style", "display:inline");
+                    case AAAK.DISPLAYTYPES.NONE:
+                        return encodeProperty("style", "display:none");
+                    default:
+                        return "";
+            }
+           } catch (Exception ex)
+            {
+                return "";
+            }
+        }
 
 }
 }

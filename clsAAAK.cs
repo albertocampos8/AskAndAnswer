@@ -49,5 +49,7 @@ namespace AskAndAnswer
         public const string spGET_WEB_KEYVALUEPAIR_INFO = "spGetWebKeyValuePairInfo";
         //The stored procedure that retrieves the information needed to generate the input fields from the database
         public const string spGET_WEB_DISPLAYFIELD_INFO = "spGetWebDisplayFieldInfo";
+
+        public enum DISPLAYTYPES { UNDEFINED, NONE, BLOCK, INLINE}
     }
 }

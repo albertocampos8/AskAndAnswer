@@ -116,13 +116,14 @@ namespace AskAndAnswer
                                                                         (string)dR[DBK.lblPROMPT],
                                                                         "fldlabel",
                                                                         mainCtlName, 
-                                                                        true)
+                                                                        true,
+                                                                        AAAK.DISPLAYTYPES.BLOCK)
                                                   );
                         //Add linebreak
-                        if ((Boolean)dR[DBK.blINITVISIBLE])
-                        {
-                            dRControlSet.Append(DynControls.html_linebreak_string());
-                        }
+                        //if ((Boolean)dR[DBK.blINITVISIBLE])
+                        //{
+                        //    dRControlSet.Append(DynControls.html_linebreak_string());
+                        //}
                         
                         //Next, the actual input element
                         switch ((System.Byte)dR[AAAK.fkCONTROLTYPE])
@@ -131,7 +132,8 @@ namespace AskAndAnswer
                                 dRControlSet.Append(DynControls.html_txtbox_string("txt_" + index,
                                                                                    "txtinput", 
                                                                                     (string)dR[DBK.txtDEFAULTVALUE],
-                                                                                   true)
+                                                                                   true,
+                                                                                   AAAK.DISPLAYTYPES.BLOCK)
                                                           );
                                 break;
                             case CntlDecoder.YESNO_DROPDOWN:
@@ -139,7 +141,8 @@ namespace AskAndAnswer
                                                                                             "cboinput",
                                                                                             dR[DBK.blSELECTIONREQUIRED].Equals(true),
                                                                                             dR[DBK.txtDEFAULTVALUE].Equals("0"),
-                                                                                            true)
+                                                                                            true,
+                                                                                            AAAK.DISPLAYTYPES.BLOCK)
                                                           );
                                 break;
                             case CntlDecoder.MULT_DROPDOWN:
@@ -180,21 +183,23 @@ namespace AskAndAnswer
                                                                                      "cboinput",
                                                                                      dR[DBK.blSELECTIONREQUIRED].Equals(true),
                                                                                      (string)dR[DBK.txtDEFAULTVALUE],
-                                                                                     true)
+                                                                                     true,
+                                                                                     AAAK.DISPLAYTYPES.BLOCK)
                                                           );
                                 break;
                             default:
                                 break;
                         }
                         //Add linebreak
-                        dRControlSet.Append(DynControls.html_linebreak_string());
+                        //dRControlSet.Append(DynControls.html_linebreak_string());
 
                         //Control for error label
                         dRControlSet.Append(DynControls.html_label_string("lblError_" + index,
                                                                         "",
                                                                         "errorlabel",
                                                                         "",
-                                                                        false)
+                                                                        false,
+                                                                        AAAK.DISPLAYTYPES.BLOCK)
                                                     );
                         //DONT'T Add linebreak-- error label is not visible, so display:none, and it takes no space
                         //containingDiv.Controls.Add(DynControls.html_linebreak());
@@ -204,13 +209,14 @@ namespace AskAndAnswer
                                                                         (string)dR[DBK.lblHELPMESSAGE],
                                                                         "helplabel",
                                                                         "",
-                                                                        !dR[DBK.lblHELPMESSAGE].Equals(""))
+                                                                        !dR[DBK.lblHELPMESSAGE].Equals(""),
+                                                                        AAAK.DISPLAYTYPES.BLOCK)
                                                    );
                         //Add linebreak after the label, if the help message is <> ""
-                        if (!dR[DBK.lblHELPMESSAGE].Equals(""))
-                        {
-                            dRControlSet.Append(DynControls.html_linebreak_string());
-                        }
+                        //if (!dR[DBK.lblHELPMESSAGE].Equals(""))
+                        //{
+                         //   dRControlSet.Append(DynControls.html_linebreak_string());
+                        //}
 
                         //Always terminate with a separating linebreak
                         dRControlSet.Append(DynControls.html_linebreak_string());
