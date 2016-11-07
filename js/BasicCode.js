@@ -12,7 +12,7 @@ function sendFormData() {
         //make an AJAX Call
         $.ajax({
             type: "POST",
-            url: "Default.aspx/respond",
+            url: "CustomPN.aspx/respond",
             data: strData,
             contentType: "application/json; charset utf-8",
             dataType: "json",
@@ -27,7 +27,7 @@ function sendFormData() {
                 bindEvents();
             },
             error: function () {
-                alert(status);
+                alert("error: " + status);
             }
         }) //ajax
 
@@ -36,18 +36,22 @@ function sendFormData() {
     }
 };
 
-//Loops over the *VISIBLE* input elements that have class .txtinput and .cboinput and returns a string, formatted as follows:
-//IDCODE_0!#!INPUTVALUE_0...IDCODE_N-1!#!INPUTVALUE_N-1
-//...where IDCODE_i is the ID code of the ith element, and comes from the html control id, e.g., txt_i.  Typically the value
-//of i comes from the database.
-//INPUTVALUE_0 is the value in the ith input control
-//THIS CODE DOES NOT EXPECT A VALUE TO BE NOTHING.  A separate error checking function should be called prior to this function
-//to make sure all controls have a value
-function synthesizeData() {
+/*Finds all input elements with class .txtinput or .cboinput in container <containerSelector> and arranges them in a string
+formatted as follows:
+IDCODE_0!#!INPUTVALUE_0...IDCODE_N-1!#!INPUTVALUE_N-1
+...where IDCODE_i is the ID code of the ith element, and comes from the html control id, e.g., txt_i.  Typically the value
+of i comes from the database.
+This means that INPUTVALUE_is the value in the ith input control.
+THIS CODE DOES NOT EXPECT A VALUE TO BE NOTHING.  A separate error checking function should be called prior to this function
+to make sure all controls have a value
+
+NOTE: containerSelector should be a valid jQuery selector, e.g., #<something>, .<something>, etc.
+*/
+function synthesizeData(containerSelector) {
     try {
         //Iterate over all input elements
         var strReturn = "";
-        $(".txtinput,.cboinput").each(function (index, element) {
+        $(containerSelector).find(".txtinput,.cboinput").each(function (index, element) {
             //if ($(this).css('display') != 'none') { <-- this is an alernate method to check for visibility
             if ($(this).is(":visible")) {
                 //The numeric portion, i, of the control id, e.g., txt_i
@@ -84,3 +88,28 @@ function changeControlVisibility(controlID, blMakeVisible) {
 
     }
 };
+
+function isNumeric(n) {
+    return !isNAN(parseFloat(n)) && isFinite(n);
+};
+
+function giveErrorMessage(lblErrorID, msg, lblInputField, bkgndcolor, fontcolor) {
+    try {
+        //Put message in field
+        $(lblErrorID).css("display", "block");
+        $(lblErrorID).text(msg);
+        //Change color of input field
+        try {
+            $(lblInputField).css({"background-color": bkgndcolor});
+        } catch (err2) {
+            alert(err2.message);
+        }
+        try {
+            $(lblInputField).css({ "color": fontcolor });
+        } catch (err3) {
+            alert(err3.message);
+        }
+    } catch (err) {
+        alert("giveErrorMessage: " + err.message);
+    }
+}

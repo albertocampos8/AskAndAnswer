@@ -1,17 +1,11 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/SiteMain.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" EnableViewState="false" Inherits="AskAndAnswer.Default" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/SiteMain.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="AskAndAnswer.Default1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <script src="/js/BasicCode.js"> </script>
-    <script src="/js/CustomizePage.js"> </script>
 </asp:Content>
-<asp:Content ID="rightColContent" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <asp:Panel ID="pnlOutput" runat="server">
-        <div id="response">
-            <p>Instructions:</p>
-            <p>Answer the questions on the left and press 'Submit' after scrolling to the bottom of the form.</p>
-        </div>
-    </asp:Panel>
+<asp:Content ID="MainRight" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <h1>Main Menu</h1>
+    <p><a href="./CustomPN.aspx">Custom Part Numbers</a></p>
+    <p><a href="./OTSPN.aspx">Off the Shelf (OTS) Part Numbers</a></p>
 </asp:Content>
-<asp:Content ID="leftColContent" ContentPlaceHolderID="ContentPlaceHolder2" runat="server">
-    <asp:Panel ID="pnlInput" runat="server">
-    </asp:Panel>
+<asp:Content ID="MainLeft" ContentPlaceHolderID="ContentPlaceHolder2" runat="server">
+
 </asp:Content>

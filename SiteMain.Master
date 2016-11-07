@@ -5,12 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>Ask And Answer Demo</title>
-    <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />-->
+    <link rel="stylesheet" href="/js/jquery-ui-1.12.1.uilightness/jquery-ui.css" />
     <link href="/stylesheets/2colscreen.css" rel="stylesheet" type="text/css" />
     <!--Reference to jQuery-->
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-
+    <!--<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>-->
+    <!--<script src="/js/jquery-3.1.1.min.js"></script>-->
+    <script src="/js/jquery-ui-1.12.1.uilightness/external/jquery/jquery.js"></script>
+    <script src="/js/jquery-ui-1.12.1.uilightness/jquery-ui.js"></script>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>

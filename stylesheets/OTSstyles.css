@@ -1,0 +1,36 @@
+﻿body {
+}
+
+/*Table properties*/
+.otsTable {
+    border-collapse: collapse;
+}
+
+/*Cell properties*/
+.otsTableCells {
+    //padding-left: 5px;
+    padding: 5px;
+    font-size: small;
+}
+
+.disabledButton {
+    background-color:lightgray;
+}
+.activeEditButton {
+    background-color:yellow;
+}
+.activeSaveButton {
+    background-color:lightgreen;
+}
+
+.activeCancelButton {
+    background-color:red;
+}
+
+.activeAddButton {
+    background-color:aqua;
+}
+
+.activeViewButton {
+    background-color:plum;
+}

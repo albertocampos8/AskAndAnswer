@@ -6,7 +6,8 @@ body {
 	background:#fff;
 	min-width:600px;    	/* Minimum width of layout - remove line if not required */
 					/* The min-width property does not work in old versions of Internet Explorer */
-	font-size:90%;
+	font-size:small;
+    font-family: Arial, Helvetica, sans-serif;
 }
 a {
 	color:#369;
@@ -156,3 +157,90 @@ img {
 table, th, td {
     border: 1px solid black;
 }
+
+/****** For OTSPN Page *******/
+.menubutton {
+  width:100%;  
+  background-color:maroon;
+  color:white;
+}
+
+#divOTSNewIn {
+    float: left;
+    padding-right: 50px;
+}
+
+.txtinput[type=text] {
+    text-transform:uppercase;
+}
+
+.upper {
+    text-transform:uppercase;
+}
+
+.cboinput_vwpndata,.txtinput_vwpndata,.cboinput_vwpndata_toggle,.txtinput_vwpndata_toggle  {
+    width: 450px;
+}
+
+.fldlabel_vwpndata {
+    float: left;
+    width: 150px;
+    margin-right: 5px;
+    text-align: right;
+}
+
+/*https://staff.washington.edu/fmf/2010/03/05/jquery-tabs-basic-styling*/
+/*Search for jquery ui tab styling missing borders*/
+
+/*The expand button that appears input the table with search results
+.otsFoundExpand {
+    position:relative;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    margin:3px;
+}*/
+
+/*Class to apply to a button that should fill its container*/
+.fillbutton {
+    height:100%;
+    width:100%;
+}
+
+/*****************************/
+
+/***** TAB OVERRIDES *********/
+#bordertabs ul {
+    display:none;
+}
+
+#bordertabs ul.ui-tabs-nav {
+    display:block;
+}
+
+#bordertabs .ui-tabs-panel h3 {
+    display:none;
+}
+/************************888*/
+#bordertabs .ui-tabs-nav {
+    margin-bottom: -1px;
+}
+#bordertabs .ui-tabs-nav li {
+    border: 1px #f21e1e solid;
+    -webkit-border-top-left-radius: 0.5em;
+    -webkit-border-top-right-radius: 0.5em;
+    -moz-border-radius-topleft: 0.5em;
+    -moz-border-radius-topright: 0.5em;
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+#bordertabs .ui-tabs-nav li.ui-tabs-selected {
+    border-bottom-color: #e3e3e3;
+}
+
+#bordertabs .ui-tabs-panel {
+    border: 1px #f21e1e solid;
+}
+/*****************************/

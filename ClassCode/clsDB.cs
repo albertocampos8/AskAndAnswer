@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.Data;
 using AskAndAnswer;
 
 namespace DB
@@ -78,6 +79,52 @@ namespace DB
         }
 
         /// <summary>
+        /// Converts the database object into a string; 
+        /// If object is null, return ""
+        /// </summary>
+        /// <param name="dbVal"></param>
+        /// <param name="valIfNull">Value to return if null, e.g., N/A.  Returns "" if unspecified</param>
+        /// <returns></returns>
+        public string Fld2Str(object dbVal, string valIfNull = "")
+        {
+            try
+            {
+                if (dbVal != DBNull.Value)
+                {
+                    return Convert.ToString(dbVal);
+                } else
+                {
+                    return valIfNull;
+                }
+            } catch (Exception ex)
+            {
+                return "Error in Method Fld2str for " + dbVal.ToString() + " " + ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Returns a DBNull object for an empty string.
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public object EmptyStr2Null(string val)
+        {
+            try
+            {
+                if (val == "")
+                {
+                    return DBNull.Value;
+                } else
+                {
+                    return val;
+                }
+            }
+            catch (Exception ex)
+            {
+                return "Error in Method Fld2str for " + val + " " + ex.Message;
+            }
+        }
+        /// <summary>
         /// Returns the result of a Stored Procedure; you must make sure the connection is open before calling this function
         /// </summary>
         /// <param name="storedProcName">Nameof stored procedure</param>
@@ -138,5 +185,134 @@ namespace DB
             return "@" + name;
         }
 
+        /// <summary>
+        /// Return an SQL output parameter
+        /// </summary>
+        /// <param name="parameterName">Name of parameter; you must supply "@"</param>
+        /// <param name="dType">Data Type; use System.Data.SqlDbType type</param>
+        /// <param name="size">Size of parameter; default is 1000000000</param>
+        /// <returns></returns>
+        public SqlParameter makeOutputParameter(string parameterName, SqlDbType dType, int size = 1000000000)
+        {
+            try
+            {
+                SqlParameter p = new SqlParameter();
+                p.ParameterName = parameterName;
+                p.Size = size;
+                p.Direction = ParameterDirection.Output;
+                return p;
+            } catch (Exception ex)
+            {
+                return new SqlParameter();
+            }
+        }
+
+        public SqlParameter makeReturnParameter(SqlDbType dType, string parameterName = "@returnVal")
+        {
+            try
+            {
+                SqlParameter p = new SqlParameter();
+                p.ParameterName = parameterName;
+                p.Direction = ParameterDirection.ReturnValue;
+                return p;
+            }
+            catch (Exception ex)
+            {
+                return new SqlParameter();
+            }
+        }
+
+        /// <summary>
+        /// Converts an object from a database to a string.
+        /// If the object is Null, return an empty string ("")
+        /// </summary>
+        /// <param name="dbVal"></param>
+        /// <returns></returns>
+
+        /// <summary>
+        /// Puts the key value pair with fkAppID = appID that is defined in webKVP into the application object.
+        /// To access the dictionary, use key "kvpd_[APPID]"
+        /// To access the list, use key "kvpl_[APPID]"
+        /// </summary>
+        /// <param name="appID"></param>
+        public void PutKVPInDictionary(Int64 appID)
+        {
+            try
+            {
+                Dictionary<string, string> d = new Dictionary<String, string>();
+                List<string> l = new List<string>();
+                clsDB myDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.fkGROUPID, appID));
+                using (myDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(DBK.SP.spGETWEBKEYVALUEPAIRINFO, ps,
+                        clsDB.SPExMode.READER, ref cmd))
+                    {
+                        if (dR != null && dR.HasRows)
+                        {
+                            while (dR.Read())
+                            {
+                                d.Add(Convert.ToString(dR[DBK.keyACTUALVALUE]), Convert.ToString(dR[DBK.valDISPLAYEDVALUE]));
+                                l.Add(Convert.ToString(dR[DBK.keyACTUALVALUE]));
+                                l.Add(Convert.ToString(dR[DBK.valDISPLAYEDVALUE]));
+                            }
+
+                        }
+                    }
+                }
+
+
+                HttpContext.Current.Application["kvpd_" + Convert.ToString(appID)] = d;
+                HttpContext.Current.Application["kvpl_" + Convert.ToString(appID)] = l;
+            }
+            catch (Exception ex)
+            {
+                string x = ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Puts the key value pair that you obtain from a storedProcedure into the application object.
+        /// To access the dictionary, use key "kvpd_[spName]"
+        /// To access the list, use key "kvpl_[spName]"
+        /// </summary>
+        /// <param name="appID"></param>
+        public void PutKVPInDictionary(string spName)
+        {
+            try
+            {
+                Dictionary<string, string> d = new Dictionary<String, string>();
+                List<string> l = new List<string>();
+                clsDB myDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                using (myDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(spName, null,
+                        clsDB.SPExMode.READER, ref cmd))
+                    {
+                        if (dR != null && dR.HasRows)
+                        {
+                            while (dR.Read())
+                            {
+                                d.Add(Convert.ToString(dR[DBK.keyACTUALVALUE]), Convert.ToString(dR[DBK.valDISPLAYEDVALUE]));
+                                l.Add(Convert.ToString(dR[DBK.keyACTUALVALUE]));
+                                l.Add(Convert.ToString(dR[DBK.valDISPLAYEDVALUE]));
+                            }
+
+                        }
+                    }
+                }
+
+
+                HttpContext.Current.Application["kvpd_" + spName] = d;
+                HttpContext.Current.Application["kvpl_" + spName] = l;
+            }
+            catch (Exception ex)
+            {
+                string x = ex.Message;
+            }
+        }
     }
 }
