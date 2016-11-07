@@ -14,6 +14,14 @@ function InitializeOTSSearchCSS() {
         //...and also let the message be visible
         $("#divMessage").css('display', 'block');
 
+        //Padding
+        $("#visdiv_" + ID_OTSSearch_ByBU).css('margin', '5px');
+        $("#visdiv_" + ID_OTSSearch_ByUser).css('margin', '5px');
+        $("#visdiv_" + ID_OTSSearch_ByDate).css('margin', '5px');
+        $("#visdiv_" + ID_OTSSearch_ByText).css('margin', '5px');
+
+        //Initialize the datepicker
+        $("#txt_" + ID_OTSSearch_ByDate).datepicker();
         //Bind the change event on ID_OTSSearch_Method
         $("#cbo_" + ID_OTSSearch_Method).off("change", HandleChangedSearchMethod);
         $("#cbo_" + ID_OTSSearch_Method).on("change", HandleChangedSearchMethod);

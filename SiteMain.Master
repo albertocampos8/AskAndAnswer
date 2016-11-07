@@ -43,6 +43,7 @@
     </div>
     <div id="footer">
 	    <p>THIS IS THE FOOTER SECTION</p>
+        <div id ="dialog"></div>
     </div>
     <div>
 

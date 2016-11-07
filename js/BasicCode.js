@@ -53,7 +53,7 @@ function synthesizeData(containerSelector) {
         var strReturn = "";
         $(containerSelector).find(".txtinput,.cboinput").each(function (index, element) {
             //if ($(this).css('display') != 'none') { <-- this is an alernate method to check for visibility
-            if ($(this).is(":visible")) {
+            if ($(this).is(":visible"))  {
                 //The numeric portion, i, of the control id, e.g., txt_i
                 var ctlID = $(this).attr('id').split("_")[1];
                 //The value provided by the user for the control; for drop-down boxes, this is the actual (not display) value
@@ -111,5 +111,21 @@ function giveErrorMessage(lblErrorID, msg, lblInputField, bkgndcolor, fontcolor)
         }
     } catch (err) {
         alert("giveErrorMessage: " + err.message);
+    }
+}
+
+function OpenDialog(dialogCssSelector, t, msg) {
+    try {
+        //initialize
+        $(dialogCssSelector).dialog({
+            title: t,
+            modal: true,
+            hide: { effect: "explode", duration: 1000 },
+            show: {effect:"blind", duration:1000}
+        });
+        $(dialogCssSelector).html(msg);
+        $(dialogCssSelector).dialog();
+    } catch (err) {
+        alert(err.message);
     }
 }

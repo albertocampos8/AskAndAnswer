@@ -34,3 +34,18 @@
 .activeViewButton {
     background-color:plum;
 }
+
+.activeInputField {
+    background-color:yellow;
+}
+.inactiveInputField {
+    background-color:initial;
+}
+.tableCellButton {
+    width:100%;
+    height:100%;
+}
+
+.btnExpand {
+    background-color:lightcoral;
+}

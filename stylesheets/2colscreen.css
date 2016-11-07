@@ -165,11 +165,17 @@ table, th, td {
   color:white;
 }
 
+
 #divOTSNewIn {
     float: left;
     padding-right: 50px;
 }
 
+.ui-widget-header {
+    background-color:maroon;
+    background-image:none;
+    color:white;
+}
 .txtinput[type=text] {
     text-transform:uppercase;
 }

@@ -995,7 +995,7 @@ namespace AskAndAnswer
                                                     "otsFindResultsRow_" + pnID,
                                                     "otsFindResultsRow",
                                                     new HTMLStrings.TableCell[] {
-                                                                    new HTMLStrings.TableCell("","otsFindResultsCell",buttonhtml.Replace("btnOTSFOUNDID_", "btnOTSFOUNDID_" + pnID),1,false,true),
+                                                                    new HTMLStrings.TableCell("","otsFindResultsCell withExpandButton",buttonhtml.Replace("btnOTSFOUNDID_", "btnOTSFOUNDID_" + pnID),1,false,true),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",status,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",pn,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",desc,1,false),
@@ -1329,21 +1329,21 @@ namespace AskAndAnswer
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,vStatus,1,false, true,
                                                         "txtinput_" + OTSINDK.CHANGE_VENDORSTATUS + uid, null, "", "", false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,vPN,1,false,true,
-                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN + uid, null, "", "txtinputtoggle_" + pnID, false),
+                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN + uid, null, "", "txtinput toggle " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,vPNStatus,1,false,true,
-                                                        "cboinput_" + OTSINDK.CHANGE_VENDORPNSTATUS + uid, lstVPNStatus, "", "cboinputtoggle_" + pnID, false),
+                                                        "cboinput_" + OTSINDK.CHANGE_VENDORPNSTATUS + uid, lstVPNStatus, "", "cboinput toggle " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,vDshtURL,1,false,true,
-                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_DATASHEET + uid, null, "", "txtinputtoggle_" + pnID, false),
+                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_DATASHEET + uid, null, "", "txtinput toggle " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,lowcost,1,false,true,
-                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_COST_LOW + uid, null, "", "txtinputtoggle_" + pnID, false),
+                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_COST_LOW + uid, null, "", "txtinput toggle " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,highcost,1,false,true,
-                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_COST_HIGH + uid, null, "", "txtinputtoggle_" + pnID, false),
+                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_COST_HIGH + uid, null, "", "txtinput toggle " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,engcost,1,false,true,
-                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_COST_ENG + uid, null, "", "txtinputtoggle_" + pnID, false),
+                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_COST_ENG + uid, null, "", "txtinput toggle " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,height,1,false,true,
-                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_HEIGHT + uid, null, "", "txtinputtoggle_" + pnID, false),
+                                                        "txtinput_" + OTSINDK.CHANGE_VENDORPN_HEIGHT + uid, null, "", "txtinput toggle " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,ecode,1,false,true,
-                                                        "cboinput_" + OTSINDK.CHANGE_VENDORPN_ECODE + uid, lstECode, "", "cboinputtoggle_" + pnID, false),
+                                                        "cboinput_" + OTSINDK.CHANGE_VENDORPN_ECODE + uid, lstECode, "", "cboinput toggle " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsVPNCell_" + pnID,"VIEW",1,false,true,
                                                         "btninput_" + OTSINDK.CHANGE_VENDORPN_WHEREUSED + uid, null, "VIEW","btnViewVendorWhereUsed", true)
                                                     }
@@ -1383,6 +1383,8 @@ namespace AskAndAnswer
         {
             try
             {
+                string msg = "";
+                string html = "";
                 string targetID = "";
                 string[] dlim = { AAAK.DELIM };
                 string[] kvp = input.Split(dlim, StringSplitOptions.None);
@@ -1420,18 +1422,25 @@ namespace AskAndAnswer
                 ps.Add(myDB.makeOutputParameter("@changed", System.Data.SqlDbType.Bit));
                 using (myDB.OpenConnection())
                 {
-                    myDB.ExecuteSP(DBK.SP.spOTSUPDATEPARTSTABLE, ps, clsDB.SPExMode.NONQUERY, ref cmd);
-                    
-                    if (Convert.ToString(cmd.Parameters["@changed"].Value) == "0")
+                   object res = myDB.ExecuteSP(DBK.SP.spOTSUPDATEPARTSTABLE, ps, clsDB.SPExMode.NONQUERY, ref cmd);
+                    if (res.ToString().Contains(" "))
                     {
-                        //This indicates no change.
-                        return "0";
-                    } else
-                    {
-                        //A change occurred; return the updated results.
-                        return getHTMLForPartNumberID(targetID);
+                        msg = "<p>UpdatePNData: Unable to execute stored procedure: " + res.ToString() + "</p>";
+                    } else 
+                    {                   
+                        if (Convert.ToString(cmd.Parameters["@changed"].Value) == "0")
+                        {
+                            //This indicates no change.
+                            msg = "<p>The data you provided resulted in no changes to store in the database.</p>";
+                        } else
+                        {
+                            //A change occurred; return the updated results.
+                            msg = "<p>Success!</p><p>Your changes were saved in the database.</p>";
+                        }
                     }
                 }
+                html = getHTMLForPartNumberID(targetID);
+                return msg + AAAK.DELIM + html;
             } catch (Exception ex)
             {
                 return "<p>Method UpdatePNData error: " + ex.Message + "</p>";

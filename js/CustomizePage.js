@@ -146,6 +146,9 @@ $(document).ready(function () {
             }
         });
 
+        //Handler for getting new OTS PN
+        $("#btnOTSNewIn").on("click", GetNewOTSPN);
+
         //Code to handle menu buttons that go to a link
         $("#btnOTSToMain").on("click", function (e) {
             try {
@@ -192,6 +195,33 @@ function bindEvents() {
     });
 }
 
+function GetNewOTSPN() {
+    try {
+        //encode the data in divOTSNewIn
+        data = synthesizeData("#divOTSNewIn");
+        //alert(data);
+        var obj = new Object();
+        obj.input = data;
+        var strData = JSON.stringify(obj);
+        //make an AJAX Call
+        $.ajax({
+            type: "POST",
+            url: "OTSPN.aspx/getNewOTSPN",
+            data: strData,
+            contentType: "application/json; charset utf-8",
+            dataType: "json",
+            success: function (msg) {
+                //The result goes in...
+                $("#divOTSNewOut").html(msg.d);
+            },
+            error: function () {
+                alert(status);
+            }
+        }) //ajax
+    } catch (err) {
+        alert(err.message);
+    }
+}
 //Performs from validation.
 //btnID; the ID of the button that was pressed
 //divID: the ID of the div containing the controls you want to validate
