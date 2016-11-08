@@ -33,10 +33,14 @@ function ShowOTSPNDetail() {
         if ($("#otsExpandResultsRow_" + id).is(':visible')) {
             //Since it's visible, hide it.
             $(this).val('Expand');
+            $(this).prop('title','Expand to get more information about the Part Number');
             $("#otsExpandResultsRow_" + id).toggle();
         } else {
             //Since it's not visible, show it
             $("#otsExpandResultsRow_" + id).toggle();
+            $(this).prop('title', 'Hide to reclaim browser space');
+            //Since this row was invisible, its color was not set; make it match the color of this row.
+            $("#otsExpandResultsRow_" + id).css('background-color', $(this).closest('tr').css('background-color'));
             $(this).val('Hide');
             if ($("#otsDisplayAreaFor_" + id).html() == '') {
                 //We only need to do the ajax call if the row is empty
@@ -80,7 +84,7 @@ function AJAX_GetOTSPNDetail(id) {
             }
         }) //ajax
     } catch (err) {
-        alert("Error in FormatOTSPNDetail: " + err.message);
+        alert("Error in GetOTSPNDetail: " + err.message);
     }
 }
 
@@ -92,15 +96,44 @@ function FormatOTSPNDetail(divSelector) {
         $("#" + divSelector).tabs("option", "active", flagSelectedTab);
         
         //Make txt/cbo fields in divPNInfo wide
-        $("#divPNInfo_" + id + " .txtinput,.cboinput").width("500px");
+        //$("#divPNInfo_" + id + " .txtinput,.cboinput").width("500px");
+        $("#divPNInfo_" + id).find(".txtinput,.cboinput").width("500px");
 
         //Set button colors
         $(".editotsinfo_" + id).addClass("activeEditButton");
         $(".editvpn_" + id).addClass("activeEditButton");
         $(".viewpnhistory_" + id).addClass("activeViewButton");
 
+        var buttonID = ""
         $("#tblVPNInfo_" + id).find(".btnViewVendorWhereUsed").each(function (index, value) {
             $(this).addClass("activeViewButton");
+            buttonID = $(this).attr('id');
+            //Couldn't figure out why the following binding didn't work:
+            //$("#" + buttonID).on("click", "AJAX_DoVPNWhereUsed");
+            //...so just bind directly
+            $("#" + buttonID).on("click", function () {
+                var id = $(this).attr('id').split("_")[2];
+                //The ID is the only data we need to send to the server.
+                var obj = new Object();
+                obj.input = id;
+                var strData = JSON.stringify(obj);
+                //make an AJAX Call
+                $.ajax({
+                    type: "POST",
+                    url: "OTSPN.aspx/WhereUsedForVPNID",
+                    data: strData,
+                    contentType: "application/json; charset utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        //The result goes in a dialog box
+                        //$("#dialog").dialog("option", "width", 700);
+                        OpenDialog("#dialog", "WHERE USED FOR ", msg.d);
+                    },
+                    error: function () {
+                        alert(status);
+                    }
+                }) //ajax
+            });
         });
         
         //Bind button functions
@@ -113,7 +146,6 @@ function FormatOTSPNDetail(divSelector) {
         $(".savevpn_" + id).on("click", saveVPNInfo_Click);
         $(".cancelvpn_" + id).on("click", cancelVPNInfo_Click);
 
-        
     } catch (err) {
         alert("Error in FormatOTSPNDetail: " + err.message);
     }
@@ -438,4 +470,36 @@ function EncodeVPNTable(tableIDCssSelector) {
         return "";
     }
 }
+
+function AJAX_DoVPNWhereUsed() {
+    try {
+        var id = $(this).attr('id').split("_")[2];
+        //The ID is the only data we need to send to the server.
+        var obj = new Object();
+        obj.input = id;
+        alert(id);
+        var strData = JSON.stringify(obj);
+        //make an AJAX Call
+        $.ajax({
+            type: "POST",
+            url: "OTSPN.aspx/WhereUsedForVPNID",
+            data: strData,
+            contentType: "application/json; charset utf-8",
+            dataType: "json",
+            success: function (msg) {
+                //The result goes in a dialog box
+                alert(msg.d);
+                OpenDialog("#dialog","WHERE USED FOR ", msg.d);
+            },
+            error: function () {
+                alert(status);
+            }
+        }) //ajax
+    } catch (err) {
+        alert("Error in AJAX_DoVPNWhereUsed: " + err.message);
+        return "";
+    }
+}
+
+
 

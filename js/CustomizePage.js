@@ -5,8 +5,37 @@
 
 $(document).ready(function () {
     try {
+        //Need to call this function if we are viewing data via an html string
+        try {
+            $(".pnsummary").each(function (index, value) {
+                FormatOTSPNDetail($(this).attr('id'));
+            });
+        } catch (err) {
 
+        }
+        
+        //tooltip
+        $(document).tooltip();
         //alert("HERE");
+        //Set width for input elements-- note, this applies to OTSPN.aspx page only
+        try {
+            var w = "250px"
+            $("#txt_" + RequestOTS_VPN).width(w);
+            $("#txt_" + RequestOTS_Vendor).width(w);
+            $("#cbo_" + RequestOTS_User).width(w);
+            $("#cbo_" + RequestOTS_BU).width(w);
+            $("#txt_" + RequestOTS_ForProduct).width(w);
+            $("#cbo_" + RequestOTS_PartType).width(w);
+            $("#cbo_" + RequestOTS_PartSubType).width(w);
+            $("#txt_" + RequestOTS_Package).width(w);
+            $("#txt_" + RequestOTS_Value).width(w);
+            $("#txt_" + RequestOTS_Tol).width(w);
+            $("#txt_" + RequestOTS_Size).width(w);
+            $("#txt_" + RequestOTS_Attachment).width(w);
+        } catch (err) {
+
+        }
+
 
         //Assigns the AJAX Call (in BasicCode.js)-- do not change this.  You want to change function SynthesizeInput()
         $(".inputButton").click(function (e) {
@@ -171,6 +200,48 @@ $(document).ready(function () {
         //Set Tabs
         $("#divOTSFind, #divLook").tabs();
 
+        //Another case where this doesn't apply if using customPN.aspx
+
+        try {
+            //Handler that helps user determine if the Vendor Part Number they're entering has already been entered.
+            $("#txt_" + RequestOTS_VPN + "," + "#txt_" + RequestOTS_Vendor).on("focusout", function () {
+                try {
+                    var vpn = $("#txt_" + RequestOTS_VPN).val();
+                    var v = $("#txt_" + RequestOTS_Vendor).val();
+                    var data = "1" + DELIM + vpn + DELIM + v;
+                    var obj = new Object();
+                    obj.input = data;
+                    var strData = JSON.stringify(obj);
+                    //make an AJAX Call
+                    $.ajax({
+                        type: "POST",
+                        url: "OTSPN.aspx/WhereUsedForVPN",
+                        data: strData,
+                        contentType: "application/json; charset utf-8",
+                        dataType: "json",
+                        success: function (msg) {
+                            //The result goes in...
+                            if (msg.d == "") {
+                                $("#divOTSNewOut").html('<p style="color:green"><b>Good!</b></p><p>The vendor/vendor part number combination you have entered does not yet exist in the database.</p>');
+                            } else {
+                                $("#divOTSNewOut").html(msg.d);
+                                FormatTable_OTSStyle("#tbl_" + vpn);
+                            }
+                            //alert(msg.d);
+
+                        },
+                        error: function () {
+                            alert("Ajax check vpn value: " + status);
+                        }
+                    }) //ajax
+                } catch (err) {
+                    alert('ERROR in document.ready - Handler to check if Vendor Part Number exists: ' + err);
+                }
+            });
+        } catch (err) {
+
+        }
+ 
         //***********************************************************************************
 
     } catch(err) {
@@ -197,6 +268,11 @@ function bindEvents() {
 
 function GetNewOTSPN() {
     try {
+        //Validate
+        if (!validateForm($(this).attr('id'), $(this).attr('id').replace("btn", "div"))) {
+            return "";
+        }
+        alert("passed validatiion");
         //encode the data in divOTSNewIn
         data = synthesizeData("#divOTSNewIn");
         //alert(data);
@@ -222,31 +298,31 @@ function GetNewOTSPN() {
         alert(err.message);
     }
 }
-//Performs from validation.
+//Performs from validation.; Returns true if OK to submit form
 //btnID; the ID of the button that was pressed
 //divID: the ID of the div containing the controls you want to validate
 function validateForm(btnID, divID) {
     try {
-        blErrorOccurred = false;
+        formValid = true;
         switch (btnID) {
             case "btnOTSNewIn":
                 //Ensure user selected a part type, even if it's undefined.
-                ErrorOccured = !validateAllVisibleDropDownsHaveSelection("divOTSNewIn")
+                formValid = validateAllVisibleDropDownsHaveSelection("divOTSNewIn")
                 //MPN is required
                 if ($("#txt_18").val() == "") {
-                    blErrorOccurred = true;
+                    formValid = false;
                     giveErrorMessage("#lblError_18", "You must provide a Vendor Part Number.", "#txt_18", "red", "black");
                 }
                 //...as is a vendor is required
                 if ($("#txt_19").val() == "") {
-                    blErrorOccurred = true;
+                    formValid = false;
                     giveErrorMessage("#lblError_19", "You must provide a Vendor Name.", "#txt_19", "red", "black");
                 }
                 break;
             default:
                 break;
         }
-        return blErrorOccurred;
+        return formValid;
     } catch (err) {
         alert("validateForm: " + err.message);
     }

@@ -42,6 +42,7 @@ img {
 	clear:both;
 	float:left;
 	width:100%;
+    background:black;
 }
 #header {
 	border-bottom:1px solid #000;
@@ -127,11 +128,28 @@ img {
 }
 /* 2 Column (left menu) settings */
 .leftmenu {
-	background:#fff;		/* right column background colour */
+    /* right column background colour */
+	background: #D5F5E3;		/*For browsers that dont support gradients*/
+    /*Gradients-- light green to light red*/
+   /* background: -webkit-linear-gradient(left, #F1948A, #D5F5E3);	/*For safari*/
+   /* background: -o-linear-gradient(bottom right, #F1948A, #D5F5E3);	/*For Opera*/
+    /*background: -moz-linear-gradient(bottom right, #F1948A, #D5F5E3);	/*For Firefox*/
+    /*background: linear-gradient(bottom right, #F1948A, #D5F5E3);	/*For Standard*/
+    
+    background: -webkit-linear-gradient(135deg, #D5F5E3, #F1948A);	/*For safari*/
+    background: -o-linear-gradient(135deg, #D5F5E3, #F1948A);	/*For Opera*/
+    background: -moz-linear-gradient(135deg, #D5F5E3, #F1948A);	/*For Firefox*/
+    background: linear-gradient(135deg, #D5F5E3, #F1948A);	/*For Standard*/
 }
 .leftmenu .colleft {
 	right:75%;			/* right column width */
-	background:#f4f4f4;	/* left column background colour */
+	/* background:#f4f4f4;	 left column background colour */
+	background: #D5F5E3;		/*For browsers that dont support gradients*/
+    /*Gradients-- light green to light red*/
+    background: -webkit-linear-gradient(left top, #f4f4f4, #D5F5E3);	/*For safari*/
+    background: -o-linear-gradient(bottom right, #f4f4f4, #D5F5E3);	/*For Opera*/
+    background: -moz-linear-gradient(bottom right, #f4f4f4, #D5F5E3);	/*For Firefox*/
+    background: linear-gradient(bottom right, #f4f4f4, #D5F5E3);	/*For Standard*/
 }
 .leftmenu .col1 {
 	width:71%;			/* right column content width */
@@ -147,6 +165,7 @@ img {
 	float:left;
 	width:100%;
 	border-top:1px solid #000;
+    background:black;
 }
 #footer p {
 	padding:10px;
@@ -250,3 +269,14 @@ table, th, td {
     border: 1px #f21e1e solid;
 }
 /*****************************/
+
+/***********TOOL TIP WIDGET************/
+.ui-tooltip-content {
+    background: #EAFAF1;/*light green*/
+    border: 1px solid black;
+    padding: 5px;
+}
+.ui-tooltip {
+    background: #FADBD8;/*light-red*/
+}
+/**************************************/

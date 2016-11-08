@@ -209,6 +209,8 @@ namespace AskAndAnswer
             public const string spOTSUPDATE_ADDVENDORPNTOOTSPARTNUMBER = AAAK.spOTSUPDATE_ADDVENDORPNTOOTSPARTNUMBER;
             public const string spOTSUPDATEVENDORPNTABLE = AAAK.spOTSUPDATEVENDORPNTABLE;
             public const string spOTSWHEREUSEDFORVENDORPARTNUMBER = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBER;
+            public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING;
+            public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR;
             public const string spOTSUPDATEPARTSBASEDINAVL = AAAK.spOTSUPDATEPARTSBASEDINAVL;
         }
 
@@ -542,6 +544,7 @@ namespace AskAndAnswer
                      //Here is where we determine whether the div is visible.
                     string qVisible = "";
                     string qID = DynControls.encodeProperty("id", "visdiv_" + index + uid);
+                    string qClass = DynControls.encodeProperty("class", "fromdb");
                     if (!(Boolean)dR[DBK.blINITVISIBLE])
                     {
                         qVisible = DynControls.encodeProperty("style", "display:none");
@@ -549,6 +552,7 @@ namespace AskAndAnswer
                     masterControlSet.Append("<div " +
                         qID +
                         qVisible +
+                        qClass + 
                         ">" +
                         dRControlSet.ToString() +
                         "</div>");
@@ -1145,6 +1149,7 @@ namespace AskAndAnswer
             sB.Append("</ul>");
             return sectionTitle +
                     "<div " + DynControls.encodeProperty("id", "pnsummary_" + pnID) +
+                    DynControls.encodeProperty("class", "pnsummary") +
                     //DynControls.encodeProperty("style","overflow-x:auto") + ">" +
                     ">" +
                     sB.ToString() +
@@ -2057,11 +2062,185 @@ namespace AskAndAnswer
                     return false;
                 }
             }
+        }
 
+        /// <summary>
+        /// Checks the database if the given vendor part number (and, optionally, the vendor) is used for any OTS part numbers.
+        /// If yes, returns a table showing the where used information.
+        /// If no, returns an empty string
+        /// </summary>
+        /// <param name="input">Expected format:
+        /// blGiveWarning[DELIM]Vendor Part Number[DELIM]Vendor(Optional)</param>
+        /// <returns></returns>
+        public string WhereUsedForVPN(string input)
+        {
+            try
+            {
 
+                string[] dlim = { AAAK.DELIM };
+                List<string> lst = input.Split(dlim, StringSplitOptions.None).ToList();
+                Boolean includeWarning = (lst[0]=="1");
+                string vpn = lst[1];
+                string v = "";
+                if (lst.Count == 3)
+                {
+                    v = lst[2];
+                }
 
+                clsDB myDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strVENDORPARTNUMBER, vpn));
 
+                string sp = DBK.SP.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING;
+                if (v!="")
+                {
+                    sp = DBK.SP.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR;
+                    ps.Add(new SqlParameter("@" + DBK.strVENDOR, v));
+                }
+                string htmlTable = "";
+                Boolean PartIsUsed = false;
+                using (myDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(sp,ps,clsDB.SPExMode.READER,ref cmd))
+                    {
+                        if (dR != null)
+                        {
+                            if (dR.HasRows) {
+                                PartIsUsed = true;
+                                htmlTable = MakeVendorPartNumberWhereUsedTable(dR, vpn, myDB);
+                            } else
+                            {
+                                return "";
+                            }
+                        } else
+                        {
+                            return "<p>Error in DoWhereUsedForVendorPNString: NULL dataset.  " + 
+                                "This indicates a problem occurred when executing stored procedure " + 
+                                DBK.SP.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING + ".</p>";
+                        }
+                    } 
+                }
+                if (PartIsUsed) {
+                    if (includeWarning)
+                    {
+                        return GenerateVPNWhereUsedWarning(vpn, v) + htmlTable;
+                    } else
+                    {
+                        return htmlTable;
+                    }
+                } else
+                {
+                    return "";
+                }
 
+            }
+            catch (Exception ex)
+            {
+                return "<p>Error in DoWhereUsedForVendorPNString: " + ex.Message + "</p>";
+
+            }
+        }
+
+        private string GenerateVPNWhereUsedWarning(string vendorPartNumber, string vendor)
+        {
+            string vendorInfo = "";
+            if (vendor != "")
+            {
+                vendorInfo = " by <b>" + vendor + "</b>";
+            }
+            return "<p " + DynControls.encodeProperty("style", "font-size:60px;color:red") +
+                DynControls.encodeProperty("text-align", "center") +
+                ">!!! WARNING !!!</p>" +
+                "<p>Vendor Part Number <b>" + vendorPartNumber + "</b>" + vendorInfo + 
+                " is already used on other OTS Part Numbers.  See the table below for details.</p>";
+        }
+
+        /// <summary>
+        /// Returns and html table summarizing the contents of the data reader
+        /// </summary>
+        /// <param name="dR">The data reader</param>
+        /// <param name="vpn">A marker to make the table unique; use either the Vendor Part Number or the VPNID</param>
+        public string MakeVendorPartNumberWhereUsedTable(SqlDataReader dR, string vpnMkr, clsDB myDB)
+        {
+            try
+            {
+                vpnMkr = vpnMkr.Replace(" ", "_");
+                List<HTMLStrings.TableRow> lstTblRows = new List<HTMLStrings.TableRow>();
+                lstTblRows.Add(new HTMLStrings.TableRow(
+                    "row_h_" + vpnMkr,
+                    "clsHeaderRow",
+                    new HTMLStrings.TableCell[] {
+                        new HTMLStrings.TableCell("","clsHeaderRow","OTS Part Number",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","Requested By",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","Requested For",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","BU",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","Date Requested",1,true)
+                                                }
+                                                     )
+                             );
+                int rowIndex = 0;
+                while (dR.Read())
+                {
+                    lstTblRows.Add(new HTMLStrings.TableRow(
+                        "row_" + vpnMkr + "_" + rowIndex.ToString(),
+                        "tblRowFor_" + vpnMkr,
+                    new HTMLStrings.TableCell[] {
+                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.strPARTNUMBER]),1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.strNAME]),1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.strPRODUCT]),1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.strBUCODE]),1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.dtREQUESTED]),1,true)
+                                                }
+                                                     )
+                             );                        
+                 }
+
+                return new HTMLStrings.Table("tbl_" + vpnMkr, "tblWhereUsedVPN", lstTblRows).ToHTML();
+            }
+            catch (Exception ex)
+            {
+                return "<p>Error in DoWhereUsedForVendorPNString: " + ex.Message + "</p>";
+
+            }
+        }
+
+        public string WhereUsedForVPNID(string input)
+        {
+            try
+            {
+                clsDB myDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.keyVENDORPN, input));
+                string htmlResult = "";
+                using (myDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(
+                            DBK.SP.spOTSWHEREUSEDFORVENDORPARTNUMBER,ps,clsDB.SPExMode.READER,ref cmd))
+                    {
+                        if (dR != null)
+                        {
+                            if (dR.HasRows)
+                            {
+                                htmlResult = MakeVendorPartNumberWhereUsedTable(dR, input, myDB);
+                            }
+                            else
+                            {
+                                htmlResult = "<p>This Vendor Part Number resulted in the retrieval of no records from the database.</p>";
+                            }
+                        } else
+                        {
+                            htmlResult = "<p>No records retrieved; this may indicate a problem with execution of the Storeed Procedure.</p>";
+                        }
+                    }
+                }
+                return htmlResult;
+            } catch (Exception ex)
+            {
+                return "<p>Error in WhereUsedForVPNID: " + ex.Message + "</p>";
+
+            }
         }
     }
 }

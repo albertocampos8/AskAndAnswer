@@ -90,7 +90,7 @@ function changeControlVisibility(controlID, blMakeVisible) {
 };
 
 function isNumeric(n) {
-    return !isNAN(parseFloat(n)) && isFinite(n);
+    return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
 function giveErrorMessage(lblErrorID, msg, lblInputField, bkgndcolor, fontcolor) {
@@ -118,13 +118,17 @@ function OpenDialog(dialogCssSelector, t, msg) {
     try {
         //initialize
         $(dialogCssSelector).dialog({
+            autoOpen: false,
             title: t,
             modal: true,
             hide: { effect: "explode", duration: 1000 },
-            show: {effect:"blind", duration:1000}
+            show: { effect: "blind", duration: 1000 },
+            resizable: false
         });
         $(dialogCssSelector).html(msg);
-        $(dialogCssSelector).dialog();
+        $(dialogCssSelector).dialog('open');
+        $(dialogCssSelector).dialog('option', 'maxHeight', 'auto');
+        $(dialogCssSelector).dialog('option', 'maxWidth', 'auto');
     } catch (err) {
         alert(err.message);
     }

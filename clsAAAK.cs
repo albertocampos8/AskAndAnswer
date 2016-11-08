@@ -163,7 +163,8 @@ namespace AskAndAnswer
         public const string spOTSUPDATEVENDORPNTABLE = "spOTSUpdateVendorPNTable";
         public const string spOTSWHEREUSEDFORVENDORPARTNUMBER = "spOTSWhereUsedForVendorPartNumber";
         public const string spOTSUPDATEPARTSBASEDINAVL = "spOTSUpdatePartsBasedOnAVL";
-
+        public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING = "spOTSWhereUsedForVendorPartNumberString";
+        public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR = "spOTSWhereUsedForVendorPartNumberStringAndVendor";
         //COLUMN ALIAS NAMES Used in Stored Procs
         public class SP_COLALIAS
         {

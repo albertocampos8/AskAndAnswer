@@ -3,6 +3,8 @@ function InitializeOTSSearchCSS() {
     try {
         //The drop down box that let users select the search method:
         $("#divSearch").css('display', 'block');
+        //Get some space from the top
+        $("#divOTSFind").css('margin-top', '15px');
         $("#visdiv_" + ID_OTSSearch_Method).css('display', 'inline');
         $("#cbo_" + ID_OTSSearch_Method).css('display', 'inline');
         //----------------------------------------
@@ -29,6 +31,8 @@ function InitializeOTSSearchCSS() {
         //Bind the AJAX call for btnLook
         $("#btnLook").off("click", ExecuteSearch);
         $("#btnLook").on("click", ExecuteSearch);
+        //Set color
+        $("#btnLook").addClass("inputButton");
 
     } catch (err) {
         alert("Error in InitializeOTSSearchCSS: " + err.message);
@@ -81,6 +85,10 @@ function HandleChangedSearchMethod() {
 //The AJAX call to send data to the server and display results to the user.
 function ExecuteSearch() {
     try {
+        //Validate
+        if (!SearchReadyToSubmit()) {
+            return "";
+        }
         var encodedData = synthesizeData("#divSearch");
         //alert(encodedData);
         //make a new object with a property that matches the parameter name of the web method we will call
@@ -100,7 +108,6 @@ function ExecuteSearch() {
                 $("#divMessage").html(resultMsg);
                 $("#divLook").html(resultHTML);
                 $("#divLook").css('display', 'block');
-                //alert(resultHTML);
                 //Initialize the table returned to this area
                 InitializeOTSViewAndEdit();
             },
@@ -112,6 +119,92 @@ function ExecuteSearch() {
         alert('ERROR in ExecuteSearch: ' + err.message);
     }
 }
+
+//Returns TRUE if the correct inputs have been entered for a search
+function SearchReadyToSubmit() {
+    try {
+        blReady = true;
+        var ctlID = "";
+        var validatingCBO = false;
+        msg = "";
+        if (!isNumeric($("#cbo_" + ID_OTSSearch_Method).val())) {
+            ctlID = "cbo_" + ID_OTSSearch_Method;
+            msg = "Please select a method to use for your search."
+            blReady = false;
+        } else {
+            switch ($("#cbo_" + ID_OTSSearch_Method).val()) {
+                case SearchBy_PN:
+                    ctlID = "txt_" + ID_OTSSearch_ByText;
+                    msg = "Please enter a Part Number to search for."
+                    break;
+                case SearchBy_BU:
+                    ctlID = "cbo_" + ID_OTSSearch_ByBU;
+                    msg = "Please Select a BU."
+                    validatingCBO = true;
+                    break;
+                case SearchBy_Desc:
+                    ctlID = "txt_" + ID_OTSSearch_ByText;
+                    msg = "Please enter a Description to search for."
+                    break;
+                case SearchBy_Requestor:
+                    ctlID = "cbo_" + ID_OTSSearch_ByUser;
+                    msg = "Please Select a User Name."
+                    validatingCBO = true;
+                    break;
+                case SearchBy_Vendor:
+                    ctlID = "txt_" + ID_OTSSearch_ByText;
+                    msg = "Please enter a Vendor to search for."
+                    break;
+                case SearchBy_VendorPN:
+                    ctlID = "txt_" + ID_OTSSearch_ByText;
+                    msg = "Please enter a Vendor Part Number to search for."
+                    break;
+                case SearchBy_RequestDate:
+                    ctlID = "txt_" + ID_OTSSearch_ByDate;
+                    msg = "<p>Please enter a Date from which to begin your search.</p>" +
+                        "<p>NOTE: This program uses jQuery's DatePicker widget; you should see a calendar pop-up when you " +
+                        "put your cursor in the input field.  If you do not, your browser may not support this functionality, " +
+                        "and an immediate workaround is to try another browser.</p>";
+                    break;
+                case SearchBy_RequestForProduct:
+                    ctlID = "txt_" + ID_OTSSearch_ByText;
+                    msg = "Please enter a Product to search for."
+                    break;
+            }
+
+            if (validatingCBO) {
+                if (!isNumeric($("#" + ctlID).val())) {
+                    blReady = false;
+                }
+            } else {
+                if ($("#" + ctlID).val() == '') {
+                    blReady = false;
+                }
+            }
+        }
+
+        if (!blReady) {
+            $("#" + ctlID).css('background-color', 'red');
+            OpenDialog("#dialog", "MISSING DATA", msg);
+        }
+
+        return blReady;
+    } catch (err) {
+        alert('ERROR in SearchReadyToSubmit: ' + err.message);
+    }
+}
+
+
+
+//Contstant names for the Search Methods, as contained in OTSSEarch_Method drop down box (and defined in the database)
+var SearchBy_PN = "1";
+var SearchBy_BU = "2";
+var SearchBy_Desc = "8";
+var SearchBy_Requestor = "3";
+var SearchBy_Vendor = "4";
+var SearchBy_VendorPN = "5";
+var SearchBy_RequestDate = "6";
+var SearchBy_RequestForProduct = "7";
 
 
 

@@ -6,6 +6,23 @@
     border-collapse: collapse;
 }
 
+.otsTable .clsHeaderRow {
+    background-color:maroon;
+    color:white;
+}
+.otsTable .otsFindResultsRow:nth-child(4n+1) {
+    background-color:lightyellow;
+}
+.otsTable .otsFindResultsRow:nth-child(4n+2) {
+    background-color:lightyellow;
+}
+.otsTable .otsFindResultsRow:nth-child(4n+3) {
+    background-color:#ABEBC6;
+}
+.otsTable .otsFindResultsRow:nth-child(4n+4) {
+    background-color:#ABEBC6;
+}
+
 /*Cell properties*/
 .otsTableCells {
     //padding-left: 5px;
@@ -47,5 +64,16 @@
 }
 
 .btnExpand {
-    background-color:lightcoral;
+    background-color:black;
+    color:white;
+}
+
+/*Divs generated from the database on the server*/
+.fromdb {
+    margin-bottom:10px;
+}
+
+.inputButton {
+    background-color:darkgreen;
+    color:white;
 }

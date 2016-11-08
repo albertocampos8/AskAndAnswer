@@ -138,5 +138,34 @@ namespace AskAndAnswer
             return x.UpdateVPNData(input);
         }
 
+
+        /// <summary>
+        /// Gets an html table for the WHERE USED information of a Vendor Part Number.
+        /// </summary>
+        /// <param name="input">Expected Format:
+        /// [0 or 1][DELIM]Vendor Part Number[DELIM]Vendor(Optional)</param>
+        /// <returns>
+        /// If receive 0, this method just returns a table if WHERE USED has results.
+        /// If receive 1, this method returns a warning html text block in front of the table.
+        /// If the part is not used on any OTS PN, this function returns an empty string.</returns>
+        [System.Web.Services.WebMethod]
+        public static string WhereUsedForVPN(string input)
+        {
+            CustomCode x = new CustomCode();
+            return x.WhereUsedForVPN(input);
+        }
+
+        /// <summary>
+        /// Similar to WhereUsedForVPN, except this just uses the ID of the Part Number in the database.
+        /// HTML Table with where used information is returned to client.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [System.Web.Services.WebMethod]
+        public static string WhereUsedForVPNID(string input)
+        {
+            CustomCode x = new CustomCode();
+            return x.WhereUsedForVPNID(input);
+        }
     }
 }
