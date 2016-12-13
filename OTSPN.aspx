@@ -4,8 +4,10 @@
     <script src="/js/OTSGlobals.js"> </script>
     <script src="/js/BasicCode.js"> </script>
     <script src="/js/OTSViewAndEditFunctions.js"> </script>
-    <script src="/js/OTSsearchFunctions.js"> </script>
-    <script src="/js/CustomizePage.js"> </script>
+    <script src="/js/OTSSearchFunctions.js"> </script>
+    <script src="/js/OTSNewPNCode.js"> </script>
+    <script src="/js/DocReady_CommonBindings.js"> </script>
+    <script src="/js/DocReady_OTSPN.js"> </script>
 </asp:Content>
 <asp:Content ID="OTSRight" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <!--NOTE: Set ClientIDMode = static to prevent VS from messing with ID names on form -->

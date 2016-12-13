@@ -89,6 +89,7 @@ function ExecuteSearch() {
         if (!SearchReadyToSubmit()) {
             return "";
         }
+        $("#divMessage").html("<p>Please wait while the server executes your search request..</p>");
         var encodedData = synthesizeData("#divSearch");
         //alert(encodedData);
         //make a new object with a property that matches the parameter name of the web method we will call
@@ -111,8 +112,8 @@ function ExecuteSearch() {
                 //Initialize the table returned to this area
                 InitializeOTSViewAndEdit();
             },
-            error: function () {
-                alert(status);
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
             }
         }) //ajax
     } catch (err) {

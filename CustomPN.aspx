@@ -1,7 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/SiteMain.Master" AutoEventWireup="true" CodeBehind="CustomPN.aspx.cs" EnableViewState="false" Inherits="AskAndAnswer.Default" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="/js/BasicCode.js"> </script>
-    <script src="/js/CustomizePage.js"> </script>
+    <script src="/js/CustomizePNCode.js"> </script>
+    <script src="/js/DocReady_CommonBindings.js"> </script>
+    <script src="/js/DocReady_CustomPN.js"> </script>
 </asp:Content>
 <asp:Content ID="rightColContent" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <asp:Panel ID="pnlOutput" runat="server">

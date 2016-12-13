@@ -63,7 +63,12 @@
     <Content Include="Global.asax" />
     <Content Include="js\BasicCode.js" />
     <Content Include="js\CustomizePage.js" />
+    <Content Include="js\CustomPNCode.js" />
+    <Content Include="js\DocReady_CommonBindings.js" />
+    <Content Include="js\DocReady_CustomPN.js" />
+    <Content Include="js\DocReady_OTSPN.js" />
     <Content Include="js\OTSGlobals.js" />
+    <Content Include="js\OTSNewPNCode.js" />
     <Content Include="js\OTSSearchFunctions.js" />
     <Content Include="js\OTSViewAndEditFunctions.js" />
     <Content Include="OTSPN.aspx" />

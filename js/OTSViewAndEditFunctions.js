@@ -79,8 +79,8 @@ function AJAX_GetOTSPNDetail(id) {
                 //Initialize the returned HTML
 
             },
-            error: function () {
-                alert(status);
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
             }
         }) //ajax
     } catch (err) {
@@ -129,8 +129,8 @@ function FormatOTSPNDetail(divSelector) {
                         //$("#dialog").dialog("option", "width", 700);
                         OpenDialog("#dialog", "WHERE USED FOR ", msg.d);
                     },
-                    error: function () {
-                        alert(status);
+                    error: function (xhr, textStatus, errorThrown) {
+                        alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
                     }
                 }) //ajax
             });
@@ -209,8 +209,8 @@ function saveOTSInfo_Click() {
                 //Format this
                 FormatOTSPNDetail("pnsummary_" + id);
             },
-            error: function () {
-                alert(status);
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
             }
         }) //ajax
     } catch (err) {
@@ -322,8 +322,8 @@ function saveVPNInfo_Click() {
                 //Format this
                 FormatOTSPNDetail("pnsummary_" + id);
             },
-            error: function () {
-                alert(status);
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
             }
         }) //ajax
     } catch (err) {
@@ -491,8 +491,8 @@ function AJAX_DoVPNWhereUsed() {
                 alert(msg.d);
                 OpenDialog("#dialog","WHERE USED FOR ", msg.d);
             },
-            error: function () {
-                alert(status);
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
             }
         }) //ajax
     } catch (err) {

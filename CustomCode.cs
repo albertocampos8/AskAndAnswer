@@ -340,6 +340,7 @@ namespace AskAndAnswer
             */
             try
             {
+                clsUtil helper = new clsUtil();
                 //String constants for the css class of the input fields
                 StringBuilder masterControlSet = new StringBuilder();
 
@@ -471,7 +472,7 @@ namespace AskAndAnswer
 
                                     //See if the kvp is already stored in the App Object
 
-                                    lstKVPs = clsUtil.PutKVPInDictionary(appKey);
+                                    lstKVPs = helper.PutKVPInDictionary(appKey);
 
                                     dRControlSet.Append(DynControls.html_combobox_string("cbo_" + index + uid,
                                                                                          lstKVPs,
@@ -966,9 +967,11 @@ namespace AskAndAnswer
                                         break;
                                     case OTSINDK.SEARCHMETHOD_BYBU:
                                         bu = DynControls.EmphasizeText(bu, bu, "red", true);
+                                        htmlSearchText = bu;
                                         break;
                                     case OTSINDK.SEARCHMETHOD_BYREQUESTOR:
                                         reqby = DynControls.EmphasizeText(reqby, reqby, "red", true);
+                                        htmlSearchText = reqby;
                                         break;
                                     case OTSINDK.SEARCHMETHOD_BYVENDOR:
                                         vendor = DynControls.EmphasizeText(vendor, searchText, "red", true);
@@ -1062,8 +1065,15 @@ namespace AskAndAnswer
                 }
             }
 
+            string strPlural = "";
+            if (nResults > 1)
+            {
+                strPlural = "s";
+            }
+                
             string resultMessage = "<p>Your search for '" + htmlSearchText + "' in the '" + fldName + "' field returned " +
-                DynControls.EmphasizeText(Convert.ToString(nResults), Convert.ToString(nResults), "red", true) + " records.";
+                DynControls.EmphasizeText(Convert.ToString(nResults), Convert.ToString(nResults), "red", true) + " record" +
+                strPlural + ".";
             HTMLStrings.Table resultTable = new HTMLStrings.Table("otsSearchResults", "otsSearchResults", tblRows);
             return resultMessage + dlim[0] + resultTable.ToHTML();
         }
@@ -1286,10 +1296,11 @@ namespace AskAndAnswer
         {
             try
             {
+                clsUtil helper = new clsUtil();
                 List<HTMLStrings.TableRow> tblRows = new List<HTMLStrings.TableRow>();
-                List<string> lstVPNStatus = clsUtil.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPPARTSTATUS);
-                List<string> lstVStatus = clsUtil.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPVENDORSTATUS);
-                List<string> lstECode = clsUtil.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPENVIRONCODE);
+                List<string> lstVPNStatus = helper.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPPARTSTATUS);
+                List<string> lstVStatus = helper.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPVENDORSTATUS);
+                List<string> lstECode = helper.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPENVIRONCODE);
                 tblRows.Add(new HTMLStrings.TableRow(
                         "row_h",
                         "clsHeaderRow",
@@ -2080,11 +2091,11 @@ namespace AskAndAnswer
                 string[] dlim = { AAAK.DELIM };
                 List<string> lst = input.Split(dlim, StringSplitOptions.None).ToList();
                 Boolean includeWarning = (lst[0]=="1");
-                string vpn = lst[1];
+                string vpn = lst[1].ToUpper();
                 string v = "";
                 if (lst.Count == 3)
                 {
-                    v = lst[2];
+                    v = lst[2].ToUpper();
                 }
 
                 clsDB myDB = new clsDB();

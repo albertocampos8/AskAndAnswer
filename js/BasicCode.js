@@ -26,8 +26,8 @@ function sendFormData() {
                 //Bind any events to the returned html code in this call
                 bindEvents();
             },
-            error: function () {
-                alert("error: " + status);
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
             }
         }) //ajax
 
@@ -116,19 +116,21 @@ function giveErrorMessage(lblErrorID, msg, lblInputField, bkgndcolor, fontcolor)
 
 function OpenDialog(dialogCssSelector, t, msg) {
     try {
-        //initialize
+  /*      //initialize dialog
         $(dialogCssSelector).dialog({
             autoOpen: false,
             title: t,
             modal: true,
             hide: { effect: "explode", duration: 1000 },
-            show: { effect: "blind", duration: 1000 },
-            resizable: false
-        });
+            show: { effect: "blind", duration: 1000 }
+        }); */
+        //Unsure why I have to initialize this again...
+        $(dialogCssSelector).dialog();
         $(dialogCssSelector).html(msg);
+        $(dialogCssSelector).dialog('option', 'title', t);
+        /*$(dialogCssSelector).dialog('option', 'maxHeight', 'auto');
+        $(dialogCssSelector).dialog('option', 'maxWidth', 'auto');*/
         $(dialogCssSelector).dialog('open');
-        $(dialogCssSelector).dialog('option', 'maxHeight', 'auto');
-        $(dialogCssSelector).dialog('option', 'maxWidth', 'auto');
     } catch (err) {
         alert(err.message);
     }
