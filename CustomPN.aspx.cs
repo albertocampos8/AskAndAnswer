@@ -12,6 +12,13 @@ namespace AskAndAnswer
     {
         private Boolean m_useDB = true;
 
+        /// <summary>
+        /// The scripts we need to register on this page, complete with cache-busting GET version parameter
+        /// </summary>
+        protected string jsBasicCode = DynControls.EncodeScript("/js/BasicCode.js");
+        protected string jsCustomizePNCode = DynControls.EncodeScript("/js/CustomizePNCode.js");
+        protected string jsDocReady_CommonBindings = DynControls.EncodeScript("/js/DocReady_CommonBindings.js");
+        protected string jsDocReady_CustomPN = DynControls.EncodeScript("/js/DocReady_CustomPN.js");
         protected void Page_Load(object sender, EventArgs e)
         {
             //Add controls to pnlInput; attributes for these controls are taken from the database, so that this can

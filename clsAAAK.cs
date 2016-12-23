@@ -13,6 +13,17 @@ namespace AskAndAnswer
     /// </summary>
     public class AAAK
     {
+        public const string ver = "0.001";
+        /// <summary>
+        /// Returns a string with a Query Parameter, v = version.
+        /// Use this to force browsers to get the latest version of files.
+        /// </summary>
+        /// <returns></returns>
+        public static string bustCache()
+        {
+            return "?v=" + ver;
+        }
+
         public static string vbCRLF = System.Environment.NewLine;
         public const string DQ = "\"";
         public const string defaultConnStr = "AskAndAddConnectionString";
@@ -249,4 +260,6 @@ namespace AskAndAnswer
     {
         public const string UID = "uid";
     }
+
+
 }

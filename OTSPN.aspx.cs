@@ -10,6 +10,14 @@ namespace AskAndAnswer
 {
     public partial class OTSPN : System.Web.UI.Page
     {
+        protected string cssOTSStyles = DynControls.EncodeScript("/stylesheets/OTSstyles.css", true);
+        protected string jsOTSGlobals = DynControls.EncodeScript("/js/OTSGlobals.js");
+        protected string jsBasicCode = DynControls.EncodeScript("/js/BasicCode.js");
+        protected string jsOTSViewAndEditFunctions = DynControls.EncodeScript("/js/OTSViewAndEditFunctions.js");
+        protected string jsOTSSearchFunctions = DynControls.EncodeScript("/js/OTSSearchFunctions.js");
+        protected string jsOTSNewPNCode = DynControls.EncodeScript("/js/OTSNewPNCode.js");
+        protected string jsDocReady_CommonBindings = DynControls.EncodeScript("/js/DocReady_CommonBindings.js");
+        protected string jsDocReady_OTSPN = DynControls.EncodeScript("/js/DocReady_OTSPN.js");
         protected void Page_Load(object sender, EventArgs e)
         {
             //check for any url encoded parameters

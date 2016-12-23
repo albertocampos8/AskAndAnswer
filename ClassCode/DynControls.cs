@@ -803,5 +803,27 @@ namespace AskAndAnswer.ClassCode
             }
         }
 
+        /// <summary>
+        /// Appends the sw version to the script name and encloses it in double quotes
+        /// </summary>
+        /// <param name="scriptName">Name of script/css style sheet</param>
+        /// <param name="encloseInDblQuotes">Set true if returned string should be enclosed in double quotes
+        /// (required for css style sheets)</param>
+        /// <returns></returns>
+        public static string EncodeScript(string scriptName, Boolean encloseInDblQuotes = false)
+        {
+            string s =  scriptName + AAAK.bustCache();
+            if (encloseInDblQuotes)
+            {
+                return AAAK.DQ + s + AAAK.DQ;
+            } else
+            {
+                return s;
+            }
+
+            
+        }
+
+
 }
 }

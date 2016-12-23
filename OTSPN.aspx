@@ -1,13 +1,14 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/SiteMain.Master" AutoEventWireup="true" CodeBehind="OTSPN.aspx.cs" Inherits="AskAndAnswer.OTSPN" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link href="/stylesheets/OTSstyles.css" rel="stylesheet" type="text/css" />
-    <script src="/js/OTSGlobals.js"> </script>
-    <script src="/js/BasicCode.js"> </script>
-    <script src="/js/OTSViewAndEditFunctions.js"> </script>
-    <script src="/js/OTSSearchFunctions.js"> </script>
-    <script src="/js/OTSNewPNCode.js"> </script>
-    <script src="/js/DocReady_CommonBindings.js"> </script>
-    <script src="/js/DocReady_OTSPN.js"> </script>
+    <!--<Scripts are added in the PageLoad method, to allow appending GET Variable to refresh cach with new version release-->
+        <link href=<%=cssOTSStyles%> rel="stylesheet" type="text/css" />
+        <script src="<%=jsOTSGlobals%>" ></script>
+        <script src="<%=jsBasicCode%>" ></script>
+        <script src="<%=jsOTSViewAndEditFunctions%>" ></script>
+        <script src="<%=jsOTSSearchFunctions%>" ></script>        
+        <script src="<%=jsOTSNewPNCode%>" ></script>
+        <script src="<%=jsDocReady_CommonBindings%>" ></script>        
+        <script src="<%=jsDocReady_OTSPN%>" ></script>
 </asp:Content>
 <asp:Content ID="OTSRight" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <!--NOTE: Set ClientIDMode = static to prevent VS from messing with ID names on form -->

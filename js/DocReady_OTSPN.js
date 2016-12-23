@@ -3,7 +3,7 @@
         //Start by assigning common bindings:
         CommonBindings();
 
-        //alert("doc ready otspn");
+        alert("doc ready otspn");
         //
         //Need to call this function if we are viewing data via an html string
         try {
