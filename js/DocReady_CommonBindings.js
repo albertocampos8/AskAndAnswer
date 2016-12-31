@@ -11,7 +11,9 @@
         });
 
         //assign tooltip
-        $(document).tooltip();
+        $(document).tooltip({
+            position: {my: "right-25"}
+        });
 
         //Use the following to influence what happens after user leaves a text box.
         //Structure is as follows:

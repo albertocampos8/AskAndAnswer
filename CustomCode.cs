@@ -178,6 +178,39 @@ namespace AskAndAnswer
 
         public const string otsRELATION = AAAK.otsRELATION;
         public const string keyVENDORPN = AAAK.keyVENDORPN;
+
+        public const string asyBOM = AAAK.asyBOM;
+        public const string keyTOPLEVELNAME = AAAK.keyTOPLEVELNAME;
+        public const string keyASSYPN = AAAK.keyASSYPN;
+        public const string keyASSYREV = AAAK.keyASSYREV;
+        public const string keyUPLOADEDBY = AAAK.keyUPLOADEDBY;
+        public const string keyASSYSTATUS = AAAK.keyASSYSTATUS;
+        public const string keyASSYBU = AAAK.keyASSYBU;
+        public const string intBOMREV = AAAK.intBOMREV;
+        public const string dtUPLOADED = AAAK.dtUPLOADED;
+        public const string keyREASONFORREV = AAAK.keyREASONFORREV;
+
+        public const string asyPNS = AAAK.asyPNS;
+        public const string strASSYPARTNUMBER = AAAK.strASSYPARTNUMBER;
+
+        public const string asyREVs = AAAK.asyREVs;
+        public const string strREVISION = AAAK.strREVISION;
+        public const string intMAJOR = AAAK.intMAJOR;
+        public const string intMINOR = AAAK.intMINOR;
+
+        public const string asySTATUS = AAAK.asySTATUS;
+        public const string strASSYSTATUS = AAAK.strASSYSTATUS;
+
+        public const string asyCHANGEREASONS = AAAK.asyCHANGEREASONS;
+        public const string strREASON = AAAK.strREASON;
+
+        public const string asyBOMPARTS = AAAK.asyBOMPARTS;
+        public const string keyASSY = AAAK.keyASSY;
+        public const string keyPN = AAAK.keyPN;
+        public const string strREFDES = AAAK.strREFDES;
+        public const string strBOMNOTES = AAAK.strBOMNOTES;
+        public const string intQTY = AAAK.intQTY;
+
         //END OTS DATABASE ENTRIES
 
         //Stored Procedures
@@ -212,6 +245,20 @@ namespace AskAndAnswer
             public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING;
             public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR;
             public const string spOTSUPDATEPARTSBASEDINAVL = AAAK.spOTSUPDATEPARTSBASEDINAVL;
+            public const string spOTSGETPNIDS = AAAK.spOTSGETPNIDS;
+            public const string spUPSERTASSYBOMENTRY = AAAK.spUPSERTASSYBOMENTRY;
+            public const string spDELETEASSYBOMPARTS = AAAK.spDELETEASSYBOMPARTS;
+            public const string spGETASSYSTATUS = AAAK.spGETASSYSTATUS;
+            public const string spOTSWHEREUSED = AAAK.spOTSWHEREUSED;
+            public const string spAC_ASYNAMES = AAAK.spAC_ASYNAMES;
+            public const string spAC_ASYREVSFORGIVENASYNAME = AAAK.spAC_ASYREVSFORGIVENASYNAME;
+            public const string spAC_ASYBOMREVSFORGIVENASYNAMEANDREV = AAAK.spAC_ASYBOMREVSFORGIVENASYNAMEANDREV;
+            public const string spAC_OTSVENDORPN = AAAK.spAC_OTSVENDORPN;
+            public const string spAC_OTSVENDOR = AAAK.spAC_OTSVENDOR;
+            public const string spAC_OTSPRODUCT = AAAK.spAC_OTSPRODUCT;
+            public const string spAC_OTSPARTS = AAAK.spAC_OTSPARTS;
+            public const string spDOWNLOADBOM = AAAK.spDOWNLOADBOM;
+            public const string spRELEASEBOM = AAAK.spRELEASEBOM;
         }
 
         public partial class SPVar
@@ -229,6 +276,8 @@ namespace AskAndAnswer
             public const string PSUBTYPEID = AAAK.SP_COLALIAS.PSUBTYPEID;
             public const string BU = AAAK.SP_COLALIAS.BU;
             public const string VENDORPNID = AAAK.SP_COLALIAS.VENDORPNID;
+            public const string PN = AAAK.SP_COLALIAS.PN;
+            public const string USERNAME = AAAK.SP_COLALIAS.USERNAME;
         }
 
         /// <summary>
@@ -243,6 +292,7 @@ namespace AskAndAnswer
             public const int VIEW_OTS_COST = 5;
             public const int VIEW_OTS_PARAMS = 6;
             public const int VIEW_OTS_HISTORY = 7;
+            public const int BOM_VIEW_UPLOAD = 10004;
         }
 
     }
@@ -313,6 +363,7 @@ namespace AskAndAnswer
     /// </summary>
     public class CustomCode
     {
+        string[] m_dlim = { AAAK.DELIM };
         /// <summary>
         /// Add controls to cntlContainer based on the contents of dR.
         /// </summary>
@@ -329,9 +380,10 @@ namespace AskAndAnswer
         /// The default value is 1, resulting in each field sequentially listed after another.  See Documentation for how this looks.
         /// To customize, define a new code, and call this procedure using that code number</param>
         /// <param name="blElementsInLine">If true, then all elements are displayed in-line; no line-breaks are put in the output</param>
+        /// <param name="blRunAtServer">Set TRUE to include runat="server" as a property of the control</param>
         public void ConstructInputControls(SqlDataReader dR, System.Web.UI.Control cntlContainer,
             Dictionary<string, string> dctDefaultOverride, string uid, int displayType,
-            Boolean blElementsInLine = false)
+            Boolean blElementsInLine = false, Boolean blRunAtServer = false)
         {
             /* Each time we go through a dR read loop, we will add the html control strings it spawns to a string.
              * That string will be enclosed in a div element; this allows us to toggle visibility easily later.
@@ -420,7 +472,8 @@ namespace AskAndAnswer
                                                                             "fldlabel" + classSuffix,
                                                                             mainCtlName,
                                                                             true,
-                                                                            elDtype)
+                                                                            elDtype,
+                                                                            blRunAtServer)
                                                       );
                             //Add linebreak
                             //if ((Boolean)dR[DBK.blINITVISIBLE])
@@ -438,7 +491,8 @@ namespace AskAndAnswer
                                                                                        true,
                                                                                        elDtype,
                                                                                        (string)dR[DBK.lblHELPMESSAGE],
-                                                                                       rdonly)
+                                                                                       rdonly, 
+                                                                                       blRunAtServer)
                                                               );
                                     break;
                                 case CntlDecoder.YESNO_DROPDOWN:
@@ -449,7 +503,8 @@ namespace AskAndAnswer
                                                                                                 true,
                                                                                                 elDtype,
                                                                                                 (string)dR[DBK.lblHELPMESSAGE],
-                                                                                                rdonly)
+                                                                                                rdonly,
+                                                                                                blRunAtServer)
                                                               );
                                     break;
                                 case CntlDecoder.MULT_DROPDOWN:
@@ -482,22 +537,30 @@ namespace AskAndAnswer
                                                                                          true,
                                                                                          elDtype,
                                                                                          (string)dR[DBK.lblHELPMESSAGE],
-                                                                                         rdonly)
+                                                                                         rdonly,
+                                                                                         blRunAtServer)
                                                               );
                                     break;
                                 case CntlDecoder.TXT_W_BROWSE_ATTACHMENTS:
                                     //The input element that will hold the file
-                                    dRControlSet.Append(DynControls.html_input_string("input_" + index + uid, "file", "fileinput",
-                                        AAAK.DISPLAYTYPES.NONE, "Browse for file to send to Component Engineer"));
+                                    dRControlSet.Append(DynControls.html_input_string("input_" + index + uid, "file", "fileinput", AAAK.DISPLAYTYPES.INLINE, (string)dR[DBK.lblHELPMESSAGE],
+                                        (Boolean)dR[DBK.blINITENABLED], blRunAtServer));
+                                    dRControlSet.Append(DynControls.html_linebreak_string());
                                     //And the text box
-                                    //dRControlSet.Append(DynControls.html_txtbox_string("txt_" + index, "", "", true,
-                                    //   AAAK.DISPLAYTYPES.INLINE, (string)dR[DBK.lblHELPMESSAGE]));
+                                    dRControlSet.Append(DynControls.html_txtbox_string("txt_" + index + uid,
+                                                                                       txtCSSClass,
+                                                                                        valToDisplay,
+                                                                                       (Boolean)dR[DBK.blINITVISIBLE],
+                                                                                       AAAK.DISPLAYTYPES.INLINE,
+                                                                                       (string)dR[DBK.lblHELPMESSAGE],
+                                                                                       rdonly,
+                                                                                       blRunAtServer));
 
                                     //The browse button...
                                     // dRControlSet.Append(DynControls.html_button_string("btn_" + index, "BROWSE",
                                     //   "", true, AAAK.DISPLAYTYPES.INLINE, "Click to Browse for file..."));
-                                    //Since the last element was inline, and a break
-                                    //dRControlSet.Append(DynControls.html_linebreak_string());
+                                    //Since the last element was inline, add a break
+                                    dRControlSet.Append(DynControls.html_linebreak_string());
                                     break;
                                 default:
                                     break;
@@ -567,6 +630,61 @@ namespace AskAndAnswer
                 string x = EX.Message;
             }
         }
+        
+        /// <summary>
+        /// Returns the minor portion of the revision,
+        /// which should be the last two characters, for demo purposes.
+        /// Returns 0 if fails.
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        public int getMinorRev(string r)
+        {
+            try
+            {
+                return int.Parse(r.Substring(r.Length - 2, 2));
+            } catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Returns the major portion of the revision,
+        /// which should be the third from last character, for demo purposes.
+        /// Returns 0 if fails.
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        public int getMajorRev(string r)
+        {
+            try
+            {
+                return int.Parse(r.Substring(r.Length - 3, 1));
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Code specific to application
+        /// </summary>
+        /// <returns></returns>
+        public Int64 getUserDBID()
+        {
+            return 1;
+        }
+
+        /// <summary>
+        /// Code specific to application
+        /// </summary>
+        /// <returns></returns>
+        public int getUserdBUID()
+        {
+            return 1;
+        }
 
 
         /// <summary>
@@ -579,8 +697,7 @@ namespace AskAndAnswer
         {
             try
             {
-                string[] dlim = { AAAK.DELIM };
-                string[] kvp = input.Split(dlim, StringSplitOptions.None);
+                string[] kvp = input.Split(m_dlim, StringSplitOptions.None);
                 List<HTMLStrings.TableRow> tblRows = new List<HTMLStrings.TableRow>();
                 //Add the header row
                 tblRows.Add(new HTMLStrings.TableRow(
@@ -627,8 +744,7 @@ namespace AskAndAnswer
         {
             try
             {
-                string[] dlim = { AAAK.DELIM };
-                string[] kvp = input.Split(dlim, StringSplitOptions.None);
+                string[] kvp = input.Split(m_dlim, StringSplitOptions.None);
                 Int32 partTypeID = 0;
                 string partSubType = "";
                 string pkg = "";
@@ -794,8 +910,7 @@ namespace AskAndAnswer
         public string findMatchingPN(string input)
         {
             ParametricSearchResponse retObj = new ParametricSearchResponse();
-            string[] dlim = { AAAK.DELIM };
-            string[] kvp = input.Split(dlim, StringSplitOptions.None);
+            string[] kvp = input.Split(m_dlim, StringSplitOptions.None);
             int searchMethod = -1;
             string searchText = "";
             for (int i = 0; i < kvp.Length; i = i + 2)
@@ -865,7 +980,7 @@ namespace AskAndAnswer
                     break;
                 default:
                     return "<p>Did not know how to perform search for Method with ID " + Convert.ToString(searchMethod + ".</p>") +
-                        dlim[0] + "<p>NO DATA</p>";
+                        m_dlim[0] + "<p>NO DATA</p>";
             }
 
             int nResults = 0; //The number of records returned by the search
@@ -1053,14 +1168,14 @@ namespace AskAndAnswer
                         else
                         {
                             return "<p>Your search for '" + htmlSearchText + "' in the  '" + fldName + "' field returned 0 results.</p>" +
-                                dlim[0] + "<p>NO DATA</p>";
+                                m_dlim[0] + "<p>NO DATA</p>";
                         }
                     }
                     else
                     {
                         //null data reader
                         return "<p>Method FindMatchingPN returned a null dataset.  This is a coding error.</p>" +
-                            dlim[0] + "<p>NO DATA</p>";
+                            m_dlim[0] + "<p>NO DATA</p>";
                     }
                 }
             }
@@ -1075,7 +1190,7 @@ namespace AskAndAnswer
                 DynControls.EmphasizeText(Convert.ToString(nResults), Convert.ToString(nResults), "red", true) + " record" +
                 strPlural + ".";
             HTMLStrings.Table resultTable = new HTMLStrings.Table("otsSearchResults", "otsSearchResults", tblRows);
-            return resultMessage + dlim[0] + resultTable.ToHTML();
+            return resultMessage + m_dlim[0] + resultTable.ToHTML();
         }
 
         /// <summary>
@@ -1126,6 +1241,9 @@ namespace AskAndAnswer
                     } while (dR.NextResult());
                 }
             }
+
+            //Obtaining 'where used' info for the id is handled by a different function, which we'll call now
+            htmlForWhereUsedTab = WhereUsedForPN(pnID.ToString());
             //Title of this section
             string bookmarkurl = "Bookmark this URL to get back to this page: " + DynControls.html_hyperlink_string("", HttpContext.Current.Request.Url.AbsoluteUri + ".aspx?ID=" + pnID,
                     "bkmk_" + pnID, "bkmkID", "_blank");
@@ -1141,14 +1259,13 @@ namespace AskAndAnswer
 
             Panel divPNVendorInfo = new Panel();
             divPNVendorInfo.ID = "divPNVendorInfo_" + pnID;
-            //divPNVendorInfo.Width = new Unit("99%");
             divPNVendorInfo.Controls.Add(new LiteralControl(htmlForVendorPNTab));
             //divPNVendorInfo.Style.Add(HtmlTextWriterStyle.Display, "table");
             divPNVendorInfo.Style.Add(HtmlTextWriterStyle.OverflowX, "auto");
 
             Panel divPNWhereUsedInfo = new Panel();
             divPNWhereUsedInfo.ID = "divPNWhereUsedInfo_" + pnID;
-            divPNWhereUsedInfo.Controls.Add(new LiteralControl("<p>Please wait... searching database...</p>"));
+            divPNWhereUsedInfo.Controls.Add(new LiteralControl(htmlForWhereUsedTab));
             divPNWhereUsedInfo.Style.Add(HtmlTextWriterStyle.OverflowX, "auto");
             //Set up the unordered list for the tabs.
             StringBuilder sB = new StringBuilder();
@@ -1402,8 +1519,7 @@ namespace AskAndAnswer
                 string msg = "";
                 string html = "";
                 string targetID = "";
-                string[] dlim = { AAAK.DELIM };
-                string[] kvp = input.Split(dlim, StringSplitOptions.None);
+                string[] kvp = input.Split(m_dlim, StringSplitOptions.None);
                 clsDB myDB = new clsDB();
                 SqlCommand cmd = new SqlCommand();
                 List<SqlParameter> ps = new List<SqlParameter>();
@@ -1488,8 +1604,7 @@ namespace AskAndAnswer
                 List<string> htmlResults = new List<string>(); //We will have one list entry per row
                 List<VendorPartNumber> lstV = new List<VendorPartNumber>();
                 Decimal tmpX;   //Used when tryparsing a decimal
-                string[] dlim = { AAAK.DELIM };
-                string[] kvp = input.Split(dlim, StringSplitOptions.None);
+                string[] kvp = input.Split(m_dlim, StringSplitOptions.None);
 
                 //The first element in the arry is always the ots ID, 
                 pnID = Convert.ToInt64(kvp[0]);
@@ -2076,6 +2191,57 @@ namespace AskAndAnswer
         }
 
         /// <summary>
+        /// Checks the database if the given part number ID is used in any Assy BOMs.
+        /// If yes, returns a table showing the where used information.
+        /// If no, returns an html string informing the user the part is not used in any BOMs uploaded to the database
+        /// </summary>
+        /// <param name="input">Expected format:
+        /// PNID</param>
+        /// <returns></returns>
+        public string WhereUsedForPN(string input)
+        {
+            try
+            {
+                Int64 pnID = Int64.Parse(input);
+                clsDB myDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.keyPN, pnID));
+
+                string sp = DBK.SP.spOTSWHEREUSED;
+                
+                using (myDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(sp, ps, clsDB.SPExMode.READER, ref cmd))
+                    {
+                        if (dR != null)
+                        {
+                            if (dR.HasRows)
+                            {
+                                return MakePartNumberWhereUsedTable(dR, pnID, myDB);
+                            }
+                            else
+                            {
+                                return "<p>Error: Unable to find Part Number with database ID " + pnID.ToString() + ".</p>";
+                            }
+                        }
+                        else
+                        {
+                            return "<p>Error in WhereUsedForPN: NULL dataset.  " +
+                                "This indicates a problem occurred when executing stored procedure " +
+                                DBK.SP.spOTSWHEREUSED + ".</p>";
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return "<p>Error in WhereUsedForPN: " + ex.Message + "</p>";
+            }
+        }
+
+        /// <summary>
         /// Checks the database if the given vendor part number (and, optionally, the vendor) is used for any OTS part numbers.
         /// If yes, returns a table showing the where used information.
         /// If no, returns an empty string
@@ -2087,9 +2253,7 @@ namespace AskAndAnswer
         {
             try
             {
-
-                string[] dlim = { AAAK.DELIM };
-                List<string> lst = input.Split(dlim, StringSplitOptions.None).ToList();
+                List<string> lst = input.Split(m_dlim, StringSplitOptions.None).ToList();
                 Boolean includeWarning = (lst[0]=="1");
                 string vpn = lst[1].ToUpper();
                 string v = "";
@@ -2126,7 +2290,7 @@ namespace AskAndAnswer
                             }
                         } else
                         {
-                            return "<p>Error in DoWhereUsedForVendorPNString: NULL dataset.  " + 
+                            return "<p>Error in WhereUsedForVPN: NULL dataset.  " + 
                                 "This indicates a problem occurred when executing stored procedure " + 
                                 DBK.SP.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING + ".</p>";
                         }
@@ -2148,7 +2312,7 @@ namespace AskAndAnswer
             }
             catch (Exception ex)
             {
-                return "<p>Error in DoWhereUsedForVendorPNString: " + ex.Message + "</p>";
+                return "<p>Error in WhereUsedForVPN: " + ex.Message + "</p>";
 
             }
         }
@@ -2195,23 +2359,97 @@ namespace AskAndAnswer
                 {
                     lstTblRows.Add(new HTMLStrings.TableRow(
                         "row_" + vpnMkr + "_" + rowIndex.ToString(),
-                        "tblRowFor_" + vpnMkr,
+                        "tblRowWhereUsed",
                     new HTMLStrings.TableCell[] {
-                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.strPARTNUMBER]),1,true),
-                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.strNAME]),1,true),
-                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.strPRODUCT]),1,true),
-                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.strBUCODE]),1,true),
-                        new HTMLStrings.TableCell("","clsHeaderRow",myDB.Fld2Str(dR[DBK.dtREQUESTED]),1,true)
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.strPARTNUMBER]),1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.strNAME]),1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.strPRODUCT]),1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.strBUCODE]),1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.dtREQUESTED]),1,true)
                                                 }
                                                      )
                              );                        
                  }
 
-                return new HTMLStrings.Table("tbl_" + vpnMkr, "tblWhereUsedVPN", lstTblRows).ToHTML();
+                return new HTMLStrings.Table("tbl_" + vpnMkr, "tblWhereUsed", lstTblRows).ToHTML();
             }
             catch (Exception ex)
             {
-                return "<p>Error in DoWhereUsedForVendorPNString: " + ex.Message + "</p>";
+                return "<p>Error in MakeVendorPartNumberWhereUsedTable: " + ex.Message + "</p>";
+
+            }
+        }
+
+        /// <summary>
+        /// Returns an html table summarizing the contents of the data reader
+        /// NOTE: The IDs are similar to the format used for the Vendor Part Number, except instead of
+        /// the ID ending in _[id], it ends in _pn[id].
+        /// This helps distinguish Vendor Part Number objects and OTS Part Number objects that have the same ID
+        /// (remember, each class of parts exist in separate tables)
+        /// </summary>
+        /// <param name="pnID">Database ID of the part number</param>
+        /// <param name="dR">The data reader</param>
+        public string MakePartNumberWhereUsedTable(SqlDataReader dR, Int64 pnID, clsDB myDB)
+        {
+            try
+            {
+                //First result is the part number
+                dR.Read();
+                string pn = myDB.Fld2Str(dR[DBK.strPARTNUMBER]);
+                string id = pnID.ToString();
+                //Advance to the next result
+                dR.NextResult();
+                if (dR.HasRows)
+                {
+                    List<HTMLStrings.TableRow> lstTblRows = new List<HTMLStrings.TableRow>();
+                    lstTblRows.Add(new HTMLStrings.TableRow(
+                        "row_h_pn" + id,
+                        "clsHeaderRow",
+                        new HTMLStrings.TableCell[] {
+                        new HTMLStrings.TableCell("","clsHeaderRow","Assembly Name",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","Assembly Part Number",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","Assembly Revision",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","BOM Revision",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","Status",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","Designer",1,true),
+                        new HTMLStrings.TableCell("","clsHeaderRow","BU",1,true)
+                                                    }
+                                                         )
+                                 );
+                    int rowIndex = 0;
+                    while (dR.Read())
+                    {
+                        string p = myDB.Fld2Str(dR[DBK.strNAME]);
+                        string pR = myDB.Fld2Str(dR[DBK.strREVISION]);
+                        string bR = myDB.Fld2Str(dR[DBK.intBOMREV]);
+                        string prodLink = DynControls.html_hyperlink_string(p, HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Authority) +
+                            "/BOMViewUpload.aspx?p=" + p + "&pR=" + pR + "&bR=" + bR + "&wu=" + pn, "", "PNWhereUsedURL", "_blank");
+                        lstTblRows.Add(new HTMLStrings.TableRow(
+                            "row_pn" + id + "_" + rowIndex.ToString(),
+                            "tblRowWhereUsed",
+                        new HTMLStrings.TableCell[] {
+                        new HTMLStrings.TableCell("","whereUsedCell",prodLink,1,true,toolTip:"Click to view BOM in a new Browser Window"),
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.strASSYPARTNUMBER]),1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",pR,1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",bR.PadLeft(2,'0'),1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.strASSYSTATUS]),1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.SP_COLALIAS.USERNAME]),1,true),
+                        new HTMLStrings.TableCell("","whereUsedCell",myDB.Fld2Str(dR[DBK.valDISPLAYEDVALUE]),1,true)
+                                                    }
+                                                         )
+                                 );
+                    }
+
+                    return new HTMLStrings.Table("tbl_pn" + id, "", lstTblRows).ToHTML();
+                } else
+                {
+                    return "<p>This part is not used on any BOMs that have been uploaded to the database.</p>";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return "<p>Error in MakePartNumberWhereUsedTable: " + ex.Message + "</p>";
 
             }
         }
@@ -2251,6 +2489,323 @@ namespace AskAndAnswer
             {
                 return "<p>Error in WhereUsedForVPNID: " + ex.Message + "</p>";
 
+            }
+        }
+
+        /// <summary>
+        /// Returns an empty string if the input
+        /// (Format: Product DELIM Product Rev DELEIM BOM Rev)
+        /// ...is not RELEASED.
+        /// 
+        /// Otherwise, returns a message to the user explaining what can and can't happen with 
+        /// a RELEASED Bill of Material.
+        /// </summary>
+        /// <param name="p">The product name</param>
+        /// <param name="pRev">The product rev</param>
+        /// <param name="bRev">The bom rev</param>
+        /// <returns></returns>
+        public string GetProductStatus(string p, string pRev, string bRev)
+        {
+            try
+            {
+                int x = -1;
+                if (!int.TryParse(bRev, out x))
+                {
+                    x = -1;
+                }
+                clsDB xDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strNAME, p));
+                ps.Add(new SqlParameter("@" + DBK.strREVISION, pRev));
+                ps.Add(new SqlParameter("@" + DBK.intBOMREV, x));
+                using (xDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(DBK.SP.spGETASSYSTATUS,ps,clsDB.SPExMode.READER, ref cmd))
+                    {
+                        if (dR != null && dR.HasRows)
+                        {
+                            dR.Read();
+                            return xDB.Fld2Str(dR[DBK.strASSYSTATUS]);
+                        } else
+                        {
+                            return "NOT YET UPLOADED";
+                        }
+                    }
+                }
+            } catch (Exception ex)
+            {
+                return "<p>Error in CustomCode.GetProductStatus:" + AAAK.vbCRLF + 
+                    ex.Message + AAAK.vbCRLF + ex.StackTrace + "</p>";
+            }
+
+        }
+
+        /// <summary>
+        /// Generates HTML for a formatted BOM
+        /// </summary>
+        /// <param name="p">Product Name</param>
+        /// <param name="pRev">Product Revision</param>
+        /// <param name="bRev">BOM Revision</param>
+        /// <returns></returns>
+        public string DownloadHTMLforBOM(string p, string pRev, string bRev)
+        {
+            string htmlForBOM = "";
+            string htmlForBOMHeader = "";
+            try
+            {
+                p = p.ToUpper();
+                pRev = pRev.ToUpper();
+                bRev = bRev.ToUpper();
+                int x = -1;
+                if (!int.TryParse(bRev, out x))
+                {
+                    x = -1;
+                }
+                clsDB xDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strNAME, p));
+                ps.Add(new SqlParameter("@" + DBK.strREVISION, pRev));
+                ps.Add(new SqlParameter("@" + DBK.intBOMREV, x));
+                using (xDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(DBK.SP.spDOWNLOADBOM, ps, clsDB.SPExMode.READER, ref cmd))
+                    {
+                        int resultSetIndex = 0;
+                        do
+                        {
+                            if (dR != null)
+                            {
+                                if (resultSetIndex == 0)
+                                {
+                                    if (dR.HasRows)
+                                    {
+                                        htmlForBOMHeader = createHTMLStringForBOMHeader(dR, xDB);
+                                    } else
+                                    {
+                                        htmlForBOMHeader = "<p>Found no Record of <b><span style='color:red'>" +
+                                                p +
+                                                "</span></b> Revision <b><span style='color:red'>" +
+                                                pRev +
+                                                "</span></b> BOM Revision <b><span style='color:red'>" +
+                                                bRev +
+                                                "</span></b>) </p><p>Validation checks should have prevented you " +
+                                                "from seeing this message.  Please send this link to the Administrator.</p>";
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    if (dR.HasRows)
+                                    {
+                                        htmlForBOM = createHTMLStringForBOM(dR, xDB);
+                                    }
+                                    else
+                                    {
+                                        htmlForBOM = "<p>No BOM has been uploaded for <b><span style='color:red'>" +
+                                                p +
+                                                "</span></b> Revision <b><span style='color:red'>" +
+                                                pRev +
+                                                "</span></b> BOM Revision <b><span style='color:red'>" +
+                                                bRev.PadLeft(2,'0') +
+                                                "</span></b>.</p>";
+                                    }
+                                    
+                                }
+
+                            }
+                            else
+                            {
+                            }
+                            resultSetIndex = resultSetIndex + 1;
+                        } while (dR.NextResult());
+                    }
+                }
+
+                return htmlForBOMHeader + htmlForBOM;
+            } catch (Exception ex)
+            {
+                return DynControls.renderLiteralControlErrorString(ex, "");
+            }
+        }
+
+        private string createHTMLStringForBOMHeader(SqlDataReader dR, clsDB myDB)
+        {
+            try
+            {
+                StringBuilder sB = new StringBuilder();
+                dR.Read();
+                sB.Append(DynControls.html_header_string(myDB.Fld2Str(dR[DBK.strNAME]).ToUpper() +
+                    " Rev " +
+                    myDB.Fld2Str(dR[DBK.strREVISION]).ToUpper(), 1));
+
+                sB.Append(DynControls.html_header_string("Assy Part Number: <u>" +
+                    myDB.Fld2Str(dR[DBK.strASSYPARTNUMBER]).ToUpper() +
+                    "</u> BOM Revision: <u>" +
+                    myDB.Fld2Str(dR[DBK.intBOMREV]).ToUpper().PadLeft(2,'0') + "</u>", 3));
+                sB.Append("<p>Last uploaded by <b>" + dR["USERNAME"] + "</b> at <b>" + ((DateTime)dR[DBK.dtUPLOADED]).ToString("g") + "</b>." );
+                
+                string strLbl = DynControls.html_label_string("lblReleaseNote", "Release Notes:",
+                        assocCtl: "txtReasonForChange",
+                        dType: AAAK.DISPLAYTYPES.BLOCK);
+                if (int.Parse(myDB.Fld2Str(dR[DBK.keyASSYSTATUS]))==2)
+                {
+                    //This BOM is released; Create a disabled text area that is resizeable, with contents equal to the
+                    //release reason
+                    sB.Append(strLbl);
+                    sB.Append(DynControls.html_textarea_string("txtReasonForChange", "txtinput",
+                        myDB.Fld2Str(dR[DBK.strREASON]), AAAK.DISPLAYTYPES.BLOCK, "", true));
+                } else
+                {
+                    //This BOM is not released. Add a Release button and a blank enabled text area
+
+                    sB.Append(strLbl);
+                    string releaseReason = "";
+                    if (int.Parse(myDB.Fld2Str(dR[DBK.intBOMREV]))==1)
+                    {
+                        releaseReason = myDB.Fld2Str(dR[DBK.strREASON]);
+                    }
+                    sB.Append(DynControls.html_textarea_string("txtReasonForChange", "txtinput",
+                         releaseReason, AAAK.DISPLAYTYPES.BLOCK,"Enter the reason you are changing the BOM Revision for this " + 
+                         "Product. If this is the first time you are releasing this BOM, you can leave the text as 'Initial Release'",
+                         false));
+              
+                    sB.Append(DynControls.html_button_string("btnRelease", "RELEASE", "",
+                        dType: AAAK.DISPLAYTYPES.BLOCK,
+                        toolTip: "WARNING!  Once you press this button and release this BOM, the BOM will be LOCKED.  " + 
+                        "You will be unable to make changes to this BOM Revision."));
+                }
+                //Provide a gap between this and the next block
+                sB.Append(DynControls.html_linebreak_string());
+                return sB.ToString();
+            } catch (Exception ex)
+            {
+                return DynControls.renderLiteralControlErrorString(ex, "");
+            }
+
+        }
+
+        private string createHTMLStringForBOM(SqlDataReader dR, clsDB myDB)
+        {
+            try
+            {
+                List<HTMLStrings.TableRow> tblRows = new List<HTMLStrings.TableRow>();
+                int expandSpan = 0;
+                //Add the Header Row
+                tblRows.Add(new HTMLStrings.TableRow(
+                            "bomHeader",
+                            "clsHeaderRow",
+                            new HTMLStrings.TableCell[] {
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","PART NUMBER",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","QTY",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","DESCRIPTION",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","REFERENCE DESIGNATORS",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","BOM NOTES",1,true)
+                                                        }
+                                                      )
+                                     );
+
+
+                expandSpan = tblRows[0].Cells.Count();
+                string pn = "";
+                string qty = "";
+                string desc = "";
+                string refdes = "";
+                string bomnotes = "";
+                string pnID = "";
+ 
+                while (dR.Read())
+                {
+                    //Format the text in the data reader
+                    pn = myDB.Fld2Str(dR[DBK.strPARTNUMBER]);
+                    pnID = myDB.Fld2Str(dR[DBK.keyPN]);
+                    qty = myDB.Fld2Str(dR[DBK.intQTY]);
+                    desc = myDB.Fld2Str(dR[DBK.strDESCRIPTION]);
+                    refdes = myDB.Fld2Str(dR[DBK.strREFDES]);
+                    bomnotes = myDB.Fld2Str(dR[DBK.strBOMNOTES]);
+                    string buttonhtml = DynControls.html_button_string("otsbtnFoundExpand_" + pnID, "Expand", "otsbtnFoundExpand btnExpand tableCellButton",
+                        true, AAAK.DISPLAYTYPES.BLOCK, "Expand to get more information about the Part Number");
+         
+                    tblRows.Add(new HTMLStrings.TableRow(
+                                "otsFindResultsRow_" + pnID,
+                                "otsFindResultsRow",
+                                new HTMLStrings.TableCell[] {
+                                                        new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell withExpandButton",buttonhtml.Replace("btnOTSFOUNDID_", "btnOTSFOUNDID_" + pnID),1,false,true),
+                                                        new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",pn,1,false),
+                                                        new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",qty,1,false),
+                                                        new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",desc,1,false),
+                                                        new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",refdes,1,false),
+                                                        new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",bomnotes,1,false)
+                                                            }
+                                                         )
+                                );
+                     
+
+                        //We need to add one hidden row that will expand.
+                    HTMLStrings.TableRow expandRow = new HTMLStrings.TableRow(
+                                "otsExpandResultsRow_" + pnID,
+                                "otsExpandResultsRow",
+                                new HTMLStrings.TableCell[] {
+                                                                new HTMLStrings.TableCell("otsDisplayAreaFor_" + pnID,
+                                                                                            "otsFindResultsExpansionCell",
+                                                                                            "",
+                                                                                            expandSpan,false),
+                                                            }
+                                                            );
+                    expandRow.DisplayStyle = AAAK.DISPLAYTYPES.NONE;
+                    tblRows.Add(expandRow);
+                } //end single pass over datareader
+
+                HTMLStrings.Table resultTable = new HTMLStrings.Table("otsSearchResults", "otsTable", tblRows);
+                return  resultTable.ToHTML();
+            }
+            catch (Exception ex)
+            {
+                return DynControls.renderLiteralControlErrorString(ex, "");
+            }
+
+        }
+
+        /// <summary>
+        /// Changes the status of an assy BOM in asyBOM.
+        /// Returns the number of rows affected; you should get 1.
+        /// If you get more than 1, something is wrong (bom/rev/bomrev should be unique)
+        /// If you get something less than 1, somethig is also wrong (nothing changed)
+        /// </summary>
+        /// <param name="p">Product Name</param>
+        /// <param name="pRev">Product Rev</param>
+        /// <param name="bRev">BOM Rev</param>
+        /// <returns></returns>
+        public string releaseBOM(string input)
+        {
+            try
+            {
+                string[] arr = input.Split(m_dlim, StringSplitOptions.None);
+                string p = arr[0].ToUpper();
+                string pRev = arr[1].ToUpper();
+                string bRev = arr[2].ToUpper();
+                int x = -1;
+                if (!int.TryParse(bRev, out x))
+                {
+                    x = -1;
+                }
+                clsDB xDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strNAME, p));
+                ps.Add(new SqlParameter("@" + DBK.strREVISION, pRev));
+                ps.Add(new SqlParameter("@" + DBK.intBOMREV, x));
+                using (xDB.OpenConnection())
+                {
+                    return xDB.Fld2Str(xDB.ExecuteSP(DBK.SP.spRELEASEBOM, ps, clsDB.SPExMode.NONQUERY, ref cmd));               
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return DynControls.renderLiteralControlErrorString(ex, "");
             }
         }
     }

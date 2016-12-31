@@ -3,7 +3,7 @@
         //Start by assigning common bindings:
         CommonBindings();
 
-        alert("doc ready otspn");
+        //alert("doc ready otspn");
         //
         //Need to call this function if we are viewing data via an html string
         try {
@@ -133,9 +133,13 @@
                 alert('ERROR in document.ready - Handler to check if Vendor Part Number exists: ' + err);
             }
         });
+
+
     } catch (err) {
         alert("Error in docready for ostpn: " + err.message);
     }
+
+
 });
 
 

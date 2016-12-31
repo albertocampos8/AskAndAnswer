@@ -24,6 +24,8 @@ namespace AskAndAnswer
             return "?v=" + ver;
         }
 
+        public const string TERM = "term";  //Used as the GET URL Parameter in jQuery auto-complete requests
+        public const string TEMPDATA = "tempData"; //Name of the directory on the server that holds user files 
         public static string vbCRLF = System.Environment.NewLine;
         public const string DQ = "\"";
         public const string defaultConnStr = "AskAndAddConnectionString";
@@ -143,6 +145,38 @@ namespace AskAndAnswer
         public const string otsRELATION = "otsRelation";
         public const string keyVENDORPN = "keyVendorPN";
 
+        public const string asyBOM = "asyBOM";
+        public const string keyTOPLEVELNAME = "keyTopLevelName";
+        public const string keyASSYPN = "keyAssyPN";
+        public const string keyASSYREV = "keyAssyRev";
+        public const string keyUPLOADEDBY = "keyUploadedBy";
+        public const string keyASSYSTATUS = "keyAssyStatus";
+        public const string keyASSYBU = "keyAssyBU";
+        public const string intBOMREV = "intbomRev";
+        public const string dtUPLOADED = "dtUploaded";
+        public const string keyREASONFORREV = "keyReasonForRev";
+
+        public const string asyPNS = "asyPNs";
+        public const string strASSYPARTNUMBER = "strAssyPartNumber";
+
+        public const string asyREVs = "asyRevs";
+        public const string strREVISION = "strRevision";
+        public const string intMAJOR = "intMajor";
+        public const string intMINOR = "intMinor";
+
+        public const string asySTATUS = "asyStatus";
+        public const string strASSYSTATUS = "strAssyStatus";
+
+        public const string asyCHANGEREASONS = "asyChangeReasons";
+        public const string strREASON = "strReason";
+
+        public const string asyBOMPARTS = "asyBOMParts";
+        public const string keyASSY = "keyAssy";
+        public const string keyPN = "keyPN";
+        public const string strREFDES = "strRefDes";
+        public const string strBOMNOTES = "strBOMNotes";
+        public const string intQTY = "intQty";
+
         //END OTS DATABASE ENTRIES
 
 
@@ -176,6 +210,21 @@ namespace AskAndAnswer
         public const string spOTSUPDATEPARTSBASEDINAVL = "spOTSUpdatePartsBasedOnAVL";
         public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING = "spOTSWhereUsedForVendorPartNumberString";
         public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR = "spOTSWhereUsedForVendorPartNumberStringAndVendor";
+        public const string spOTSGETPNIDS = "spOTSGetPNIDs";
+        public const string spUPSERTASSYBOMENTRY = "spUpsertAssyBOMEntry";
+        public const string spDELETEASSYBOMPARTS = "spDeleteAssyBOMParts";
+        public const string spGETASSYSTATUS = "spGetAssyStatus";
+        public const string spOTSWHEREUSED = "spOTSWhereUsed";
+        public const string spDOWNLOADBOM = "spDownloadBOM";
+        public const string spRELEASEBOM = "spReleaseBOM";
+
+        public const string spAC_ASYNAMES = "spAC_AsyNames";
+        public const string spAC_ASYREVSFORGIVENASYNAME = "spAC_AsyRevsForGivenAsyName";
+        public const string spAC_ASYBOMREVSFORGIVENASYNAMEANDREV = "spAC_AsyBOMRevsForGivenAsyNameAndRev";
+        public const string spAC_OTSVENDORPN = "spAC_OTSVendorPN";
+        public const string spAC_OTSVENDOR = "spAC_OTSVendor";
+        public const string spAC_OTSPRODUCT = "spAC_OTSProduct";
+        public const string spAC_OTSPARTS = "spAC_OTSParts";
         //COLUMN ALIAS NAMES Used in Stored Procs
         public class SP_COLALIAS
         {
@@ -183,6 +232,8 @@ namespace AskAndAnswer
             public const string PSUBTYPEID = "PSUBTYPEID";
             public const string BU = "BU";
             public const string VENDORPNID = "VendorPNID";
+            public const string PN = "pn";
+            public const string USERNAME = "USERNAME";
         }
         public enum DISPLAYTYPES { UNDEFINED, NONE, BLOCK, INLINE, FILL}
 

@@ -1,4 +1,4 @@
-﻿//Call this function to intialize the TTable shown when the user retrieves part numbers.
+﻿//Call this function to intialize the Table shown when the user retrieves part numbers.
 var insertedRowIndex = -1;  //All rows we insert will have a negative index.
 var flagSelectedTab = 0; //A global variable used to indicate which tab to select when doing a refresh
 
@@ -29,7 +29,7 @@ function InitializeOTSViewAndEdit() {
 function ShowOTSPNDetail() {
     try {
         var id = $(this).attr('id').split("_")[1];
-
+        var pn = $(this).attr('id').split("_")[2];
         if ($("#otsExpandResultsRow_" + id).is(':visible')) {
             //Since it's visible, hide it.
             $(this).val('Expand');
@@ -72,7 +72,6 @@ function AJAX_GetOTSPNDetail(id) {
             success: function (msg) {
                 //The result goes in...
                 $("#otsDisplayAreaFor_" + id).html(msg.d);
-
                 //Format this
                 FormatOTSPNDetail("pnsummary_" + id);
                 //alert(msg.d);
@@ -106,8 +105,18 @@ function FormatOTSPNDetail(divSelector) {
 
         var buttonID = ""
         $("#tblVPNInfo_" + id).find(".btnViewVendorWhereUsed").each(function (index, value) {
+
             $(this).addClass("activeViewButton");
             buttonID = $(this).attr('id');
+
+            //To get the Vendor Part Number, get the button's parent (cell)'s parent (row), 
+            var rowID = $("#" + buttonID).parent().parent().attr('id');
+            //alert($("#" + rowID + " td:nth-child(1) input:nth-child(1)").attr('id'));
+            //then get child(1) [cell]'s child (textbox) value for the Vendor, and
+            var vendor = $("#" + rowID + " td:nth-child(1) input:nth-child(1)").val();
+            // and child(3) [cell]'s child (text box) for the VPN
+            var vpn = $("#" + rowID + " td:nth-child(3) input:nth-child(1)").val();
+
             //Couldn't figure out why the following binding didn't work:
             //$("#" + buttonID).on("click", "AJAX_DoVPNWhereUsed");
             //...so just bind directly
@@ -127,7 +136,7 @@ function FormatOTSPNDetail(divSelector) {
                     success: function (msg) {
                         //The result goes in a dialog box
                         //$("#dialog").dialog("option", "width", 700);
-                        OpenDialog("#dialog", "WHERE USED FOR ", msg.d);
+                        OpenDialog("#dialog", "WHERE USED FOR " + vendor + " PART NUMBER " + vpn, msg.d);
                     },
                     error: function (xhr, textStatus, errorThrown) {
                         alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
@@ -146,6 +155,8 @@ function FormatOTSPNDetail(divSelector) {
         $(".savevpn_" + id).on("click", saveVPNInfo_Click);
         $(".cancelvpn_" + id).on("click", cancelVPNInfo_Click);
 
+        //Format the Where Used table
+        $("#tbl_pn" + id).addClass("tblWhereUsed");
     } catch (err) {
         alert("Error in FormatOTSPNDetail: " + err.message);
     }

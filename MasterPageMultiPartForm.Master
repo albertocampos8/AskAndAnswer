@@ -1,0 +1,50 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="MasterPageMultiPartForm.master.cs" Inherits="AskAndAnswer.MasterPageMultiPartForm" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+        <link href=<%=css2Col%> rel="stylesheet" type="text/css" />
+        <link href=<%=cssJquery%> rel="stylesheet" type="text/css" />
+        
+        <script src="<%=jsJquery%>" ></script>
+        <script src="<%=jsJqueryUI%>" ></script>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id = "Form1" method="post" enctype="multipart/form-data" runat="server">
+    <asp:ScriptManager ID="scmMain" runat="server" ClientIDMode="Static"></asp:ScriptManager>
+    <div id="header">
+	    <h1>This header is in div id=Header</h1>
+	    </div>
+    <div class="colmask leftmenu">
+	    <div class="colleft">
+		    <div class="col1">
+			    <!-- Column 1 start -->
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                    <p>This is Column 1 area.</p>
+                </asp:ContentPlaceHolder>                   
+			    <!-- Column 1 end -->
+		    </div>
+		    <div class="col2">
+			    <!-- Column 2 start -->
+                <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                    <p>This is Column 2 area.</p>
+                </asp:ContentPlaceHolder>   
+
+			    <!-- Column 2 end -->
+		    </div>
+	    </div>
+    </div>
+    <div id="footer">
+	    <p>THIS IS THE FOOTER SECTION</p>
+        <div id ="dialog"></div>
+    </div>
+    <div>
+
+    </div>
+    </form>
+</body>
+</html>

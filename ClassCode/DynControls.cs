@@ -95,7 +95,7 @@ namespace AskAndAnswer.ClassCode
         /// <param name="canSee">Set true if the control should be visible</param>
         /// <returns></returns>
         public static string html_label_string(string cntlID, string lblText, string cssclass = "", string assocCtl = "", 
-            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
+            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, Boolean blRunAtServer = false)
         {
             try {
                 //Enclose values in double (escaped) quotes
@@ -115,6 +115,7 @@ namespace AskAndAnswer.ClassCode
                         qID +
                         qCssClass +
                         qVisible +
+                        GetRunAtServerProperty(blRunAtServer) +
                         ">" + lblText + "</label>";
             } catch (Exception ex) {
                 return "<p>" + ex.Message + "</p>";
@@ -131,9 +132,9 @@ namespace AskAndAnswer.ClassCode
         /// <param name="canSee">Set true if the control should be visible</param>
         /// <returns></returns>
         public static LiteralControl html_label(string cntlID, string lblText,  string cssclass = "", string assocCtl = "", 
-            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED)
+            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, Boolean blRunAtServer = false)
         {
-            string controlText = html_label_string(cntlID, lblText, cssclass, assocCtl, canSee, dType);
+            string controlText = html_label_string(cntlID, lblText, cssclass, assocCtl, canSee, dType, blRunAtServer);
             try
             {
                 return new LiteralControl(controlText);
@@ -157,7 +158,7 @@ namespace AskAndAnswer.ClassCode
         /// <param name="blReadonly">Set TRUE to disable the textbox</param>
         /// <returns></returns>
         public static string html_txtbox_string(string cntlID, string cssclass = "", string defaultValue = "", Boolean canSee = true,
-            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false)
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false, Boolean blRunAtServer = false)
         {
             try
             {
@@ -183,6 +184,7 @@ namespace AskAndAnswer.ClassCode
                         qTitle +
                         qVisible +
                         qReadonly +
+                        GetRunAtServerProperty(blRunAtServer) +
                         " />";
             }
             catch (Exception ex)
@@ -199,9 +201,9 @@ namespace AskAndAnswer.ClassCode
         /// <returns></returns>
         public static LiteralControl html_txtbox(string cntlID, string cssclass = "", string defaultValue = "", 
             Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", 
-            Boolean blReadonly = false)
+            Boolean blReadonly = false, Boolean blRunAtServer = false)
         {
-            string controlText = html_txtbox_string(cntlID, cssclass, defaultValue, canSee, dType, toolTip, blReadonly);
+            string controlText = html_txtbox_string(cntlID, cssclass, defaultValue, canSee, dType, toolTip, blReadonly, blRunAtServer);
             try
             {
                 return new LiteralControl(controlText);
@@ -223,7 +225,7 @@ namespace AskAndAnswer.ClassCode
         /// <param name="blReadonly"></param>
         /// <returns></returns>
         public static string html_input_string(string cntlID, string inputType,  string cssclass = "", 
-            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.NONE, string toolTip = "", Boolean blReadonly = false)
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.NONE, string toolTip = "", Boolean blReadonly = false, Boolean blRunAtServer = false)
         {
             try
             {
@@ -245,7 +247,64 @@ namespace AskAndAnswer.ClassCode
                         qVisible +
                         qName +
                         qTitle + 
-                        qReadonly + "/>";
+                        qReadonly +
+                        GetRunAtServerProperty(blRunAtServer) + 
+                        "/>";
+            }
+            catch (Exception ex)
+            {
+                return "<p>" + ex.Message + "</p>";
+            }
+        }
+
+        public static LiteralControl html_textarea(string cntlID, string cssclass = "", string initVal = "",
+    AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.NONE, string toolTip = "", Boolean blReadonly = false, Boolean blRunAtServer = false)
+        {
+            string controlText = html_textarea_string(cntlID, cssclass, initVal, dType, toolTip, blReadonly, blRunAtServer);
+
+            try
+            {
+                return new LiteralControl(controlText);
+            }
+            catch (Exception e)
+            {
+                return renderLiteralControlError(e, controlText);
+            }
+        }
+
+        /// <summary>
+        /// Returns a text area
+        /// </summary>
+        /// <param name="cntlID">ID of control</param>
+        /// <param name="cssclass">css class of control</param>
+        /// <param name="initVal">Initial string to display in the text area</param>
+        /// <param name="dType">Display Type</param>
+        /// <param name="toolTip">Tool Tip</param>
+        /// <param name="blReadonly">Set true for readonly</param>
+        /// <param name="blRunAtServer"></param>
+        /// <returns></returns>
+        public static string html_textarea_string(string cntlID, string cssclass = "", string initVal = "",
+    AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.NONE, string toolTip = "", Boolean blReadonly = false, Boolean blRunAtServer = false)
+        {
+            try
+            {
+                string qID = encodeProperty("id", cntlID);
+                string qCssClass = encodeProperty("class", cssclass);
+                string qVisible = DecodeDisplayValue(dType);
+                string qTitle = encodeProperty("title", toolTip);
+                string qReadonly = "";
+                if (blReadonly)
+                {
+                    qReadonly = " readonly ";
+                }
+                return "<textarea " +
+                        qID +
+                        qCssClass +
+                        qVisible +
+                        qTitle +
+                        qReadonly +
+                        GetRunAtServerProperty(blRunAtServer) +
+                        "/>" + initVal + "</textarea>";
             }
             catch (Exception ex)
             {
@@ -263,9 +322,9 @@ namespace AskAndAnswer.ClassCode
         /// <param name="toolTip"></param>
         /// <returns></returns>
         public static LiteralControl html_input(string cntlID, string inputType, string cssclass = "",
-            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.NONE, string toolTip = "", Boolean rdonly = false)
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.NONE, string toolTip = "", Boolean rdonly = false, Boolean blRunAtServer = false)
         {
-            string controlText = html_input_string(cntlID, inputType, cssclass, dType, toolTip, rdonly);
+            string controlText = html_input_string(cntlID, inputType, cssclass, dType, toolTip, rdonly, blRunAtServer);
             try
             {
                 return new LiteralControl(controlText);
@@ -292,7 +351,7 @@ namespace AskAndAnswer.ClassCode
         /// <returns></returns>
         public static String html_combobox_YESNO_string(string cntlID, string cssclass = "",
             Boolean selectionRequired = false, Boolean defaultValueIsNo = true, Boolean canSee = true,
-            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false)
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false, Boolean blRunAtServer = false)
         {
             try
             {
@@ -329,6 +388,7 @@ namespace AskAndAnswer.ClassCode
                         qTitle +
                         qVisible + ">" +
                         Options +
+                        GetRunAtServerProperty(blRunAtServer) +
                         "</select>";
             }
             catch (Exception ex)
@@ -352,11 +412,11 @@ namespace AskAndAnswer.ClassCode
         /// <returns></returns>
         public static LiteralControl html_combobox_YESNO(string cntlID, string cssclass = "", 
             Boolean selectionRequired = false, Boolean defaultValueIsNo = true, Boolean canSee = true,
-            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip  = "", Boolean blDisable = false)
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip  = "", Boolean blDisable = false, Boolean blRunAtServer = false)
         {
             string controlText = html_combobox_YESNO_string(cntlID, cssclass, 
                 selectionRequired, defaultValueIsNo, canSee, dType, toolTip,
-                blDisable);
+                blDisable, blRunAtServer);
             try
             {
                 return new LiteralControl(controlText);
@@ -391,7 +451,7 @@ namespace AskAndAnswer.ClassCode
         public static string html_combobox_string(string cntlID, List<string> lstKVP, string cssclass = "",
             Boolean selectionRequired = false, string defaultValue = "", Boolean canSee = true,
             AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", 
-            Boolean blReadonly = false)
+            Boolean blReadonly = false, Boolean blRunAtServer = false)
         {
             try
             {
@@ -448,6 +508,7 @@ namespace AskAndAnswer.ClassCode
                         qReadonly +
                         qTitle + ">" +
                         Options +
+                        GetRunAtServerProperty(blRunAtServer) +
                         "</select>";
             }
             catch (Exception ex)
@@ -475,10 +536,10 @@ namespace AskAndAnswer.ClassCode
         /// <returns></returns>
         public static LiteralControl html_combobox(string cntlID, List<string> lstKVP, string cssclass = "",
             Boolean selectionRequired = false, string defaultValue="", Boolean canSee = true,
-            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false)
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false, Boolean blRunAtServer = false)
         {
             string controlText = html_combobox_string(cntlID, lstKVP, cssclass, selectionRequired, defaultValue, 
-                canSee, dType, toolTip, blReadonly);
+                canSee, dType, toolTip, blReadonly, blRunAtServer);
             try
             {
                 return new LiteralControl(controlText);
@@ -502,7 +563,7 @@ namespace AskAndAnswer.ClassCode
         /// <returns></returns>
         public static string html_button_string(string cntlID, string displayText, string cssclass = "",
             Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED,
-            string toolTip = "", string form = "", Boolean enabled = true)
+            string toolTip = "", string form = "", Boolean enabled = true, Boolean blRunAtServer = false)
         {
             try
             {
@@ -527,7 +588,8 @@ namespace AskAndAnswer.ClassCode
                     qTitle + 
                     qForm + 
                     qVisible + 
-                    qDisplayValue + 
+                    qDisplayValue +
+                    GetRunAtServerProperty(blRunAtServer) +
                     qDisabled + "/>";
             } catch (Exception ex)
             {
@@ -549,9 +611,10 @@ namespace AskAndAnswer.ClassCode
         /// <param name="disabled">Set TRUE to disable the button</param>
         /// <returns></returns>
         public static LiteralControl html_button(string cntlID, string displayText, string cssclass = "", Boolean canSee = true,
-            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", string form = "", Boolean enabled = true)
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", string form = "", Boolean enabled = true,
+            Boolean blRunAtServer = false)
         {
-            string controlText = html_button_string(cntlID, displayText, cssclass, canSee, dType, toolTip, form, enabled);
+            string controlText = html_button_string(cntlID, displayText, cssclass, canSee, dType, toolTip, form, enabled, blRunAtServer);
             try
             {
                 return new LiteralControl(controlText);
@@ -572,7 +635,7 @@ namespace AskAndAnswer.ClassCode
         /// <param name="href">href value; needed when making tabs; 
         /// set this to the name of the div associated with this tab</param>
         /// <returns></returns>
-        public static string html_li_string(string cntlID, string cssclass, string text, string href="")
+        public static string html_li_string(string cntlID, string cssclass, string text, string href="", Boolean blRunAtServer = false)
         {
             string controlText = "";
             try
@@ -582,7 +645,7 @@ namespace AskAndAnswer.ClassCode
                 controlText = "<li " + qID + qClass + ">";
                 if (href != "")
                 {
-                    controlText = controlText + "<a " + encodeProperty("href", href) + ">";
+                    controlText = controlText + "<a " + encodeProperty("href", href) + GetRunAtServerProperty(blRunAtServer) + ">";
                 }
                 controlText = controlText + text;
                 if (href != "")
@@ -598,9 +661,9 @@ namespace AskAndAnswer.ClassCode
             }
         }
 
-        public static LiteralControl html_li(string cntlID, string cssclass, string text, string href = "")
+        public static LiteralControl html_li(string cntlID, string cssclass, string text, string href = "", Boolean blRunAtServer = false)
         {
-            string controlText = html_li_string(cntlID, cssclass, text, href);
+            string controlText = html_li_string(cntlID, cssclass, text, href, blRunAtServer);
             try
             {
                 return new LiteralControl(controlText);
@@ -621,7 +684,7 @@ namespace AskAndAnswer.ClassCode
         /// <param name="target">Set to _blank to make the link open in a new tab/window</param>
         /// <returns></returns>
         public static string html_hyperlink_string(string linkText, string url, string id = "", string cssClass = "",
-            string target = "")
+            string target = "", Boolean blRunAtServer = false)
         {
             try
             {
@@ -633,7 +696,7 @@ namespace AskAndAnswer.ClassCode
                 string qcssClass = encodeProperty("class", cssClass);
                 string qurl = encodeProperty("href", url);
                 string qTarget = encodeProperty("target", target);
-                return "<a " + qTarget + qurl + qID + qcssClass + ">" + linkText + "</a>";
+                return "<a " + qTarget + qurl + qID + qcssClass + GetRunAtServerProperty(blRunAtServer) + ">" + linkText + "</a>";
             }
             catch (Exception ex)
             {
@@ -642,12 +705,12 @@ namespace AskAndAnswer.ClassCode
         }
 
         public static LiteralControl html_hyperlink(string linkText, string url, string id = "", string cssClass = "",
-            string target = "")
+            string target = "", Boolean blRunAtServer = false)
         {
             string controlText = "";
             try
             {
-                controlText = html_hyperlink_string(linkText, url, id, cssClass, target);
+                controlText = html_hyperlink_string(linkText, url, id, cssClass, target, blRunAtServer);
                 return new LiteralControl(controlText);
             }
             catch (Exception ex)
@@ -669,9 +732,10 @@ namespace AskAndAnswer.ClassCode
         /// (One recommended value for thie Unique ID is the Database ID).</param>
         /// <param name="cntlDisplayStyle"></param>
         /// <param name="blElementsInLine">Set false to allow displaying all elements in line (no line breaks)</param>
+        /// <param name="blRunAtServer">When TRUE, includes runat=server as a property of all controls</param>
         public static void GenerateControlsFromDatabase(int appID, System.Web.UI.Control cntlContainer,
             Dictionary<string,string> dctDefaultOverride = null, string uid = "", int cntlDisplayStyle = -1,
-            Boolean blElementsInLine = false)
+            Boolean blElementsInLine = false, Boolean blRunAtServer = false)
         {
             try
             {
@@ -696,7 +760,7 @@ namespace AskAndAnswer.ClassCode
                         {
                             CustomCode x = new CustomCode();
                             x.ConstructInputControls(dR, cntlContainer, dctDefaultOverride, uid, cntlDisplayStyle,
-                                blElementsInLine);
+                                blElementsInLine, blRunAtServer);
                             
                         }
                     }
@@ -721,6 +785,24 @@ namespace AskAndAnswer.ClassCode
             return new LiteralControl(html_linebreak_string());
         }
 
+
+        public static LiteralControl html_header(string htmlHeaderText, int headerLevel)
+        {
+            return new LiteralControl(html_header_string(htmlHeaderText,headerLevel));
+        }
+
+        /// <summary>
+        /// Returns an html header
+        /// </summary>
+        /// <param name="htmlHeaderText">Header text, optionally formatted html</param>
+        /// <param name="headerLevel">1 through 7</param>
+        /// <returns></returns>
+        public static string html_header_string(string htmlHeaderText, int headerLevel)
+        {
+            return "<h" + headerLevel.ToString() + ">" + htmlHeaderText +
+                "</h" + headerLevel.ToString() + ">";
+        }
+        
         /// <summary>
         /// Puts double quotes around the value of an html property
         /// </summary>
@@ -757,20 +839,37 @@ namespace AskAndAnswer.ClassCode
             }
         }
 
+        public static string GetRunAtServerProperty(Boolean runAtServer)
+        {
+            if (runAtServer)
+            {
+                return encodeProperty("runat", "server");
+            } else
+            {
+                return "";
+            }
+        }
 
         /// <summary>
         /// Returns a literal control consisting of:
         /// Error Message
         /// HTML code that cause the error.
         /// </summary>
-        /// <param name="err">The error object; we will return it's message property</param>
+        /// <param name="err">The error object; we will return its message property</param>
         /// <param name="htmlCode">The html code that caused the error</param>
         /// <returns></returns>
-        private static LiteralControl renderLiteralControlError(Exception err, string htmlCode)
+        public static LiteralControl renderLiteralControlError(Exception err, string htmlCode)
         {
             LiteralControl l = new LiteralControl();
-            l.Text = err.Message + AAAK.vbCRLF + htmlCode;
+            l.Text = renderLiteralControlErrorString(err,htmlCode);
             return l;
+        }
+
+        public static string renderLiteralControlErrorString(Exception err, string htmlCode)
+        {
+            return (err.Message + AAAK.vbCRLF + err.StackTrace + AAAK.vbCRLF + htmlCode).Replace(AAAK.vbCRLF,html_linebreak_string()) + 
+                htmlCode;
+
         }
 
         /// <summary>

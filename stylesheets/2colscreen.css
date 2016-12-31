@@ -10,16 +10,16 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 a {
-	color:#369;
+	color:blue;
 }
 
 #btnSubmit {
     background-color:limegreen;
 }
 a:hover {
-	color:#fff;
+	/*color:#fff;
 	background:#369;
-	text-decoration:none;
+	text-decoration:none;*/
 }
 h1, h2, h3 {
 	margin:.8em 0 .2em 0;

@@ -4,12 +4,14 @@
 /*Table properties*/
 .otsTable {
     border-collapse: collapse;
+    /*width:100%*/
 }
 
 .otsTable .clsHeaderRow {
     background-color:maroon;
     color:white;
 }
+
 .otsTable .otsFindResultsRow:nth-child(4n+1) {
     background-color:lightyellow;
 }
@@ -76,4 +78,38 @@
 .inputButton {
     background-color:darkgreen;
     color:white;
+}
+
+
+
+#txtReasonForChange {
+    width:100%;
+}
+th, td {
+    padding:3px;
+}
+
+/*Format for Where Used Tables*/
+.tblWhereUsed {
+    border-collapse: collapse;
+    /*width:100%*/
+}
+
+.tblWhereUsed .clsHeaderRow {
+    background-color:lightgray;
+    color:black;
+}
+
+.tblWhereUsed .tblRowWhereUsed {
+    background-color:palegreen;
+    color: black;
+    font-weight: normal;
+}
+
+.tblWhereUsed .tblRowWhereUsed a {
+    color:blue;
+}
+
+.tblWhereUsed .tblRowWhereUsed a:hover {
+    background-color:palegreen;
 }

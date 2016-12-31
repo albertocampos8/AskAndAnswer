@@ -38,9 +38,10 @@ namespace AskAndAnswer.ClassCode
             /// <param name="cntlClass">Allows you to assign a css class to the control enclosed by the cell, if available.</param>
             /// <param name="userInputEnabled">Set FALSE to disable the text area that is created by supplying an argument for
             /// textAreaID</param>
+            /// <param name="toolTip">A tool tip that will show when user hovers over cell</param>
             public TableCell(string id, string cssClass, string content, int span = 1, Boolean isHeader = false, 
                 Boolean fill = false, string cntlID = "", List<string>dropDownOpts = null, string btnText = "", 
-                string cntlClass = "", Boolean userInputEnabled = true)
+                string cntlClass = "", Boolean userInputEnabled = true, string toolTip = "")
             {
                 m_id = id;
                 m_cssClass = cssClass;
@@ -52,7 +53,7 @@ namespace AskAndAnswer.ClassCode
                 m_lstOpts = dropDownOpts;
                 m_btnText = btnText;
                 m_UserInputEnabled = UserInputEnabled;
-
+                m_toolTip = toolTip;
             }
 
             /// <summary>
@@ -75,6 +76,7 @@ namespace AskAndAnswer.ClassCode
                     string propID = encodeProperty("id", m_id);
                     string propCssClass = encodeProperty("class", m_cssClass);
                     string propSpan = encodeProperty("colspan", m_span.ToString());
+                    string tTip = encodeProperty("title", m_toolTip);
                     if (m_fill)
                     {
                         displayStyle = encodeProperty("style", "width:100%;height:100%");
@@ -108,7 +110,7 @@ namespace AskAndAnswer.ClassCode
                         cellContents = m_contentString;
                     }
 
-                    return openTag + propID + propCssClass + propSpan + displayStyle + ">" + cellContents + closeTag;
+                    return openTag + propID + propCssClass + propSpan + tTip + displayStyle + ">" + cellContents + closeTag;
 
                 } catch (Exception ex)
                 {
@@ -157,6 +159,19 @@ namespace AskAndAnswer.ClassCode
                 set
                 {
                     m_cntlID = value;
+                }
+            }
+
+            private string m_toolTip = "";
+            public string ToolTip
+            {
+                get
+                {
+                    return m_toolTip;
+                } 
+                set
+                {
+                    m_toolTip = value;
                 }
             }
 

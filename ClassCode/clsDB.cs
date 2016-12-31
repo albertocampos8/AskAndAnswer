@@ -17,6 +17,18 @@ namespace DB
     {
         private SqlConnection m_c = new SqlConnection();
 
+        private Int64 m_NAffectedRows = -1;
+        /// <summary>
+        /// Contains the number of rows affected when you call ExecuteNonQuery method
+        /// </summary>
+        public Int64 NAffectedRows
+        {
+            get
+            {
+                return m_NAffectedRows;
+            }
+        }
+
         public enum SPExMode
         {
             READER,
@@ -28,7 +40,14 @@ namespace DB
         //The connection string used in the project's Web.config file; used to connect to the Help Database
         private string m_connStr = ConfigurationManager.ConnectionStrings[AAAK.defaultConnStr].ConnectionString;
 
-
+        private string m_errMsg = "";
+        public string ErrMsg
+        {
+            get
+            {
+                return m_errMsg = "";
+            }
+        }
         /// <summary>
         /// Instatiate an instance of this object.
         /// </summary>
@@ -175,6 +194,28 @@ namespace DB
             }
         }
 
+        public Boolean ExecuteNonQuery(string nonQueryToExecute)
+        {
+            try
+            {
+                m_NAffectedRows = -1;
+                using (m_c)
+                {
+                    if (m_c.State != ConnectionState.Open)
+                    {
+                        m_c.Open();
+                    }
+                    SqlCommand cmd = new SqlCommand(nonQueryToExecute, m_c);
+                    m_NAffectedRows = cmd.ExecuteNonQuery();
+                    
+                }
+                return true;
+            } catch (Exception ex)
+            {
+                m_errMsg = ex.Message + AAAK.vbCRLF + ex.StackTrace;
+                return false;
+            }
+        }
         /// <summary>
         /// Converts a column name into an SQL Server Parameter name.
         /// </summary>

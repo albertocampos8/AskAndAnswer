@@ -1,0 +1,39 @@
+﻿body {
+}
+.txtinput{
+    display:block;
+    margin:5px 0px 0px 0px;
+    text-transform:uppercase;
+    width:100%;
+}
+
+.lblinput{
+    display:block;
+    margin-top:15px;
+}
+
+#txtReasonForChange {
+    margin-bottom:5px;
+}
+.btninput{
+    margin-top:15px;
+}
+
+#btnRelease {
+    background-color:lime;
+    position:absolute;
+    right:0;
+    
+}
+
+h1 {
+    text-align:center;
+}
+
+#divResult {
+   overflow-x:auto;
+}
+.filFileupload{
+    margin-top:5px;
+}
+

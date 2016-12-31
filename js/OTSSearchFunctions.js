@@ -61,19 +61,113 @@ function HandleChangedSearchMethod() {
             //    break;
             case SearchBy_BU:
                 $("#visdiv_" + ID_OTSSearch_ByBU).css('display', 'inline');
-                $("#cbo" + ID_OTSSearch_ByBU).css('display', 'inline');
+                $("#cbo_" + ID_OTSSearch_ByBU).css('display', 'inline');
                 break;
             case SearchBy_Requestor:
                 $("#visdiv_" + ID_OTSSearch_ByUser).css('display', 'inline');
-                $("#cbo" + ID_OTSSearch_ByUser).css('display', 'inline');
+                $("#cbo_" + ID_OTSSearch_ByUser).css('display', 'inline');
                 break;
             case SearchBy_RequestDate:
                 $("#visdiv_" + ID_OTSSearch_ByDate).css('display', 'inline');
-                $("#txt" + ID_OTSSearch_ByDate).css('display', 'inline');
+                $("#txt_" + ID_OTSSearch_ByDate).css('display', 'inline');
                 break;
             default:
                 $("#visdiv_" + ID_OTSSearch_ByText).css('display', 'inline');
-                $("#txt" + ID_OTSSearch_ByText).css('display', 'inline');
+                $("#txt_" + ID_OTSSearch_ByText).css('display', 'inline');
+                //Initialize autocomplete here
+                switch ($("#cbo_" + ID_OTSSearch_Method).val()) {
+                    case SearchBy_PN:
+                        $("#txt_" + ID_OTSSearch_ByText).autocomplete({
+                            source: function (request, response) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "OTSPN.aspx/AC_GetPartNumber",
+                                    //data: strValForTerm,
+                                    data: "{'term':'" + $("#txt_" + ID_OTSSearch_ByText).val() + "'}",
+                                    contentType: "application/json; charset utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        response(data.d);
+                                    },
+                                    error: function (response) {
+                                        response("");
+                                        alert("Error: " + res.responseText);
+                                    }
+                                }) //ajax
+                            },
+                            minLength: 3
+                        });
+                        break;
+                    case SearchBy_RequestForProduct:
+                        $("#txt_" + ID_OTSSearch_ByText).autocomplete({
+                            source: function (request, response) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "OTSPN.aspx/AC_GetProduct",
+                                    //data: strValForTerm,
+                                    data: "{'term':'" + $("#txt_" + ID_OTSSearch_ByText).val() + "'}",
+                                    contentType: "application/json; charset utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        response(data.d);
+                                    },
+                                    error: function (response) {
+                                        response("");
+                                        alert("Error: " + res.responseText);
+                                    }
+                                }) //ajax
+                            },
+                            minLength: 6
+                        });
+                        break;
+                    case SearchBy_Vendor:
+                        $("#txt_" + ID_OTSSearch_ByText).autocomplete({
+                            source: function (request, response) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "OTSPN.aspx/AC_GetVendor",
+                                    //data: strValForTerm,
+                                    data: "{'term':'" + $("#txt_" + ID_OTSSearch_ByText).val() + "'}",
+                                    contentType: "application/json; charset utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        response(data.d);
+                                    },
+                                    error: function (response) {
+                                        response("");
+                                        alert("Error: " + res.responseText);
+                                    }
+                                }) //ajax
+                            },
+                            minLength: 3
+                        });
+                        break;
+                    case SearchBy_VendorPN:
+                        $("#txt_" + ID_OTSSearch_ByText).autocomplete({
+                            source: function (request, response) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: "OTSPN.aspx/AC_GetVendorPN",
+                                    //data: strValForTerm,
+                                    data: "{'term':'" + $("#txt_" + ID_OTSSearch_ByText).val() + "'}",
+                                    contentType: "application/json; charset utf-8",
+                                    dataType: "json",
+                                    success: function (data) {
+                                        response(data.d);
+                                    },
+                                    error: function (response) {
+                                        response("");
+                                        alert("Error: " + res.responseText);
+                                    }
+                                }) //ajax
+                            },
+                            minLength: 3
+                        });
+                        break;
+                    default:
+                        break;
+
+                }   //end sw statement for text search method for autocomplete
                 break;
         }
 

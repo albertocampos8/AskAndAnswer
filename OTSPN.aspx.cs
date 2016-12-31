@@ -175,5 +175,82 @@ namespace AskAndAnswer
             CustomCode x = new CustomCode();
             return x.WhereUsedForVPNID(input);
         }
+
+        /// <summary>
+        /// Does a 'where used' for a given part number ID (that is, otsParts.ID)
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [System.Web.Services.WebMethod]
+        public static string WhereUsedForPN(string input)
+        {
+            CustomCode x = new CustomCode();
+            return x.WhereUsedForPN(input);
+        }
+
+        [System.Web.Services.WebMethod]
+        public static string[] AC_GetPartNumber(string term)
+        {
+            try
+            {
+                clsUtil u = new clsUtil();
+                string[] x = u.GetJSONFromDB(DBK.SP.spAC_OTSPARTS, "%" + term + "%", DBK.strPARTNUMBER);
+                return x;
+            }
+            catch (Exception ex)
+            {
+                string strErr = ex.Message + ex.StackTrace;
+                return new string[0];
+            }
+        }
+
+        [System.Web.Services.WebMethod]
+        public static string[] AC_GetProduct(string term)
+        {
+            try
+            {
+                clsUtil u = new clsUtil();
+                string[] x = u.GetJSONFromDB(DBK.SP.spAC_OTSPRODUCT, "%" + term + "%", DBK.strPRODUCT);
+                return x;
+            }
+            catch (Exception ex)
+            {
+                string strErr = ex.Message + ex.StackTrace;
+                return new string[0];
+            }
+        }
+        [System.Web.Services.WebMethod]
+        public static string[] AC_GetVendor(string term)
+        {
+            try
+            {
+                clsUtil u = new clsUtil();
+                string[] x = u.GetJSONFromDB(DBK.SP.spAC_OTSVENDOR, "%" + term + "%", DBK.strVENDOR);
+                return x;
+            }
+            catch (Exception ex)
+            {
+                string strErr = ex.Message + ex.StackTrace;
+                return new string[0];
+            }
+        }
+
+        [System.Web.Services.WebMethod]
+        public static string[] AC_GetVendorPN(string term)
+        {
+            try
+            {
+                clsUtil u = new clsUtil();
+                string[] x = u.GetJSONFromDB(DBK.SP.spAC_OTSVENDORPN, "%" + term + "%", DBK.strVENDORPARTNUMBER);
+                return x;
+            }
+            catch (Exception ex)
+            {
+                string strErr = ex.Message + ex.StackTrace;
+                return new string[0];
+            }
+        }
+
+
     }
 }

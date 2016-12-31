@@ -135,3 +135,77 @@ function OpenDialog(dialogCssSelector, t, msg) {
         alert(err.message);
     }
 }
+
+/*
+THIS APPROACH DOES NOT WORK IN CHROME!!!
+The problem appears to be objTerm.  WHen I pass $("#textbox"), Chrome tells me the function is not defined.
+When I change objTerm to a string, there is no issue.  But then you end up with a static source (see  below).
+I'm leaving this here in case I ever decide to find a way to get this to work better.  For now, duplicate code
+for autocomplete :(
+
+A generic function to initialize autocomplete
+<objTerm>: The OBJECT which holds the terms by which we want to filter.
+Example: 
+$(textbox1)
+...NOT $(textbox1).val()!!!
+
+This function only works when you have one filter term; unsure how to extend this for when 
+you want to provide values from more than one object to let the server perform the filter; see below.
+
+<strURLResource>: The Url Resource that will provide the data.  Example: BOMViewUpload.aspx/GetAssyNames
+The signature of the page method should be (string term)
+
+*/
+function AJAX_InitAutoComplete(objTerm, strURLResource) {
+    try {
+        //Can't do this if you are initializing; it makes the data static
+        //(whatever is in the text box when doc is ready)
+        /*
+        var obj = new Object();
+        obj.term = $("#txtProduct").val();
+        var strData = JSON.stringify(obj);
+        //Also can't do the following:
+        /*var valForTerm = "";
+        for (i = 0; i < arrObjsWithTermVals.length; i++) {
+            dl = DELIM;
+            if (i == arrObjsWithTermVals.length - 1) {
+                dl = "";
+            }
+            valForTerm = valForTerm + arrObjsWithTermVals[i].val() + dl;
+        }
+        It seems that calling .val() before the item is actually inserted as the property in the 'data' ajax field
+        results in javascript interpreting it literally, making the term static; unsure how to fix this
+        */
+
+        objTerm.autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    url: strURLResource,
+                    //data: strValForTerm,
+                    data: "{'term':'" + objTerm.val() + "'}",
+                    contentType: "application/json; charset utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        response(data.d);
+                    },
+                    error: function (response) {
+                        response("");
+                        alert("Error: " + res.responseText);
+                    }
+                }) //ajax
+            }
+        });
+    } catch (err) {
+        alert(err);
+    }
+}
+
+/*
+Pads a string with zeros on the left hand side
+<str>: the target string
+<nZ>: the number of zeros to prepend
+*/
+function padLeftZ(str, nZ) {
+    return ("00" + str).substring(nZ);
+}

@@ -58,12 +58,15 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BOMViewUpload.aspx" />
     <Content Include="CustomPN.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
     <Content Include="js\BasicCode.js" />
+    <Content Include="js\BOMViewCode.js" />
     <Content Include="js\CustomizePage.js" />
     <Content Include="js\CustomPNCode.js" />
+    <Content Include="js\DocReady_BOMView.js" />
     <Content Include="js\DocReady_CommonBindings.js" />
     <Content Include="js\DocReady_CustomPN.js" />
     <Content Include="js\DocReady_OTSPN.js" />
@@ -72,14 +75,25 @@
     <Content Include="js\OTSSearchFunctions.js" />
     <Content Include="js\OTSViewAndEditFunctions.js" />
     <Content Include="OTSPN.aspx" />
+    <Content Include="SiteMain.Master" />
     <Content Include="stylesheets\2colscreen.css" />
+    <Content Include="stylesheets\BOMViewStyles.css" />
     <Content Include="stylesheets\OTSstyles.css" />
     <Content Include="TestDBConnection.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppCode.cs" />
+    <Compile Include="BOMViewUpload.aspx.cs">
+      <DependentUpon>BOMViewUpload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="BOMViewUpload.aspx.designer.cs">
+      <DependentUpon>BOMViewUpload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ClassCode\clsAssyBOM.cs" />
     <Compile Include="ClassCode\clsDB.cs" />
+    <Compile Include="ClassCode\clsFileUtil.cs" />
     <Compile Include="ClassCode\clsUtil.cs" />
     <Compile Include="ClassCode\DynControls.cs" />
     <Compile Include="ClassCode\HTMLStrings.cs" />
@@ -103,6 +117,13 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="MasterPageMultiPartForm.Master.cs">
+      <DependentUpon>MasterPageMultiPartForm.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MasterPageMultiPartForm.Master.designer.cs">
+      <DependentUpon>MasterPageMultiPartForm.Master</DependentUpon>
     </Compile>
     <Compile Include="OTSPN.aspx.cs">
       <DependentUpon>OTSPN.aspx</DependentUpon>
@@ -135,8 +156,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SiteMain.Master" />
     <Content Include="TestDBMaster.master" />
+    <Content Include="MasterPageMultiPartForm.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
