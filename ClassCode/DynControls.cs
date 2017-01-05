@@ -888,6 +888,8 @@ namespace AskAndAnswer.ClassCode
                         return encodeProperty("style", "display:block");
                     case AAAK.DISPLAYTYPES.INLINE:
                         return encodeProperty("style", "display:inline");
+                    case AAAK.DISPLAYTYPES.INLINEBLOCK:
+                        return encodeProperty("style", "display:inline-block");
                     case AAAK.DISPLAYTYPES.NONE:
                         return encodeProperty("style", "display:none");
                     case AAAK.DISPLAYTYPES.FILL:

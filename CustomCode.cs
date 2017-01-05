@@ -259,6 +259,7 @@ namespace AskAndAnswer
             public const string spAC_OTSPARTS = AAAK.spAC_OTSPARTS;
             public const string spDOWNLOADBOM = AAAK.spDOWNLOADBOM;
             public const string spRELEASEBOM = AAAK.spRELEASEBOM;
+            public const string spDELETEASYBOMENTRY = AAAK.spDELETEASYBOMENTRY;
         }
 
         public partial class SPVar
@@ -2670,11 +2671,15 @@ namespace AskAndAnswer
                          releaseReason, AAAK.DISPLAYTYPES.BLOCK,"Enter the reason you are changing the BOM Revision for this " + 
                          "Product. If this is the first time you are releasing this BOM, you can leave the text as 'Initial Release'",
                          false));
-              
+
+                    sB.Append(DynControls.html_button_string("btnDelete", "DELETE", "",
+                        dType: AAAK.DISPLAYTYPES.INLINEBLOCK,
+                        toolTip: "WARNING!  Once you press this button, this BOM will be PERMANENTLY deleted."));
                     sB.Append(DynControls.html_button_string("btnRelease", "RELEASE", "",
-                        dType: AAAK.DISPLAYTYPES.BLOCK,
+                        dType: AAAK.DISPLAYTYPES.INLINEBLOCK,
                         toolTip: "WARNING!  Once you press this button and release this BOM, the BOM will be LOCKED.  " + 
                         "You will be unable to make changes to this BOM Revision."));
+
                 }
                 //Provide a gap between this and the next block
                 sB.Append(DynControls.html_linebreak_string());
@@ -2800,6 +2805,48 @@ namespace AskAndAnswer
                 using (xDB.OpenConnection())
                 {
                     return xDB.Fld2Str(xDB.ExecuteSP(DBK.SP.spRELEASEBOM, ps, clsDB.SPExMode.NONQUERY, ref cmd));               
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return DynControls.renderLiteralControlErrorString(ex, "");
+            }
+        }
+
+        /// <summary>
+        /// Deletes one row from asyBOM.
+        /// Returns the number of rows affected; you should get 1.
+        /// If you get more than 1, something is wrong (bom/rev/bomrev should be unique)
+        /// If you get something less than 1, somethig is also wrong (nothing changed)
+        /// </summary>
+        /// <param name="p">Product Name</param>
+        /// <param name="pRev">Product Rev</param>
+        /// <param name="bRev">BOM Rev</param>
+        /// <returns></returns>
+        public string deleteBOM(string input)
+        {
+            try
+            {
+                string[] arr = input.Split(m_dlim, StringSplitOptions.None);
+                string p = arr[0].ToUpper();
+                string pRev = arr[1].ToUpper();
+                string bRev = arr[2].ToUpper();
+                int x = -1;
+                if (!int.TryParse(bRev, out x))
+                {
+                    x = -1;
+                }
+                clsDB xDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strNAME, p));
+                ps.Add(new SqlParameter("@" + DBK.strREVISION, pRev));
+                ps.Add(new SqlParameter("@" + DBK.intBOMREV, x));
+                using (xDB.OpenConnection())
+                {
+                    string y =  xDB.Fld2Str(xDB.ExecuteSP(DBK.SP.spDELETEASYBOMENTRY, ps, clsDB.SPExMode.NONQUERY, ref cmd));
+                    return y;
                 }
 
             }

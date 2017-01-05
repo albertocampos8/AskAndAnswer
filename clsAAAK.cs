@@ -217,6 +217,7 @@ namespace AskAndAnswer
         public const string spOTSWHEREUSED = "spOTSWhereUsed";
         public const string spDOWNLOADBOM = "spDownloadBOM";
         public const string spRELEASEBOM = "spReleaseBOM";
+        public const string spDELETEASYBOMENTRY = "spDeleteAsyBOMEntry";
 
         public const string spAC_ASYNAMES = "spAC_AsyNames";
         public const string spAC_ASYREVSFORGIVENASYNAME = "spAC_AsyRevsForGivenAsyName";
@@ -235,7 +236,7 @@ namespace AskAndAnswer
             public const string PN = "pn";
             public const string USERNAME = "USERNAME";
         }
-        public enum DISPLAYTYPES { UNDEFINED, NONE, BLOCK, INLINE, FILL}
+        public enum DISPLAYTYPES { UNDEFINED, NONE, BLOCK, INLINE, FILL, INLINEBLOCK}
 
         /// <summary>
         /// Refer to the index of the web page controls for the divOTSNewIn with constants
