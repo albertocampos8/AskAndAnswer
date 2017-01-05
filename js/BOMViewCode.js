@@ -10,6 +10,7 @@ var statusCheckShowsReleased = "<p><b>[P]</b> Revision <b>[PR]</b> (BOM Revision
                         "or the BOM Revision.</p>";
 
 var RELEASEDKEY = "released"; //text that corresponds to Status 2 in keyAssyStatus
+var PRELIMINARYKEY = "preliminary"; //text that corresponds to Status 1 in keyAssyStatus
 
 function AJAX_InitBOMViewAutoComplete() {
     try {
@@ -127,15 +128,15 @@ function AJAX_CheckProductStatus(p, pRev, bRev, htmlForReleasedResult) {
                     $("#divMsg").html(htmlForReleasedResult);
                     $("#divBrowse").hide("1000");
                     $("#btnUpload").prop('disabled', 'true');
-                    $("#divBrowse, #btnUpload, #btnRelease").hide();
+                    $("#divBrowse, #btnUpload, #btnRelease, #btnDelete").hide();
                 } else {
                     //enable/show some things
                     $("#divMsg").html("");
                     $("#btnUpload").prop('disabled', '');
-                    $("#divBrowse, #btnUpload, #btnRelease").show("slow");
+                    $("#divBrowse, #btnUpload, #btnRelease, #btnDelete").show("slow");
                     //If the bom status is not released, is it preliminary?
                     //If not, then we should clear divResult
-                    if (msg.d.toLowerCase() != "preliminary") {
+                    if (msg.d.toLowerCase() != PRELIMINARYKEY) {
                         $("#divResult").html("");
                     }
                 }
@@ -174,6 +175,47 @@ function AJAX_releaseBOM(p, pRev, bRev) {
                 } else if (parseInt(msg.d) < 1) {
                     $("#divMsg").html("<span style='color:red;'><b><p>Trying to release " + p.toUpperCase() + " Revision " + pRev.toUpperCase() + " (BOM Revision " + bRev + ")" +
                         " resulted in no records changing in the database, meaning your BOM was not released.</p>" +
+                        "<p>This is a bug that should not happen.  Please inform the administrator.</p></b></span>");
+                } else {
+                    $("#divMsg").html(msg.d);
+                }
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                //alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
+            }
+        }) //ajax
+    } catch (err) {
+        alert("Error in GetOTSPNDetail: " + err.message);
+    }
+}
+
+/*Executes an AJAX event to delete a row from asyBOM.*/
+function AJAX_deleteBOM(p, pRev, bRev) {
+    try {
+        var obj = new Object();
+        obj.input = p + DELIM + pRev + DELIM + bRev;
+        var strData = JSON.stringify(obj);
+        //make an AJAX Call
+        $.ajax({
+            type: "POST",
+            url: "BOMViewUpload.aspx/deleteBOM",
+            data: strData,
+            contentType: "application/json; charset utf-8",
+            dataType: "json",
+            success: function (msg) {
+                $("#divResult").html("");
+                if (msg.d.toLowerCase() == "1") {
+                    $("#divResult").html("<b><span style='color:red;'><p>" + p.toUpperCase() + " Revision " + pRev.toUpperCase() + " (BOM Revision " + bRev + ")</span></b>" +
+                       " has been successfully DELETED.</p>");
+                    //$("#txtProductStatus").val(RELEASEDKEY.toUpperCase());
+                } else if (parseInt(msg.d) > 1) {
+                    $("#divMsg").html("<b><span style='color:red;'><p>Trying to delete " + p.toUpperCase() + " Revision " + pRev.toUpperCase() + " (BOM Revision " + bRev + ")" +
+                        " resulted in " + msg.d + " BOMs being Deleted.</p>" +
+                        "<p>This is a (very bad) bug that should not happen.  Please inform the administrator.</p></span></b>");
+                } else if (parseInt(msg.d) < 1) {
+                    $("#divMsg").html("<span style='color:red;'><b><p>Trying to delete " + p.toUpperCase() + " Revision " + pRev.toUpperCase() + " (BOM Revision " + bRev + ")" +
+                        " resulted in no records changing in the database, meaning your BOM was not deleted.</p>" +
                         "<p>This is a bug that should not happen.  Please inform the administrator.</p></b></span>");
                 } else {
                     $("#divMsg").html(msg.d);
