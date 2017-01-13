@@ -218,6 +218,7 @@ namespace AskAndAnswer
         public const string spDOWNLOADBOM = "spDownloadBOM";
         public const string spRELEASEBOM = "spReleaseBOM";
         public const string spDELETEASYBOMENTRY = "spDeleteAsyBOMEntry";
+        public const string spGETASSYHISTORY = "spGetAssyHistory";
 
         public const string spAC_ASYNAMES = "spAC_AsyNames";
         public const string spAC_ASYREVSFORGIVENASYNAME = "spAC_AsyRevsForGivenAsyName";

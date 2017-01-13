@@ -57,8 +57,6 @@
                     type: "POST",
                     url: "BOMViewUpload.aspx/GetAssyBOMRevs",
                     data: "{'term':'" + $("#txtProduct").val() + DELIM + $("#txtProductRev").val() + "'}",
-                    //data: "{'term':'" + $("#txtProduct").val() + DELIM + $("#txtProductRev").val() +
-                    //     DELIM + $("#txtBOMRev").val() + "'}",
                     contentType: "application/json; charset utf-8",
                     dataType: "json",
                     success: function (data) {
@@ -70,13 +68,15 @@
                     }
                 }) //ajax
 
-            }
+            },
+            minLength: 0
         });
 
         if ($("#txtProductStatus").val().toLowerCase == RELEASEDKEY) {
             $("#divBrowse").hide();
             $("#btnUpload").hide();
             $("#btnRelease").hide();
+            $("#btnDelete").hide();
         }
         //Call this ots function in case any BOM is preloaded
         InitializeOTSViewAndEdit();
@@ -106,7 +106,7 @@
             var p = $("#txtProduct").val();
             var pRev = $("#txtProductRev").val();
             var bRev = $("#txtBOMRev").val();
-            if ($("#txtProductStatus").val().toLowerCase() != "preliminary" &&
+            if ($("#txtProductStatus").val().toLowerCase() != PRELIMINARYKEY &&
                 $("#txtProductStatus").val().toLowerCase() != RELEASEDKEY) {
                 OpenDialog("#dialog", "NO BOM", "You can only View BOMs that have been uploaded to the database.  " +
                     "This means the Product Status should PRELIMINARY or RELEASED.");
@@ -131,6 +131,16 @@
             e.preventDefault();
         });
 
+        $("#btnDelete").on("click", function (e) {
+            if (ConfirmAndRelease()) {
+                var p = $("#txtProduct").val();
+                var pRev = $("#txtProductRev").val();
+                var bRev = $("#txtBOMRev").val();
+                AJAX_deleteBOM(p, pRev, bRev);
+            };
+            e.preventDefault();
+        });
+
         $("#btnUpload").on("click", function (e) {
             //Validation here
             if ($("#filFileUpload").val() == "") {
@@ -138,12 +148,16 @@
                 e.preventDefault();
                 return false;
             } else {
-                if ($("#txtProductStatus").val().toLowerCase()=="preliminary" && !confirm("Are you sure you want to upload a BOM?  The current BOM will be OVERWRITTEN and its contents can no longer be recovered!")) {
+                if ($("#txtProductStatus").val().toLowerCase()==PRELIMINARYKEY && !confirm("Are you sure you want to upload a BOM?  The current BOM will be OVERWRITTEN and its contents can no longer be recovered!")) {
                     e.preventDefault();
                     return false;
                 }
             }
             
+        });
+        $("#btnShowBOMRevs").on("click", function (e) {
+            $("#txtBOMRev").autocomplete("search", "");
+           e.preventDefault();
         });
 
         $("#btnHome").on("click", function (e) {
@@ -154,6 +168,38 @@
                 alert('ERROR: ' + err);
             }
         });
+
+        $("#btnHistory").on("click", function (e) {
+            var p = $("#txtProduct").val();
+            location.href = "./BOMViewUpload.aspx?h=" + p;
+            e.preventDefault();
+        });
+
+        $(".btnToggleRelNotes").on("click", ToggleReleaseNotes);
+
+        $(".relEdit").on("click", function (e) {
+            alert("Not yet implemented");
+            e.preventDefault();
+        });
+
+        $(".relSave").on("click", function (e) {
+            alert("Not yet implemented");
+            e.preventDefault();
+        });
+
+        $(".relCancel").on("click", function (e) {
+            alert("Not yet implemented");
+            e.preventDefault();
+        });
+
+        $(".viewBOM").on("click", function (e) {
+            var p = $(this).attr('id').split("_")[1];
+            var pR = $(this).attr('id').split("_")[2];
+            var bR = $(this).attr('id').split("_")[3];
+            window.open("BOMViewUpload.aspx?p=" + p + "&pR=" + pR + "&bR=" + bR);
+            e.preventDefault();
+        });
+
     } catch (err) {
         alert("Error in docready for BOMView: " + err.message);
     }

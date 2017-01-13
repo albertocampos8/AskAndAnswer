@@ -24,6 +24,7 @@
         <asp:Button ID="btnHome" runat="server" Text="Back to Main Page" CssClass ="menubutton" />
         <asp:Button ID="btnHelp" runat="server" Text="Help" CssClass ="menubutton" />
         <asp:Label ID="lblProduct" runat="server" Text="Product Name" CssClass="lblinput"></asp:Label>
+        <asp:Button ID="btnHistory" runat="server" Text="Show History" title ="View Product History" />
         <asp:TextBox ID="txtProduct" runat="server" CssClass="txtinput userinput" title="Name of the product.">TESTBOM1</asp:TextBox>
 
         <asp:Label ID="lblProductStatus" runat="server" Text="Product Status" CssClass="lblinput"></asp:Label>
@@ -33,6 +34,7 @@
         <asp:TextBox ID="txtProductRev" runat="server" CssClass="txtinput userinput" title="Revision of the Product">P101</asp:TextBox>
 
         <asp:Label ID="lblBOMRev" runat="server" Text="BOM Revision" CssClass="lblinput"></asp:Label>
+        <asp:Button ID="btnShowBOMRevs" runat="server" Text="Show" title ="List all BOM Revisions that have been uploaded for this Product/Revision combination" />
         <asp:TextBox ID="txtBOMRev" runat="server" CssClass="txtinput userinput" title ="Revision of the Product BOM">01</asp:TextBox>
         <asp:Panel ID="divBrowse" runat="server">
                     <asp:Label ID="lblFileUpload" runat="server" Text="(Optional) You can upload a BOM for this Product Revision" CssClass="lblinput"></asp:Label>

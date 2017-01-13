@@ -15,7 +15,20 @@ namespace AskAndAnswer.ClassCode
                 return m_errMsg;
             }
         }
+
         string m_filePath = "";
+        public String FilePath
+        {
+
+            get {
+                return m_filePath;
+            }
+            set
+            {
+                m_filePath = value;
+            }
+        }
+
         public clsFileUtil(string FilePath)
         {
             m_filePath = FilePath;
@@ -33,6 +46,17 @@ namespace AskAndAnswer.ClassCode
             } catch (Exception ex)
             {
                 m_errMsg = ex.Message + AAAK.vbCRLF + ex.StackTrace;
+                return false;
+            }
+        }
+
+        public Boolean MakeDirectory(string path)
+        {
+            if (Directory.CreateDirectory(path) != null)
+            {
+                return true;
+            } else
+            {
                 return false;
             }
         }

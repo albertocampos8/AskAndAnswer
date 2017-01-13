@@ -36,7 +36,7 @@ namespace AskAndAnswer
                 string p = Request.QueryString["p"];
                 string pR = Request.QueryString["pR"];
                 string bR = Request.QueryString["bR"];
-
+                string desNm = Request.QueryString["h"];
                 if (p != null && pR != null && bR != null)
                 {
                     CustomCode x = new CustomCode();
@@ -54,8 +54,16 @@ namespace AskAndAnswer
                     }
                     
                     this.Title = txtProduct.Text + " Rev " + txtProductRev.Text + " (BOM Rev " + txtBOMRev.Text.PadLeft(2, '0') + ")";
-                } else
-                {
+                } else if (desNm != null) {
+                    CustomCode x = new CustomCode();
+                    html = x.DownloadHTMLforBOMHistory(desNm);
+                    divResult.Controls.Add(new LiteralControl(html));
+                    txtProduct.Text = desNm.ToUpper();
+                    txtProductRev.Text = "";
+                    txtBOMRev.Text = "";
+                    txtProductStatus.Text = "";
+                    this.Title = desNm + " History";
+                } else {
                     this.Title = "BOM View and Upload";
                 }
 
@@ -73,8 +81,10 @@ namespace AskAndAnswer
                 string fn = System.IO.Path.GetFileName(filFileUpload.PostedFile.FileName);
                 if (filFileUpload.PostedFile != null && filFileUpload.PostedFile.ContentLength > 0)
                 {
-                    
+                    clsFileUtil f = new clsFileUtil("");
+                    f.MakeDirectory(Server.MapPath(AAAK.TEMPDATA) + "\\");
                     string fullServerFileName = Server.MapPath(AAAK.TEMPDATA) + "\\" + fn;
+                    //Create the directory
                     filFileUpload.PostedFile.SaveAs(fullServerFileName);
                     string pName = txtProduct.Text;
                     string pRev = txtProductRev.Text;
@@ -195,7 +205,6 @@ namespace AskAndAnswer
                 List<SqlParameter> sqlPs = new List<SqlParameter>();
                 sqlPs.Add(new SqlParameter("@strName", arrTerms[0]));
                 sqlPs.Add(new SqlParameter("@strRevision", arrTerms[1]));
-                sqlPs.Add(new SqlParameter("@filter", "%" + arrTerms[2] + "%"));
                 clsUtil u = new clsUtil();
                 string[] x = u.GetJSONFromDB(DBK.SP.spAC_ASYBOMREVSFORGIVENASYNAMEANDREV, "", DBK.intBOMREV, ps: sqlPs);
                 return x;
@@ -215,6 +224,21 @@ namespace AskAndAnswer
             {
                 CustomCode x = new CustomCode();
                 return x.releaseBOM(input);
+            }
+            catch (Exception ex)
+            {
+                string strErr = ex.Message + ex.StackTrace;
+                return "[]";
+            }
+        }
+
+        [System.Web.Services.WebMethod]
+        public static string deleteBOM(string input)
+        {
+            try
+            {
+                CustomCode x = new CustomCode();
+                return x.deleteBOM(input);
             }
             catch (Exception ex)
             {

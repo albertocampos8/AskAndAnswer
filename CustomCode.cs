@@ -260,6 +260,7 @@ namespace AskAndAnswer
             public const string spDOWNLOADBOM = AAAK.spDOWNLOADBOM;
             public const string spRELEASEBOM = AAAK.spRELEASEBOM;
             public const string spDELETEASYBOMENTRY = AAAK.spDELETEASYBOMENTRY;
+            public const string spGETASSYHISTORY = AAAK.spGETASSYHISTORY;
         }
 
         public partial class SPVar
@@ -2542,6 +2543,144 @@ namespace AskAndAnswer
 
         }
 
+
+        /// <summary>
+        /// Generates HTML for a Design Name's History
+        /// </summary>
+        /// <param name="desNm"></param>
+        /// <returns></returns>
+        public string DownloadHTMLforBOMHistory(string desNm)
+        {
+            StringBuilder sB = new StringBuilder();
+            string rev = "";
+            string bomRev = "";
+            string status = "";
+            string uploadDate = "";
+            string uploader = "";
+            string assyNumber = "";
+            string relNotes = "";
+            string relNoteID = "";
+            string buttonViewBOM = DynControls.html_button_string("btnViewBOM_",
+                "Open", "tableCellButton viewBOM",
+                true, AAAK.DISPLAYTYPES.BLOCK, "Open this BOM in a new tab/window.");
+            string buttonViewRelNotes = DynControls.html_button_string("btnViewRelNotes_",
+                "Show", "tableCellButton btnExpand btnToggleRelNotes",
+                true, AAAK.DISPLAYTYPES.BLOCK, "Show Release Notes.");
+            string buttonEditReleaseNotes = DynControls.html_button_string("btnEditRelNotes_",
+                "Edit", "relNoteButton relEdit",
+                true, AAAK.DISPLAYTYPES.INLINE, "Put Release Notes in Edit Mode to make changes.");
+            string buttonSaveReleaseNotes = DynControls.html_button_string("btnSaveRelNotes_",
+                "Save", "relNoteButton relSave",
+                true, AAAK.DISPLAYTYPES.INLINE, "Save your changes.",enabled:false);
+            string buttonCancelReleaseNotes = DynControls.html_button_string("btnCancelRelNotes_",
+                "Cancel", "relNoteButton relCancel",
+                true, AAAK.DISPLAYTYPES.INLINE, "Cancel changes made to the Release Notes", enabled: false);
+
+            try
+            {
+                List<HTMLStrings.TableRow> tblRows = new List<HTMLStrings.TableRow>();
+                clsDB xDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strNAME, desNm));
+                using (xDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(DBK.SP.spGETASSYHISTORY, ps, clsDB.SPExMode.READER, ref cmd))
+                    {
+                        if (dR != null && dR.HasRows)
+                        {
+                            sB.Append(DynControls.html_header_string(desNm.ToUpper() + " History", 1));
+                            tblRows.Add(new HTMLStrings.TableRow(
+                                "row_h_pn",
+                                "clsHeaderRow",
+                                new HTMLStrings.TableCell[] {
+                                new HTMLStrings.TableCell("","clsHeaderRow","Product</br>Rev",1,true),
+                                new HTMLStrings.TableCell("","clsHeaderRow","BOM</br>Rev",1,true),
+                                new HTMLStrings.TableCell("","clsHeaderRow","Status",1,true),
+                                new HTMLStrings.TableCell("","clsHeaderRow","View BOM",1,true),
+                                new HTMLStrings.TableCell("","clsHeaderRow","Release</br>Notes",1,true),
+                                new HTMLStrings.TableCell("","clsHeaderRow","Date</br>Uploaded",1,true),
+                                new HTMLStrings.TableCell("","clsHeaderRow","Uploaded</br>By",1,true),
+                                new HTMLStrings.TableCell("","clsHeaderRow","Assembly Number",1,true)
+                                                                    }
+                                                                         )
+                                                 );
+                            int rowIndex = 0;
+                            while (dR.Read())
+                            {
+                                //Format the text in the data reader
+                                rev = xDB.Fld2Str(dR[DBK.strREVISION]);
+                                bomRev = xDB.Fld2Str(dR[DBK.intBOMREV]).PadLeft(2,'0');
+                                status = xDB.Fld2Str(dR[DBK.strASSYSTATUS]);
+                                uploadDate = xDB.Fld2Str(dR[DBK.dtUPLOADED]);
+                                uploader = xDB.Fld2Str(dR[DBK.strNAME]);
+                                assyNumber = xDB.Fld2Str(dR[DBK.strASSYPARTNUMBER]);
+                                relNotes = xDB.Fld2Str(dR[DBK.strREASON]);
+                                relNoteID = xDB.Fld2Str(dR[DBK.ID]);
+
+                                tblRows.Add(new HTMLStrings.TableRow(
+                                            "otsFindResultsRow_" + rowIndex,
+                                            "otsFindResultsRow",
+                                            new HTMLStrings.TableCell[] {
+                                                 new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",rev,1,false),
+                                                 new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",bomRev,1,false),
+                                                 new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",status,1,false),
+                                                 new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell withExpandButton",
+                                                    buttonViewBOM.Replace("btnViewBOM_", "btnViewBOM_" + desNm + "_" + rev + "_" + bomRev),1,false,true),
+                                                 new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell withExpandButton",
+                                                    buttonViewRelNotes.Replace("btnViewRelNotes_", "btnViewRelNotes_" + rowIndex + "_" + relNoteID),1,false,true),
+                                                 new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",uploadDate,1,false),
+                                                 new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",uploader,1,false),
+                                                 new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",assyNumber,1,false)
+                                                                        }
+                                                                     )
+                                            );
+
+
+                                //We need to add one hidden row that will expand.
+                                //Contents of the row:
+                                //Text Area + buttons
+                                string rC = DynControls.html_textarea_string("txtRelNote_" + rowIndex + "_" + relNoteID,
+                                    "txtRelNote", relNotes, AAAK.DISPLAYTYPES.BLOCK, "", true) +
+                                    buttonEditReleaseNotes.Replace("btnEditRelNotes_", "btnEditRelNotes_" + rowIndex + "_" + relNoteID) +
+                                    buttonSaveReleaseNotes.Replace("btnSaveRelNotes_", "btnSaveRelNotes_" + rowIndex + "_" + relNoteID) +
+                                    buttonCancelReleaseNotes.Replace("btnCancelRelNotes_", "btnCancelRelNotes_" + rowIndex + "_" + relNoteID);
+                                HTMLStrings.TableRow expandRow = new HTMLStrings.TableRow(
+                                            "otsExpandResultsRow_" + rowIndex,
+                                            "otsExpandResultsRow",
+                                            new HTMLStrings.TableCell[] {
+                                                                new HTMLStrings.TableCell("otsDisplayAreaFor_" + rowIndex + "_" + relNoteID,
+                                                                                            "otsFindResultsExpansionCell",
+                                                                                            rC, 8, false)
+                                                                        }
+
+                                                                        );
+                                expandRow.DisplayStyle = AAAK.DISPLAYTYPES.NONE;
+                                tblRows.Add(expandRow);
+                                rowIndex++;
+                            }
+
+                            //Finished reading dR; make table
+                            HTMLStrings.Table t = new HTMLStrings.Table("otsSearchResults", "otsTable", tblRows);
+                            sB.Append(t.ToHTML());
+                        }
+                        else
+                        {
+                            sB.Append("<p>Located no BOMs for <b><span style='color:red'>" +
+                                                desNm +
+                                                "</span></b>.  Please enter another Product Name.");
+                        }
+                        return sB.ToString();
+                    }
+                }
+
+                    
+            } catch (Exception ex)
+            {
+                return DynControls.renderLiteralControlErrorString(ex, "");
+            }
+        }
+
         /// <summary>
         /// Generates HTML for a formatted BOM
         /// </summary>
@@ -2704,6 +2843,8 @@ namespace AskAndAnswer
                             new HTMLStrings.TableCell[] {
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","PART NUMBER",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","STATUS",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","ENV CODE",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","QTY",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","DESCRIPTION",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","REFERENCE DESIGNATORS",1,true),
@@ -2720,11 +2861,15 @@ namespace AskAndAnswer
                 string refdes = "";
                 string bomnotes = "";
                 string pnID = "";
- 
+                string status = "";
+                string ecode = "";
+
                 while (dR.Read())
                 {
                     //Format the text in the data reader
                     pn = myDB.Fld2Str(dR[DBK.strPARTNUMBER]);
+                    status = myDB.Fld2Str(dR[DBK.strSTATUS]);
+                    ecode = myDB.Fld2Str(dR[DBK.strECODENAME]);
                     pnID = myDB.Fld2Str(dR[DBK.keyPN]);
                     qty = myDB.Fld2Str(dR[DBK.intQTY]);
                     desc = myDB.Fld2Str(dR[DBK.strDESCRIPTION]);
@@ -2739,6 +2884,8 @@ namespace AskAndAnswer
                                 new HTMLStrings.TableCell[] {
                                                         new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell withExpandButton",buttonhtml.Replace("btnOTSFOUNDID_", "btnOTSFOUNDID_" + pnID),1,false,true),
                                                         new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",pn,1,false),
+                                                        new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",status,1,false),
+                                                        new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",ecode,1,false),
                                                         new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",qty,1,false),
                                                         new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",desc,1,false),
                                                         new HTMLStrings.TableCell("","otsTableCell otsFindResultsCell",refdes,1,false),

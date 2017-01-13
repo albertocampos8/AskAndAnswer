@@ -76,6 +76,15 @@ namespace AskAndAnswer {
         protected global::System.Web.UI.WebControls.Label lblProduct;
         
         /// <summary>
+        /// btnHistory control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnHistory;
+        
+        /// <summary>
         /// txtProduct control.
         /// </summary>
         /// <remarks>
@@ -128,6 +137,15 @@ namespace AskAndAnswer {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblBOMRev;
+        
+        /// <summary>
+        /// btnShowBOMRevs control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnShowBOMRevs;
         
         /// <summary>
         /// txtBOMRev control.

@@ -246,3 +246,32 @@ function hideFileBrowser() {
 
     }
 }
+
+
+function ToggleReleaseNotes() {
+    try {
+        var rowInd = $(this).attr('id').split("_")[1];
+        var relNoteID = $(this).attr('id').split("_")[2];
+        if ($("#otsExpandResultsRow_" + rowInd).is(':visible')) {
+            //Since it's visible, hide it.
+            $(this).val('Expand');
+            $(this).prop('title','Expand to get more information about the Part Number');
+            $("#otsExpandResultsRow_" + rowInd).toggle();
+        } else {
+            //Since it's not visible, show it
+            $("#otsExpandResultsRow_" + rowInd).toggle();
+            $(this).prop('title', 'Hide to reclaim browser space');
+            //Since this row was invisible, its color was not set; make it match the color of this row.
+            $("#otsExpandResultsRow_" + rowInd).css('background-color', $(this).closest('tr').css('background-color'));
+            $(this).val('Hide');
+            if ($("#otsDisplayAreaFor_" + rowInd + "_" + relNoteID).html() == '') {
+                //We only need to do the ajax call if the row is empty
+                $("#otsDisplayAreaFor_" + rowInd + "_" + relNoteID).html("<p>Please wait... querying database...</p>");
+                alert("Insert AJAX Call to get Release Notes here!");
+            }
+        }
+    } catch (err) {
+        alert("Error in ToggleReleaseNotes: " + err.message);
+    }
+
+}
