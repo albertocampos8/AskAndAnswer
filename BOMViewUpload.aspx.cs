@@ -265,5 +265,30 @@ namespace AskAndAnswer
             CustomCode x = new CustomCode();
             return x.GetProductStatus(arr[0],arr[1],arr[2]);
         }
+
+        /// <summary>
+        /// Changes the Release Note associated with a Product/Rev/BOM Rev
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [System.Web.Services.WebMethod]
+        public static string EditReleaseNote(string input)
+        {
+            CustomCode x = new CustomCode();
+            return x.EditReleaseNote(input, false);
+        }
+
+        /// <summary>
+        /// Changes the Release Note associated with a Product/Rev/BOM Rev
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [System.Web.Services.WebMethod]
+        public static string EditReleaseNote_Reset(string input)
+        {
+            CustomCode x = new CustomCode();
+            return x.EditReleaseNote(input, true);
+        }
+
     }
 }

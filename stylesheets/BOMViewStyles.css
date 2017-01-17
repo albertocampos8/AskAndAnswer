@@ -3,9 +3,12 @@
 .txtinput{
     display:block;
     margin:5px 0px 0px 0px;
-    text-transform:uppercase;
     width:100%;
     box-sizing:border-box;
+}
+
+.userinput{
+    text-transform:uppercase;
 }
 
 .lblinput{

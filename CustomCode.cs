@@ -261,6 +261,8 @@ namespace AskAndAnswer
             public const string spRELEASEBOM = AAAK.spRELEASEBOM;
             public const string spDELETEASYBOMENTRY = AAAK.spDELETEASYBOMENTRY;
             public const string spGETASSYHISTORY = AAAK.spGETASSYHISTORY;
+            public const string spEDITRELEASENOTE = AAAK.spEDITRELEASENOTE;
+            public const string spEDITRELEASENOTE_RESET = AAAK.spEDITRELEASENOTE_RESET;
         }
 
         public partial class SPVar
@@ -2796,6 +2798,18 @@ namespace AskAndAnswer
                     sB.Append(strLbl);
                     sB.Append(DynControls.html_textarea_string("txtReasonForChange", "txtinput",
                         myDB.Fld2Str(dR[DBK.strREASON]), AAAK.DISPLAYTYPES.BLOCK, "", true));
+                    //Also add the ability to change the release reason
+                    sB.Append(DynControls.html_button_string("btnEditRelNote", "EDIT", "relEdit",
+                        dType: AAAK.DISPLAYTYPES.INLINEBLOCK,
+                        toolTip: "Put the Release Note in Edit Mode so you can make and save changes."));
+                    sB.Append(DynControls.html_button_string("btnSaveRelNote", "SAVE", "relSave",
+                        dType: AAAK.DISPLAYTYPES.INLINEBLOCK,
+                        enabled:false,
+                        toolTip: "Save Changes to the Release Note"));
+                    sB.Append(DynControls.html_button_string("btnCancelRelNote", "CANCEL", "relCancel",
+                        dType: AAAK.DISPLAYTYPES.INLINEBLOCK,
+                        enabled:false,
+                        toolTip: "Cancel Changes to the Release Note"));
                 } else
                 {
                     //This BOM is not released. Add a Release button and a blank enabled text area
@@ -2938,6 +2952,8 @@ namespace AskAndAnswer
                 string p = arr[0].ToUpper();
                 string pRev = arr[1].ToUpper();
                 string bRev = arr[2].ToUpper();
+                string relNote = arr[3].Trim();
+                string result = "";
                 int x = -1;
                 if (!int.TryParse(bRev, out x))
                 {
@@ -2951,8 +2967,19 @@ namespace AskAndAnswer
                 ps.Add(new SqlParameter("@" + DBK.intBOMREV, x));
                 using (xDB.OpenConnection())
                 {
-                    return xDB.Fld2Str(xDB.ExecuteSP(DBK.SP.spRELEASEBOM, ps, clsDB.SPExMode.NONQUERY, ref cmd));               
+                    int nAffectedRows = -1;
+                    result = xDB.Fld2Str(xDB.ExecuteSP(DBK.SP.spRELEASEBOM, ps, clsDB.SPExMode.NONQUERY, ref cmd)); 
+                    if (int.TryParse(result,out nAffectedRows) && 
+                        nAffectedRows==1 && 
+                        relNote.ToUpper() != "INITIAL RELEASE")
+                    {
+                        cmd.Parameters.Clear();
+                        ps.Add(new SqlParameter("@" + DBK.strREASON, relNote));
+                        xDB.ExecuteSP(DBK.SP.spEDITRELEASENOTE, ps, clsDB.SPExMode.NONQUERY, ref cmd);
+                    }              
                 }
+                return result;
+                
 
             }
             catch (Exception ex)
@@ -2994,6 +3021,54 @@ namespace AskAndAnswer
                 {
                     string y =  xDB.Fld2Str(xDB.ExecuteSP(DBK.SP.spDELETEASYBOMENTRY, ps, clsDB.SPExMode.NONQUERY, ref cmd));
                     return y;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return DynControls.renderLiteralControlErrorString(ex, "");
+            }
+        }
+
+        /// <summary>
+        /// Changes the release note for a given product/rev/bom rev
+        /// </summary>
+        /// <param name="input">product[DELIM]product rev[DELIM]bom rev[DELIM]release note</param>
+        /// <param name="reset">if this true, we call a special stored proc to reset the release note to 'Initial Release'</param>
+        /// <returns></returns>
+        public string EditReleaseNote(string input, Boolean reset)
+        {
+            try
+            {
+                string[] arr = input.Split(m_dlim, StringSplitOptions.None);
+                string p = arr[0].ToUpper();
+                string pRev = arr[1].ToUpper();
+                string bRev = arr[2].ToUpper();
+                string relNote = arr[3].Trim();
+                int x = -1;
+                if (!int.TryParse(bRev, out x))
+                {
+                    x = -1;
+                }
+                clsDB xDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strNAME, p));
+                ps.Add(new SqlParameter("@" + DBK.strREVISION, pRev));
+                ps.Add(new SqlParameter("@" + DBK.intBOMREV, x));
+                
+                using (xDB.OpenConnection())
+                {
+                    if (reset)
+                    {
+                        return (xDB.ExecuteSP(DBK.SP.spEDITRELEASENOTE_RESET, ps, clsDB.SPExMode.NONQUERY, ref cmd)).ToString();
+                    } else
+                    {
+                        //Since we're aren't doing a reset, we must include the new release note as a parameter
+                        ps.Add(new SqlParameter("@" + DBK.strREASON, relNote));
+                        return (xDB.ExecuteSP(DBK.SP.spEDITRELEASENOTE, ps, clsDB.SPExMode.NONQUERY, ref cmd)).ToString();
+                    }
+                    
                 }
 
             }

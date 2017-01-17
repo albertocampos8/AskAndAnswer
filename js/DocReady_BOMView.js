@@ -178,18 +178,45 @@
         $(".btnToggleRelNotes").on("click", ToggleReleaseNotes);
 
         $(".relEdit").on("click", function (e) {
-            alert("Not yet implemented");
-            e.preventDefault();
+            try {
+                $("#txtReasonForChange").prop('readonly', '');
+                $("#btnEditRelNote").prop('disabled', 'true');
+                $("#btnSaveRelNote").prop('disabled', '');
+                $("#btnCancelRelNote").prop('disabled', '');
+                initRelNote = $("#txtReasonForChange").val();
+                e.preventDefault();
+            } catch (err) {
+                alert("Error in EditReleaseNote: " + err.message);
+            }
         });
 
         $(".relSave").on("click", function (e) {
-            alert("Not yet implemented");
-            e.preventDefault();
+            try {
+                $("#txtReasonForChange").prop('readonly', 'true');
+                $("#btnEditRelNote").prop('disabled', '');
+                $("#btnSaveRelNote").prop('disabled', 'true');
+                $("#btnCancelRelNote").prop('disabled', 'true');
+                AJAX_EditReleaseNote($("#txtProduct").val(),
+                     $("#txtProductRev").val(),
+                     $("#txtBOMRev").val(),
+                     $("#txtReasonForChange").val());
+                e.preventDefault();
+            } catch (err) {
+                alert("Error in SaveReleaseNote: " + err.message);
+            }
         });
 
         $(".relCancel").on("click", function (e) {
-            alert("Not yet implemented");
-            e.preventDefault();
+            try {
+                $("#txtReasonForChange").prop('readonly', 'true');
+                $("#btnEditRelNote").prop('disabled', '');
+                $("#btnSaveRelNote").prop('disabled', 'true');
+                $("#btnCancelRelNote").prop('disabled', 'true');
+                $("#txtReasonForChange").val(initRelNote);
+                e.preventDefault();
+            } catch (err) {
+                alert("Error in CancelReleaseNote: " + err.message);
+            }
         });
 
         $(".viewBOM").on("click", function (e) {

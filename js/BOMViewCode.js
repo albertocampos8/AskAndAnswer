@@ -11,7 +11,7 @@ var statusCheckShowsReleased = "<p><b>[P]</b> Revision <b>[PR]</b> (BOM Revision
 
 var RELEASEDKEY = "released"; //text that corresponds to Status 2 in keyAssyStatus
 var PRELIMINARYKEY = "preliminary"; //text that corresponds to Status 1 in keyAssyStatus
-
+var initRelNote = "";
 function AJAX_InitBOMViewAutoComplete() {
     try {
 
@@ -155,7 +155,7 @@ id is required, as it tells us which section of the page will accept the data*/
 function AJAX_releaseBOM(p, pRev, bRev) {
     try {
         var obj = new Object();
-        obj.input = p + DELIM + pRev + DELIM + bRev;
+        obj.input = p + DELIM + pRev + DELIM + bRev + DELIM + $("#txtReasonForChange").val();
         var strData = JSON.stringify(obj);
         //make an AJAX Call
         $.ajax({
@@ -274,4 +274,47 @@ function ToggleReleaseNotes() {
         alert("Error in ToggleReleaseNotes: " + err.message);
     }
 
+}
+
+/*Executes an AJAX event to update release note for given board/rev/bom rev*/
+function AJAX_EditReleaseNote(p, pRev, bRev, relNote) {
+    try {
+        var targetURL = "BOMViewUpload.aspx/EditReleaseNote";
+        if (relNote.trim().toUpperCase() == "INITIAL RELEASE") {
+            targetURL = "BOMViewUpload.aspx/EditReleaseNote_Reset";
+        }
+        //The ID is the only data we need to send to the server.
+        var obj = new Object();
+        obj.input = p + DELIM + pRev + DELIM + bRev + DELIM + relNote;
+        var strData = JSON.stringify(obj);
+        //make an AJAX Call
+        $.ajax({
+            type: "POST",
+            url: targetURL,
+            data: strData,
+            contentType: "application/json; charset utf-8",
+            dataType: "json",
+            success: function (msg) {
+                code = msg.d.split(DELIM)[0];
+                if (isNumeric(code)) {
+                    if (code = 1) {
+                        $("#divMsg").html("<b><span style='color:red'><p>Release note for " + p +
+                            " Rev " + pRev + " (BOM Rev " + bRev + ") successfully changed.</p></span></b>");
+                    } else {
+                        $("#divMsg").html("<b><span style='color:red'><p>Unable to edit Release Note for " + p +
+                            " Rev " + pRev + " (BOM Rev " + bRev + ") successfully changed:</p>" +
+                            "<p>" + msg.d.split(DELIM)[1] + "</p></span></b>");
+                    }
+                } else {
+                    $("#divMsg").html("<b><span style='color:red'><p>Unexpected value for variable 'code': " + code + "</p>" +
+                            "<p>This error needs to be addressed by the Development Team.</p></span></b>");
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                //alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
+            }
+        }) //ajax
+    } catch (err) {
+        alert("Error in AJAX_EditReleaseNote: " + err.message);
+    }
 }
