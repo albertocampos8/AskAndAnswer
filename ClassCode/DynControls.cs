@@ -145,6 +145,73 @@ namespace AskAndAnswer.ClassCode
             }
 
         }
+        /// <summary>
+        /// Returns an html string for a search text box
+        /// </summary>
+        /// <param name="cntlID">ID of the text box</param>
+        /// <param name="cssclass">CSS class of the text box</param>
+        /// <param name="defaultValue">default value text box should contain when displayed; leave blank and box will be empty</param>
+        /// <param name="canSee">Set FALSE to make this control invisible</param>
+        /// <param name="dType">Value to use for css display value</param>
+        /// <param name="toolTip">Text for tooltip that is displayed when hovering over the textbox</param>
+        /// <param name="blReadonly">Set TRUE to disable the textbox</param>
+        /// <returns></returns>
+        public static string html_searchbox_string(string cntlID, string cssclass = "", string defaultValue = "", Boolean canSee = true,
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false, Boolean blRunAtServer = false)
+        {
+            try
+            {
+                //Enclose values in double (escaped) quotes
+                string qID = encodeProperty("id", cntlID);
+                string qCssClass = encodeProperty("class", cssclass);
+                string qDefaultValue = encodeProperty("value", defaultValue);
+                string qVisible = DecodeDisplayValue(dType);
+                string qTitle = encodeProperty("title", toolTip);
+                if (!canSee)
+                {
+                    qVisible = encodeProperty("style", "display:none");
+                }
+                string qReadonly = "";
+                if (blReadonly)
+                {
+                    qReadonly = " readonly ";
+                }
+                return "<input " + qID +
+                        encodeProperty("type", "search") +
+                        qCssClass +
+                        qDefaultValue +
+                        qTitle +
+                        qVisible +
+                        qReadonly +
+                        GetRunAtServerProperty(blRunAtServer) +
+                        " />";
+            }
+            catch (Exception ex)
+            {
+                return "<p>" + ex.Message + "</p>";
+            }
+        }
+        /// <summary>
+        /// Returns an html search txt box
+        /// </summary>
+        /// <param name="cntlID">ID of the text box</param>
+        /// <param name="cssclass">CSS class of the text box</param>
+        /// <param name="defaultValue">default value text box should contain when displayed; leave blank and box will be empty</param>
+        /// <returns></returns>
+        public static LiteralControl html_searchbox(string cntlID, string cssclass = "", string defaultValue = "",
+            Boolean canSee = true, AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "",
+            Boolean blReadonly = false, Boolean blRunAtServer = false)
+        {
+            string controlText = html_searchbox_string(cntlID, cssclass, defaultValue, canSee, dType, toolTip, blReadonly, blRunAtServer);
+            try
+            {
+                return new LiteralControl(controlText);
+            }
+            catch (Exception e)
+            {
+                return renderLiteralControlError(e, controlText);
+            }
+        }
 
         /// <summary>
         /// Returns an html string for a text box

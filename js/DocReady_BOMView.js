@@ -184,6 +184,7 @@
                 $("#btnSaveRelNote").prop('disabled', '');
                 $("#btnCancelRelNote").prop('disabled', '');
                 initRelNote = $("#txtReasonForChange").val();
+                $("#txtReasonForChange").focus();
                 e.preventDefault();
             } catch (err) {
                 alert("Error in EditReleaseNote: " + err.message);

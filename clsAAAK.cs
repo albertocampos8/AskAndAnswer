@@ -193,7 +193,8 @@ namespace AskAndAnswer
         public const string spGETKVPPARTSTATUS = "spGetKVPPartStatus";
         public const string spGETKVPVENDORSTATUS = "spGetKVPVendorStatus";
         public const string spOTSGETBASEPARTNUMBER = "spOTSGetBasePartNumber";
-        public const string spOTSINSERTNEWPARTNUMBER = "spOTSInsertNEwPartNumber";
+        public const string spOTSINSERTNEWPARTNUMBER = "spOTSInsertNewPartNumber";
+        public const string spOTSINSERTNEWPARTNUMBER2 = "spOTSInsertNewPartNumber2";
         public const string spOTSFINDBYBU = "spOTSFindByBU";
         public const string spOTSFINDBYDATE = "spOTSFindByDate";
         public const string spOTSFINDBYDESCRIPTION = "spOTSFindByDescription";
@@ -204,13 +205,16 @@ namespace AskAndAnswer
         public const string spOTSFINDBYVENDORPARTNUMBER = "spOTSFindByVendorPartNumber";
         public const string spOTSGETPNINFO = "spOTSGetPNInfo";
         public const string spOTSUPDATEPARTSTABLE = "spOTSUpdatePartsTable";
+        public const string spOTSRECONCILEPARTSTABLE = "spOTSReconcilePartsTable";
         public const string spOTSUPDATE_ADDVENDORPNTOOTSPARTNUMBER = "spOTSUpdate_AddVendorPartNumberToOTSPartNumber";
         public const string spOTSUPDATEVENDORPNTABLE = "spOTSUpdateVendorPNTable";
+        public const string spOTSRECONCILEVENDORPNTABLE = "spOTSReconcileVendorPNTable";
         public const string spOTSWHEREUSEDFORVENDORPARTNUMBER = "spOTSWhereUsedForVendorPartNumber";
         public const string spOTSUPDATEPARTSBASEDINAVL = "spOTSUpdatePartsBasedOnAVL";
         public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING = "spOTSWhereUsedForVendorPartNumberString";
         public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR = "spOTSWhereUsedForVendorPartNumberStringAndVendor";
         public const string spOTSGETPNIDS = "spOTSGetPNIDs";
+        public const string spOTSFINDUNDEFINEDPARTTYPES = "spOTSFindUndefinedPartTypes";
         public const string spUPSERTASSYBOMENTRY = "spUpsertAssyBOMEntry";
         public const string spDELETEASSYBOMPARTS = "spDeleteAssyBOMParts";
         public const string spGETASSYSTATUS = "spGetAssyStatus";

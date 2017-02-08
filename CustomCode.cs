@@ -55,6 +55,7 @@ namespace AskAndAnswer
         public const int YESNO_DROPDOWN = 2;
         public const int MULT_DROPDOWN = 3;
         public const int TXT_W_BROWSE_ATTACHMENTS = 4;
+        public const int SEARCHTEXTBOX = 5;
     }
 
     /// <summary>
@@ -218,6 +219,7 @@ namespace AskAndAnswer
             public const string spOTSGETBASEPARTNUMBER = AAAK.spOTSGETBASEPARTNUMBER;
             public const string spGETKVPBUINFO = AAAK.spGETKVPBUINFO;
             public const string spOTSINSERTNEWPARTNUMBER = AAAK.spOTSINSERTNEWPARTNUMBER;
+            public const string spOTSINSERTNEWPARTNUMBER2 = AAAK.spOTSINSERTNEWPARTNUMBER2;
             //The stored procedure that retrieves the key value pair for drop down boxes from the database
             public const string spGETWEBKEYVALUEPAIRINFO = AAAK.spGETWEBKEYVALUEPAIRINFO;
             public const string spOTSGETBASEPARTNMBER = AAAK.spOTSGETBASEPARTNUMBER;
@@ -239,11 +241,14 @@ namespace AskAndAnswer
             public const string spOTSFINDBYVENDORPARTNUMBER = AAAK.spOTSFINDBYVENDORPARTNUMBER;
             public const string spOTSGETPNINFO = AAAK.spOTSGETPNINFO;
             public const string spOTSUPDATEPARTSTABLE = AAAK.spOTSUPDATEPARTSTABLE;
+            public const string spOTSRECONCILEPARTSTABLE = AAAK.spOTSRECONCILEPARTSTABLE;
             public const string spOTSUPDATE_ADDVENDORPNTOOTSPARTNUMBER = AAAK.spOTSUPDATE_ADDVENDORPNTOOTSPARTNUMBER;
             public const string spOTSUPDATEVENDORPNTABLE = AAAK.spOTSUPDATEVENDORPNTABLE;
+            public const string spOTSRECONCILEVENDORPNTABLE = AAAK.spOTSRECONCILEVENDORPNTABLE;
             public const string spOTSWHEREUSEDFORVENDORPARTNUMBER = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBER;
             public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING;
             public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR;
+            public const string spOTSFINDUNDEFINEDPARTTYPES = AAAK.spOTSFINDUNDEFINEDPARTTYPES;
             public const string spOTSUPDATEPARTSBASEDINAVL = AAAK.spOTSUPDATEPARTSBASEDINAVL;
             public const string spOTSGETPNIDS = AAAK.spOTSGETPNIDS;
             public const string spUPSERTASSYBOMENTRY = AAAK.spUPSERTASSYBOMENTRY;
@@ -496,6 +501,17 @@ namespace AskAndAnswer
                                                                                        elDtype,
                                                                                        (string)dR[DBK.lblHELPMESSAGE],
                                                                                        rdonly, 
+                                                                                       blRunAtServer)
+                                                              );
+                                    break;
+                                case CntlDecoder.SEARCHTEXTBOX:
+                                    dRControlSet.Append(DynControls.html_searchbox_string("txt_" + index + uid,
+                                                                                       txtCSSClass,
+                                                                                        valToDisplay,
+                                                                                       true,
+                                                                                       elDtype,
+                                                                                       (string)dR[DBK.lblHELPMESSAGE],
+                                                                                       rdonly,
                                                                                        blRunAtServer)
                                                               );
                                     break;

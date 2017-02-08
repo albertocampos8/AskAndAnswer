@@ -5,11 +5,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-        <link href=<%=css2Col%> rel="stylesheet" type="text/css" />
-        <link href=<%=cssJquery%> rel="stylesheet" type="text/css" />
-        
         <script src="<%=jsJquery%>" ></script>
         <script src="<%=jsJqueryUI%>" ></script>
+
+        <link href=<%=css2Col%> rel="stylesheet" type="text/css" />
+        <link href=<%=cssJquery%> rel="stylesheet" type="text/css" />      
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
 </head>

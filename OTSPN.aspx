@@ -23,6 +23,7 @@
         <button id="btnOTSNew" class="menubutton">Get New Part Number</button>
         <button id="btnOTSFind" class="menubutton">Find/Edit Part Number</button>
         <button id="btnOTSAdmin" class="menubutton">Administer</button>
+        <button id="btnUploadOTS" class="menubutton">Upload OTS Data</button>
         <button id="btnOTSHelp" class="menubutton">Help</button>
     </asp:Panel>
 </asp:Content>

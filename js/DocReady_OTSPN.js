@@ -3,6 +3,15 @@
         //Start by assigning common bindings:
         CommonBindings();
 
+        //VERY IMPORTANT!!  PRevents the Enter Key from taking user to previous page, so enter key can now be used to trigger search...
+        $(document).keypress(function (e) {
+            var keyCode = (window.event) ? e.which : e.keyCode;
+            if (keyCode && keyCode == 13) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
         //alert("doc ready otspn");
         //
         //Need to call this function if we are viewing data via an html string
@@ -82,6 +91,16 @@
             }
         });
 
+        //Code to handle menu buttons that go to a link
+        $("#btnUploadOTS").on("click", function (e) {
+            try {
+                location.href = './UploadOTS.aspx';
+                e.preventDefault();
+            } catch (err) {
+                alert('ERROR: ' + err);
+            }
+        });
+
         $("#btnOTSHelp").on("click", function (e) {
             try {
                 location.href = './Help.aspx';
@@ -132,6 +151,14 @@
             } catch (err) {
                 alert('ERROR in document.ready - Handler to check if Vendor Part Number exists: ' + err);
             }
+        });
+
+        //Search when use hits enter in txt_25 (text field)
+        $("#txt_25").bind('keyup', function (event) {
+            if (event.which == 13) {
+                ExecuteSearch();
+            }
+            event.preventDefault();
         });
 
 

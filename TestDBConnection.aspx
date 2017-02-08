@@ -5,4 +5,7 @@
     <p>NOTE: You must change the connection string in Procedure btnTestDB_Click in the Code-behind file.</p>
         <asp:Button ID="btnTestDB" runat="server" OnClick="btnTestDB_Click" Text="Test Database" />
         <asp:Label ID="lblTestResult" runat="server"></asp:Label>
+    <asp:Button ID="btnTestEmail" runat="server" OnClick="btnEmail_Click" Text="Test Email" />
+    <asp:TextBox ID="txtServer" runat="server">mailhost.Broadcom.net</asp:TextBox>
+    <asp:TextBox ID="txtToAddress" runat="server">alberto.campos@broadcom.com</asp:TextBox>
 </asp:Content>

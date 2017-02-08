@@ -14,6 +14,7 @@ namespace AskAndAnswer
 
         protected void Application_Start(object sender, EventArgs e)
         {
+            //Update other objects
             AppCode.UpdateAppObject();
         }
 

@@ -39,7 +39,34 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EPPlus">
+      <HintPath>packages\EPPlus 4.1 Sample\Binaries\DotNet4\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.6.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>packages\NPOI.2.2.1\lib\net40\NPOI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>packages\NPOI.2.2.1\lib\net40\NPOI.OOXML.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>packages\NPOI.2.2.1\lib\net40\NPOI.OpenXml4Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.2.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>packages\NPOI.2.2.1\lib\net40\NPOI.OpenXmlFormats.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -70,17 +97,23 @@
     <Content Include="js\DocReady_CommonBindings.js" />
     <Content Include="js\DocReady_CustomPN.js" />
     <Content Include="js\DocReady_OTSPN.js" />
+    <Content Include="js\DocReady_UploadOTS.js" />
     <Content Include="js\OTSGlobals.js" />
     <Content Include="js\OTSNewPNCode.js" />
     <Content Include="js\OTSSearchFunctions.js" />
     <Content Include="js\OTSViewAndEditFunctions.js" />
     <Content Include="OTSPN.aspx" />
+    <Content Include="packages.config" />
     <Content Include="SiteMain.Master" />
     <Content Include="stylesheets\2colscreen.css" />
     <Content Include="stylesheets\BOMViewStyles.css" />
     <Content Include="stylesheets\OTSstyles.css" />
+    <Content Include="stylesheets\OTSUploadStyles.css" />
     <Content Include="TestDBConnection.aspx" />
-    <Content Include="Web.config" />
+    <Content Include="UploadOTS.aspx" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppCode.cs" />
@@ -93,10 +126,14 @@
     </Compile>
     <Compile Include="ClassCode\clsAssyBOM.cs" />
     <Compile Include="ClassCode\clsDB.cs" />
+    <Compile Include="ClassCode\clsEMail.cs" />
     <Compile Include="ClassCode\clsFileUtil.cs" />
+    <Compile Include="ClassCode\clsOTSUploader.cs" />
     <Compile Include="ClassCode\clsUtil.cs" />
     <Compile Include="ClassCode\DynControls.cs" />
     <Compile Include="ClassCode\HTMLStrings.cs" />
+    <Compile Include="ClassCode\SSERelay.cs" />
+    <Compile Include="ClassCode\XL.cs" />
     <Compile Include="clsAAAK.cs" />
     <Compile Include="clsLogin.cs" />
     <Compile Include="clsSynch.cs" />
@@ -153,6 +190,13 @@
     </Compile>
     <Compile Include="TestDBMaster.master.designer.cs">
       <DependentUpon>TestDBMaster.master</DependentUpon>
+    </Compile>
+    <Compile Include="UploadOTS.aspx.cs">
+      <DependentUpon>UploadOTS.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UploadOTS.aspx.designer.cs">
+      <DependentUpon>UploadOTS.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
