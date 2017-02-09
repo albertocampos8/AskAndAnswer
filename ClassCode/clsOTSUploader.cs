@@ -185,6 +185,9 @@ namespace AskAndAnswer.ClassCode
             List<string> lstNewParts = new List<string>();
             List<string> lstAdjParts = new List<string>();
             List<string> lstAVLAdjParts = new List<string>();
+            //This dictionary maps the OTSPN ID to a list of new Vendor Part Numbers added for that ID
+            Dictionary<Int64,List<string>> dctIDtoNewVPNs = new Dictionary<Int64,List<string>>();
+            //List of newly added vendor part numbers
 
             //Dictionary holding all Part Types
             Dictionary<string, List<string>> dPTypes = new Dictionary<string, List<string>>();
@@ -409,12 +412,19 @@ namespace AskAndAnswer.ClassCode
                         resp.send("File '" + fn + "' Row " + currR.ToString() + " is blank for Part Number Status; unable to import data for " + pn + " (Row " + currR + ").");
                         blDoInsert = false;
                     }
-                    else if (pnstatus == "")
+                    else if (vendorpnstatus == "")
                     {
                         resp.send("File '" + fn + "' Row " + currR.ToString() + " is blank for Vendor Part Number Status; unable to import data for " + pn + " (Row " + currR + ").");
                         blDoInsert = false;
                     }
 
+                    if (vendorpnstatus.ToLower().StartsWith("obs"))
+                    {
+                        vendorpnstatus = "OBSOLETE";
+                    } else
+                    {
+                        vendorpnstatus = "APPROVED";
+                    }
                     //Log the part type
                     if (type.ToUpper()!="UNKNOWN")
                     {
@@ -435,8 +445,18 @@ namespace AskAndAnswer.ClassCode
                     if (pn != "" && PNExists(pn, ref pnID))
                     {
                         OTSPartInfo OPI = new OTSPartInfo(pnID, -1, pn, desc, desc2, requestor, type, 
-                            mfrname, mfrpn);
-                        resp.send(ReconcilePartNumberInfo(OPI, ref lstAdjParts, ref lstAVLAdjParts));
+                            mfrname, mfrpn,pnstatus,vendorpnstatus,"","",0,0,0,0);
+                        List<string> tmpList = new List<string>();
+                        if (!dctIDtoNewVPNs.ContainsKey(pnID))
+                        {
+                            List<string> tmpLst = new List<string>();
+                            dctIDtoNewVPNs.Add(pnID, tmpLst);
+                        } else
+                        {
+                            tmpList = dctIDtoNewVPNs[pnID];
+                        }
+                        resp.send(ReconcilePartNumberInfo(OPI, ref lstAdjParts, ref lstAVLAdjParts,ref tmpList));
+                        dctIDtoNewVPNs[pnID] = tmpList;
                     }
                     else if (blDoInsert)
                     //otherwise we are adding a new part number (assuming no error, as indicated by blDoInsert)
@@ -480,6 +500,44 @@ namespace AskAndAnswer.ClassCode
                     //update
                     currR++;
                 }
+
+                //Deal with each otsPN for which we inserted a new vendor part number
+                foreach (Int64 pID in dctIDtoNewVPNs.Keys )
+                {
+                    List<string> tmpList = dctIDtoNewVPNs[pID];
+                    if (tmpList.Count>0)
+                    {
+                        SqlCommand cmd = new SqlCommand();
+                        List<SqlParameter> ps = new List<SqlParameter>();
+                        clsDB tmpDB = new clsDB();
+                        ps.Add(new SqlParameter("@" + DBK.ID, pID));
+                        ps.Add(new SqlParameter("@" + DBK.keyUPDATEDBY, 7));
+                        ps.Add(xDB.makeOutputParameter("@changed", System.Data.SqlDbType.Bit));
+                        ps.Add(new SqlParameter("@newVendorPNs", String.Join(AAAK.vbCRLF, tmpList.ToArray()).Replace("ADJONLY","").Replace(",,",",")));
+                        if (ps[ps.Count - 1].Value.ToString().StartsWith(","))
+                        {
+                            ps[ps.Count - 1].Value = ps[ps.Count - 1].Value.ToString().Substring(1);
+                        }
+                        if (ps[ps.Count - 1].Value.ToString().EndsWith(","))
+                        {
+                            ps[ps.Count - 1].Value = ps[ps.Count - 1].Value.ToString().Substring(0, ps[ps.Count - 1].Value.ToString().Length - 1);
+                        }
+                        using (xDB.OpenConnection())
+                        {
+                            object r = xDB.ExecuteSP(DBK.SP.spOTSUPDATEPARTSBASEDINAVL, ps, clsDB.SPExMode.NONQUERY, ref cmd);
+                            if (r.ToString().Contains(" "))
+                            {
+                                resp.send("Error when executing stored procedure: " + r.ToString() + 
+                                    "; unable to update OTS Properties for Database ID " + pID + ".");
+                            }
+                            else if (Convert.ToByte(cmd.Parameters["@changed"].Value) == 1)
+                            {
+                                resp.send("Updated OTS Properties for Database ID " + pID + ".");
+                            }
+                            cmd.Parameters.Clear();
+                        }
+                    }
+                } 
 
                 //Report any uncreated Part Types (since these parts were simply filed as unknown)
                 List<string> lstCsvTypes = new List<string>();
@@ -573,10 +631,12 @@ namespace AskAndAnswer.ClassCode
         /// <param name="sbNewParts">Stringbuilder containing list of parts that have been inserted</param>
         /// <param name="sbAdjustedParts">Stringbuilder containing list of parts that have been adjusted (not the AVL)</param>
         /// <param name="sbAVLAdjustedParts">Strinbuilder containing list of parts that have had their AVL adjusted</param>
+        /// <param name="lstNewVendorPartNumbers">Vendor Part Numbers that have been added</param>
         /// <returns></returns>
         public string ReconcilePartNumberInfo(OTSPartInfo opi,
             ref List<string> lstAdjustedParts,
-            ref List<string> lstAVLAdjustedParts)
+            ref List<string> lstAVLAdjustedParts,
+            ref List<string> lstNewVendorPartNumbers)
         {
             //This variable will hold information for the part from the database
             OTSPartInfo currentPNInfo = null;
@@ -626,8 +686,8 @@ namespace AskAndAnswer.ClassCode
                                         {
                                             dctCurrentVendorOPI.Add(k,
                                                 new OTSPartInfo(
+                                                (Int64)dR[DBK.ID],
                                                 (Int64)dR[DBK.SP_COLALIAS.VENDORPNID],
-                                                -1,
                                                 "", 
                                                 "",
                                                 "",
@@ -646,6 +706,7 @@ namespace AskAndAnswer.ClassCode
                                                 )
                                                 );
                                         }
+
                                     }
                                 }
 
@@ -667,8 +728,7 @@ namespace AskAndAnswer.ClassCode
                 if (opi.Description.ToLower() != currentPNInfo.Description.ToLower() ||
                     opi.Description2.ToLower() != currentPNInfo.Description2.ToLower() ||
                     opi.Requestor.ToLower() != currentPNInfo.Requestor.ToLower() ||
-                    opi.PartType.ToLower() != currentPNInfo.PartType.ToLower() ||
-                    opi.PNStatus.ToLower() != currentPNInfo.PNStatus.ToLower())
+                    opi.PartType.ToLower() != currentPNInfo.PartType.ToLower())
                 {
                     //Update currentPNInfo in database with info from opi
                     blChangeDetected = true;
@@ -753,14 +813,19 @@ namespace AskAndAnswer.ClassCode
                     {
                         opi.Height = targetOPI.Height;
                     }
-                    if (opi.VendorPNStatus == "")
-                    {
-                        opi.VendorPNStatus = targetOPI.VendorPNStatus;
-                    }
                     if (opi.EnvStatus == "")
                     {
                         opi.EnvStatus = targetOPI.EnvStatus;
                     }
+                    if (opi.EnvStatus.ToLower()=="none")
+                    {
+                        opi.VendorPNStatus = "SUBMITTED";
+                    }
+                    else if (opi.VendorPNStatus == "")
+                    {
+                        opi.VendorPNStatus = targetOPI.VendorPNStatus;
+                    }
+
 
                     if (opi.VendorPNStatus.ToLower() != targetOPI.VendorPNStatus.ToLower() ||
                         opi.EnvStatus.ToLower() != targetOPI.EnvStatus.ToLower() ||
@@ -773,7 +838,7 @@ namespace AskAndAnswer.ClassCode
                         //Update targetOPI info in database with info from opi
                         blChangeDetected = true;
                         //Call spOTSReconcileVendorPNTable
-                        ps.Add(new SqlParameter("@" + DBK.ID, opi.VendorPNID));
+                        ps.Add(new SqlParameter("@" + DBK.ID, targetOPI.VendorPNID));
                         ps.Add(new SqlParameter("@" + DBK.strVENDORPARTNUMBER, opi.MFRPN));
                         //For decimal values (cost, height), zero is meaningless; treat it as null.
                         if (opi.LowVolCost == Convert.ToDecimal("0"))
@@ -877,6 +942,10 @@ namespace AskAndAnswer.ClassCode
                                         {
                                             lstAVLAdjustedParts.Add(opi.PartNumber);
                                         }
+                                        if (!lstNewVendorPartNumbers.Contains("ADJONLY"))
+                                        {
+                                            lstNewVendorPartNumbers.Add("ADJONLY");
+                                        }
                                         break;
                                     default:
                                         sb.Append("<p>Unrecognized code returned from database: " + Convert.ToString(cmd.Parameters[DBK.SPVar.intReturnCode].Value) + "</p>");
@@ -922,6 +991,10 @@ namespace AskAndAnswer.ClassCode
                                 if (!lstAVLAdjustedParts.Contains(opi.PartNumber))
                                 {
                                     lstAVLAdjustedParts.Add(opi.PartNumber);
+                                }
+                                if (!lstNewVendorPartNumbers.Contains(opi.MFRPN))
+                                {
+                                    lstNewVendorPartNumbers.Add(opi.MFRPN);
                                 }
                                 break;
                             default:
