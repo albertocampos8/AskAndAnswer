@@ -5,7 +5,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using AskAndAnswer.ClassCode;
-
+using DB;
+using System.Data.SqlClient;
 namespace AskAndAnswer
 {
     public partial class OTSPN : System.Web.UI.Page
@@ -26,9 +27,41 @@ namespace AskAndAnswer
             {
                 try
                 {
-                    string targetID = Request.QueryString["ID"];
+                    
                     CustomCode x = new CustomCode();
-                    foundIDData = x.getHTMLForPartNumberID(targetID);
+                    string targetID = Request.QueryString["ID"];
+                    //The following is a bogus division that will go at the end of the displayed page so that the client can't obtain the ID
+                    string htmlForID = "<div " + 
+                        DynControls.encodeProperty("id", "x_" + targetID) + 
+                        DynControls.encodeProperty("class","getID") + " ></div>";
+                    //Get the PN associated with the targetID
+                    clsDB myDB = new clsDB();
+                    SqlCommand cmd = new SqlCommand();
+                    List<SqlParameter> ps = new List<SqlParameter>();
+                    ps.Add(new SqlParameter("@pnID", Int64.Parse(targetID)));
+                    string pageHeader = "";
+                    using (myDB.OpenConnection())
+                    {
+                        using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(DBK.SP.spOTSGETPNINFO, ps, clsDB.SPExMode.READER, ref cmd))
+                        {
+                            if (dR != null && dR.HasRows)
+                            {
+                                dR.Read();
+                                pageHeader = myDB.Fld2Str(dR[DBK.strPARTNUMBER]);
+                            }
+                        }
+                    }
+
+                    if (Request.QueryString["INV"]!=null)
+                    {
+                        pageHeader = DynControls.html_header_string(pageHeader + " Inventory", 1);
+                        foundIDData = pageHeader + x.InvForPN(targetID) + htmlForID;
+                    } else if(Request.QueryString["INVH"] != null) {
+                        pageHeader = DynControls.html_header_string(pageHeader + " Inventory History", 1);
+                        foundIDData = pageHeader + x.MakePartNumberInventoryHistoryTable(Int64.Parse(targetID)) + htmlForID;
+                    } else {                        
+                        foundIDData = x.getHTMLForPartNumberID(targetID);
+                    }
                     otsdivs.Controls.Add(new LiteralControl(foundIDData));
                     foreach (Control c in divMenuButtons.Controls)
                     {
@@ -130,6 +163,13 @@ namespace AskAndAnswer
         {
             CustomCode x = new CustomCode();
             return x.getHTMLForPartNumberID(input);
+        }
+
+        [System.Web.Services.WebMethod]
+        public static string getHTMLForPartNumberIDInventory(string input)
+        {
+            CustomCode x = new CustomCode();
+            return x.InvForPN(input);
         }
 
         [System.Web.Services.WebMethod]
@@ -251,6 +291,19 @@ namespace AskAndAnswer
             }
         }
 
+        [System.Web.Services.WebMethod]
+        public static string updatePartInventory(string input)
+        {
+            CustomCode x = new CustomCode();
+            return x.UpdatePartInventory(input);
+        }
+
+        [System.Web.Services.WebMethod]
+        public static string MakePartNumberInventoryHistoryTable(string input)
+        {
+            CustomCode x = new CustomCode();
+            return x.MakePartNumberInventoryHistoryTable(Int64.Parse(input));
+        }
 
     }
 }

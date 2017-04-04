@@ -39,9 +39,16 @@ namespace AskAndAnswer.ClassCode
             /// <param name="userInputEnabled">Set FALSE to disable the text area that is created by supplying an argument for
             /// textAreaID</param>
             /// <param name="toolTip">A tool tip that will show when user hovers over cell</param>
+            /// <param name="selectionRequiredIfNoDefault">When TRUE, then if default value is -1, 'Selection Required'
+            /// is shown (when default value of FALSE is used, first item in combobox is selected).  Usually this is set True when
+            /// you are dealing with a null value in the database.</param>
+            /// <param name="displayStyle">A valid css Display Style; This overrides property 'fill'.
+            /// Example values: 'width:10px' or 'width:30px;height:40px' or 'display:none'</param>
             public TableCell(string id, string cssClass, string content, int span = 1, Boolean isHeader = false, 
                 Boolean fill = false, string cntlID = "", List<string>dropDownOpts = null, string btnText = "", 
-                string cntlClass = "", Boolean userInputEnabled = true, string toolTip = "")
+                string cntlClass = "", Boolean userInputEnabled = true, string toolTip = "",
+                Boolean selectionRequiredIfNoDefault = false, string displayStyle = "")
+
             {
                 m_id = id;
                 m_cssClass = cssClass;
@@ -54,6 +61,8 @@ namespace AskAndAnswer.ClassCode
                 m_btnText = btnText;
                 m_UserInputEnabled = UserInputEnabled;
                 m_toolTip = toolTip;
+                m_selectionRequiredIfNoDefault = selectionRequiredIfNoDefault;
+                m_displayStyle = displayStyle;
             }
 
             /// <summary>
@@ -77,7 +86,11 @@ namespace AskAndAnswer.ClassCode
                     string propCssClass = encodeProperty("class", m_cssClass);
                     string propSpan = encodeProperty("colspan", m_span.ToString());
                     string tTip = encodeProperty("title", m_toolTip);
-                    if (m_fill)
+                    if (m_displayStyle!="")
+                    {
+                        displayStyle = encodeProperty("style", m_displayStyle);
+                    }
+                    else if (m_fill)
                     {
                         displayStyle = encodeProperty("style", "width:100%;height:100%");
                     }
@@ -89,7 +102,8 @@ namespace AskAndAnswer.ClassCode
                         {
                             //Combobox
                             cellContents = DynControls.html_combobox_string(m_cntlID, m_lstOpts, m_cntlCSSClass, false,
-                                m_contentString, true, AAAK.DISPLAYTYPES.BLOCK, "", !m_UserInputEnabled);
+                                m_contentString, true, AAAK.DISPLAYTYPES.BLOCK, "", !m_UserInputEnabled,
+                                false, m_selectionRequiredIfNoDefault);
                         }
                         else if (m_btnText != "")
                         {
@@ -295,6 +309,9 @@ namespace AskAndAnswer.ClassCode
                     m_contentString = value;
                 }
             }
+
+            private Boolean m_selectionRequiredIfNoDefault = false;
+            private string m_displayStyle = "";
 
         }
 

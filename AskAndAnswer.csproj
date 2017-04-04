@@ -85,6 +85,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Admin.aspx" />
     <Content Include="BOMViewUpload.aspx" />
     <Content Include="CustomPN.aspx" />
     <Content Include="Default.aspx" />
@@ -93,6 +94,7 @@
     <Content Include="js\BOMViewCode.js" />
     <Content Include="js\CustomizePage.js" />
     <Content Include="js\CustomPNCode.js" />
+    <Content Include="js\DocReady_Admin.js" />
     <Content Include="js\DocReady_BOMView.js" />
     <Content Include="js\DocReady_CommonBindings.js" />
     <Content Include="js\DocReady_CustomPN.js" />
@@ -106,6 +108,7 @@
     <Content Include="packages.config" />
     <Content Include="SiteMain.Master" />
     <Content Include="stylesheets\2colscreen.css" />
+    <Content Include="stylesheets\AdminStyles.css" />
     <Content Include="stylesheets\BOMViewStyles.css" />
     <Content Include="stylesheets\OTSstyles.css" />
     <Content Include="stylesheets\OTSUploadStyles.css" />
@@ -116,6 +119,13 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin.aspx.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin.aspx.designer.cs">
+      <DependentUpon>Admin.aspx</DependentUpon>
+    </Compile>
     <Compile Include="AppCode.cs" />
     <Compile Include="BOMViewUpload.aspx.cs">
       <DependentUpon>BOMViewUpload.aspx</DependentUpon>

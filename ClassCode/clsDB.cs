@@ -45,7 +45,7 @@ namespace DB
         {
             get
             {
-                return m_errMsg = "";
+                return m_errMsg;
             }
         }
         /// <summary>
@@ -190,6 +190,7 @@ namespace DB
             }
             catch (Exception ex)
             {
+                m_errMsg = (ex.Message + AAAK.vbCRLF + ex.StackTrace).Replace(AAAK.vbCRLF,"<br/>");
                 return ex.Message;
             }
         }

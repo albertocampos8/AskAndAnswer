@@ -514,16 +514,19 @@ namespace AskAndAnswer.ClassCode
         /// <param name="dType">Value for CSS Display property</param>
         /// <param name="toolTip">Text to display when user hovers over control</param>
         /// <param name="blReadonly">Set TRUE to disable</param>
+        /// <param name="selectionRequiredIfNoDefault">When TRUE, then if default value is -1, 'Selection Required'
+        /// is shown (when default value of FALSE is used, first item in combobox is selected).  Usually this is set True when
+        /// you are dealing with a null value in the database.</param>
         /// <returns></returns>
         public static string html_combobox_string(string cntlID, List<string> lstKVP, string cssclass = "",
             Boolean selectionRequired = false, string defaultValue = "", Boolean canSee = true,
             AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", 
-            Boolean blReadonly = false, Boolean blRunAtServer = false)
+            Boolean blReadonly = false, Boolean blRunAtServer = false, Boolean selectionRequiredIfNoDefault = false)
         {
             try
             {
                 string selReqOpt = "";
-                if (selectionRequired)
+                if (selectionRequired || (defaultValue=="-1" && selectionRequiredIfNoDefault))
                 {
                     selReqOpt = "<option disabled selected value >--SELECTION REQUIRED--</option>";
                 }
@@ -544,7 +547,7 @@ namespace AskAndAnswer.ClassCode
                     }
                 }
                 string Options = "";
-                if (selectionRequired)
+                if (selectionRequired || (defaultValue=="-1" && selectionRequiredIfNoDefault))
                 {
                     Options = selReqOpt + strB.ToString();
                 }
@@ -600,10 +603,13 @@ namespace AskAndAnswer.ClassCode
         /// Specify the ACTUAL VALUE.  That value will be displayed as the default value,
         /// regardless of its actual display order.  If you leave this at "", then the first item will automatically be selected.</param>
         /// <param name="canSee">Set TRUE to make the control visible</param>
-        /// <returns></returns>
+        /// <param name="selectionRequiredIfNoDefault">When TRUE, then if default value is -1, 'Selection Required'
+        /// is shown (when default value of FALSE is used, first item in combobox is selected).  Usually this is set True when
+        /// you are dealing with a null value in the database.</param>
         public static LiteralControl html_combobox(string cntlID, List<string> lstKVP, string cssclass = "",
             Boolean selectionRequired = false, string defaultValue="", Boolean canSee = true,
-            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false, Boolean blRunAtServer = false)
+            AAAK.DISPLAYTYPES dType = AAAK.DISPLAYTYPES.UNDEFINED, string toolTip = "", Boolean blReadonly = false, 
+            Boolean blRunAtServer = false, Boolean selectionRequiredIfNoDefault = false)
         {
             string controlText = html_combobox_string(cntlID, lstKVP, cssclass, selectionRequired, defaultValue, 
                 canSee, dType, toolTip, blReadonly, blRunAtServer);
@@ -853,9 +859,9 @@ namespace AskAndAnswer.ClassCode
         }
 
 
-        public static LiteralControl html_header(string htmlHeaderText, int headerLevel)
+        public static LiteralControl html_header(string htmlHeaderText, int headerLevel, string id = "", string cssClass = "")
         {
-            return new LiteralControl(html_header_string(htmlHeaderText,headerLevel));
+            return new LiteralControl(html_header_string(htmlHeaderText,headerLevel,id,cssClass));
         }
 
         /// <summary>
@@ -864,9 +870,9 @@ namespace AskAndAnswer.ClassCode
         /// <param name="htmlHeaderText">Header text, optionally formatted html</param>
         /// <param name="headerLevel">1 through 7</param>
         /// <returns></returns>
-        public static string html_header_string(string htmlHeaderText, int headerLevel)
+        public static string html_header_string(string htmlHeaderText, int headerLevel, string id = "", string cssClass = "")
         {
-            return "<h" + headerLevel.ToString() + ">" + htmlHeaderText +
+            return "<h" + headerLevel.ToString() + " " + encodeProperty("id",id) + encodeProperty("class",cssClass) + ">" + htmlHeaderText +
                 "</h" + headerLevel.ToString() + ">";
         }
         

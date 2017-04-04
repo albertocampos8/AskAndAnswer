@@ -113,3 +113,39 @@ th, td {
 .tblWhereUsed .tblRowWhereUsed a:hover {
     background-color:palegreen;
 }
+
+.hidden {
+    display:none;
+}
+
+.invCommentLabel {
+    margin-top:5px;
+    margin-right:5px;
+    float:left;
+}
+
+.invCommentInput {
+    margin-top:5px;
+    margin-right:5px;
+    width:100%;
+    background-color:yellow;
+}
+
+.invalidField {
+    background-color:red;
+}
+
+
+.duplicateField {
+    background-color:orange;
+}
+
+.displayField {
+    background-color:white;
+}
+
+.btnRemoveLocInv {
+    background-color:lightcoral;
+    width:100%;
+    height:100%;
+}

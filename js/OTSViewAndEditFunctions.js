@@ -76,6 +76,7 @@ function AJAX_GetOTSPNDetail(id) {
                 FormatOTSPNDetail("pnsummary_" + id);
                 //alert(msg.d);
                 //Initialize the returned HTML
+                FormatINVPNDetail("#divPNInvInfo_" + id)
 
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -89,8 +90,27 @@ function AJAX_GetOTSPNDetail(id) {
 
 function FormatOTSPNDetail(divSelector) {
     try {
-        var id = divSelector.split("_")[1];
-        $("#" + divSelector).tabs();
+        if (divSelector == null) {
+            return;
+        }
+        id = divSelector.split("_")[1];
+        $("#" + divSelector).tabs({
+            activate: function (event, ui) {
+                try {
+                    var activePanelName = ui.newPanel.attr('id');
+                    //We only need to worry if the user selected the divPNTransactions_ID panel, since we need to refresh the
+                    //transaction log with an AJAX Call...
+                    if (activePanelName.indexOf("divPNTransaction") > -1) {
+                        AJAX_GetInvPNHistory(activePanelName.split("_")[1]);
+                    }
+                  
+
+                } catch (err) {
+                    alert(err.message);
+                }
+
+            }
+        });
         //Set the active tab
         $("#" + divSelector).tabs("option", "active", flagSelectedTab);
         
@@ -488,7 +508,7 @@ function AJAX_DoVPNWhereUsed() {
         //The ID is the only data we need to send to the server.
         var obj = new Object();
         obj.input = id;
-        alert(id);
+        //alert(id);
         var strData = JSON.stringify(obj);
         //make an AJAX Call
         $.ajax({
@@ -512,5 +532,461 @@ function AJAX_DoVPNWhereUsed() {
     }
 }
 
+function editINVInfo_Click() {
+    try {
+        //disable this button, enable the others
+        id = $(this).attr('id').split("_")[1];
+        $(".editinv." + id).prop('disabled', 'true');
+        $(".saveinv." + id).prop('disabled', '');
+        $(".cancelinv." + id).prop('disabled', '');
+        $(".btnAddLoc." + id).prop('disabled', '');
 
+        //Show the ACTION and DELTA columns
+        $(".toggleCol." + id).removeClass('hidden');
+        //Change the colors
+        $(".editinv." + id).removeClass('activeEditButton');
+        $(".saveinv." + id).removeClass('disabledButton');
+        $(".cancelinv." + id).removeClass('disabledButton');
+        $(".btnAddLoc." + id).removeClass('disabledButton');
+
+        $(".editinv." + id).addClass('disabledButton');
+        $(".saveinv." + id).addClass('activeSaveButton');
+        $(".cancelinv." + id).addClass('activeCancelButton');
+        $(".btnAddLoc." + id).addClass('activeAddButton');
+
+        $("#divInvCmt_" + id).show('slow');
+
+        //Enable fields
+        $("#divPNInvInfo_" + id).find(".toggle").each(function (index, value) {
+            $(this).removeClass("inactiveInputField");
+            $(this).addClass("activeInputField");
+            if ($(this).hasClass("txtinput")) {
+                $(this).prop('readonly', '');
+            } else {
+                $(this).prop('disabled', '');
+            }
+        });
+
+    } catch (err) {
+        alert("Error in editInvInfo_Click: " + err.message);
+    }
+}
+
+function saveINVInfo_Click() {
+    try {
+        //disable this button, enable the others
+        id = $(this).attr('id').split("_")[1];
+
+        //Reset everything to active (in case user is trying to re-attempt a save after making corrections)
+        $(".txtinput.inv." + id).removeClass("invalidField duplicateField").addClass("activeInputField");
+        $(".cboinput.inv." + id).removeClass("invalidField duplicateField").addClass("activeInputField");
+        $(".clsInvCellInfo." + id + " ").removeClass("duplicateField").addClass("displayField");
+        var msg = ""    //This will hold the html that is displayed in divInvMsg_pnID if any errors are detected.
+
+        //we need to encode the data in the table.
+        //Format is as follows:
+        //[comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]...
+        data = ""
+        $("#tblInvInfo_" + id + " tr").each(function (index, value) {
+            if ($(this).attr('id').split('_').length > 2) {
+                uid = $(this).attr('id').split('_')[1] + "_" +
+                      $(this).attr('id').split('_')[2] + "_" +
+                      $(this).attr('id').split('_')[3];
+                
+                qty = $("#invQty_" + uid).val();
+                loc = $("#invLocCode_" + uid).val();
+                if (loc == null) {
+                    loc = -1;
+                }
+                owner = $("#invContactCode_" + uid).val();
+                if (owner == null) {
+                    owner = -1;
+                }
+
+                vpnid = $(this).attr('id').split('_')[1];
+                vpn = $("#invVendorPN_" + uid).val();
+                delta = $("#invDelta_" + uid).val();
+
+                if (!isNumeric(delta) || delta.indexOf(".") != -1) {
+                    setFieldInvalid("#invDelta_" + uid,true);
+                    msg = msg + "<p>Delta Quantity must be an integer.  Set to 0 if you do not want to change the quantity for '" +
+                        vpn + "'.</p>";
+                } else if (delta < 0) {
+                    setFieldInvalid("#invDelta_" + uid, true);
+                    msg = msg + "<p>Always specify Delta Quantity greater than 0.  Please remove the negative sign in the 'DELTA' field for '" +
+                        vpn + "'.</p>";   
+                } else {
+                    //Since we have a legal delta value, check if the delta value makes sense;
+                    //To do this, we need to know whether user wants to ADD or REMOVE
+                    switch ($("#invSign_" + uid).val()) {
+                        case "1":
+                            //User wants to REMOVE
+                            if (qty - delta < 0) {
+                                setFieldInvalid("#invDelta_" + uid,true);
+                                msg = msg + "<p>You are removing " + delta + " parts of '" + vpn +
+                                    "', but there are only " + qty +
+                                    " parts in the location you selected.  Reduce the delta quantity to a number less than " +
+                                    qty + " to continue.</p>";
+                            } else {
+                                delta = -delta;
+                            }
+                            break;
+                       case "2":
+                            //User wants to ADD
+                            break;
+                        default:
+                            //User did not specify ADD or REMOVE; this is only a problem if the delta is <> 0
+                            if (delta != 0) {
+                                setFieldInvalid("#invSign_" + uid, true);
+                                msg = msg + "<p>You must specify whether you want to ADD or REMOVE " + delta + " parts for '" + vpn +
+                                    "' in inventory.  Please make a selection in the 'ACTION' drop-down box.</p>";
+                            }
+
+                    };
+                    //Also, now that we know we have a valid integer delta, we need to make sure the use has selected
+                    //a LOCATION and OWNER for this line
+                    if ($("#invDelta_" + uid).val() > 0) {
+                        if (loc == -1) {
+                            setFieldInvalid("#invLocCode_" + uid,true);
+                            msg = msg + "<p>You must specify a location where the inventory for '" + vpn +
+                                "' will reside.  Please make a selection in the 'LOCATION' drop-down box.</p>";
+                        }
+
+                        if (owner == -1) {
+                            setFieldInvalid("#invContactCode_" + uid,true);
+                            msg = msg + "<p>You must specify the primary contact who will control the inventory for '" + vpn +
+                                "'.  Please make a selection in the 'OWNER' drop-down box.</p>";
+                        }
+                    }
+
+                }
+
+                //Add data
+                data = data + $(this).attr('id').split('_')[3] + DELIM + qty + DELIM + delta + DELIM +
+                    loc + DELIM + owner + DELIM + vpnid + DELIM;
+            }
+
+        });
+
+        //Trim and check that a comment has been supplied
+        var cmt = $("#txtInvCmt_" + id).val().trim();
+        //...and validate
+        if (cmt == "") {
+            setFieldInvalid("#txtInvCmt_" + id,true);
+            msg = msg + "<p>You must provide a comment describing why you are making this change.</p>";
+        } else {
+            //cmt is the first element of data
+            data = cmt + DELIM + data;
+        }
+
+        //Verify we have no duplicates
+
+        var dctUniqueEntries = new Object();
+        $("#tblInvInfo_" + id + " tr").each(function (index, value) {
+            var unqvpnid = $(this).attr('id').split("_")[1];
+            var unqpnid = $(this).attr('id').split("_")[2];
+            var unqinvbulkid = $(this).attr('id').split("_")[3];
+            var unquid = "_" + unqvpnid + "_" + unqpnid + "_" + unqinvbulkid;
+            var key = $("#invVendor" + unquid).val() +
+                      $("#invVendorPN" + unquid).val() +
+                      $("#invLocCode" + unquid).val() +
+                      $("#invContactCode" + unquid).val();
+            if (dctUniqueEntries[key] == null) {
+                dctUniqueEntries[key] = unquid;
+            } else {
+                $("#invLocCode" + unquid).addClass("duplicateField");
+                $("#invContactCode" + unquid).addClass("duplicateField");
+                $("#invVendor" + unquid).removeClass("displayField").addClass("duplicateField");
+                $("#invVendorPN" + unquid).removeClass("displayField").addClass("duplicateField");
+                $("#invLocCode" + dctUniqueEntries[key]).addClass("duplicateField");
+                $("#invContactCode" + dctUniqueEntries[key]).addClass("duplicateField");
+                $("#invVendor" + dctUniqueEntries[key]).removeClass("displayField").addClass("duplicateField");
+                $("#invVendorPN" + dctUniqueEntries[key]).removeClass("displayField").addClass("duplicateField");
+                msg = msg + "<p>Location and Owner must be unique for " + $("#invVendor" + unquid).val() +
+                    " part number '" + $("#invVendorPN" + unquid).val() + "'.  "  + 
+                    "The offending rows have been highlighted orange.  Please change the values in one of the rows, or, if you have accidentally added a duplicate row, remove the duplicate value.</p>";
+            }
+        });
+
+        //Validation over-- update contents of #divInvMsg_pnID...
+        $("#divInvMsg_" + id).html(msg);
+        //...and abort, if needed.
+        if (msg != "") {
+            return false;
+        }
+
+        //If we did not return, then contiue.
+        //Remove last delim
+        data = data.substring(0, data.length - DELIM.length);
+
+        var obj = new Object();
+        obj.input = data;
+        var strData = JSON.stringify(obj);
+        //make an AJAX Call
+        $.ajax({
+            type: "POST",
+            url: "OTSPN.aspx/updatePartInventory",
+            data: strData,
+            contentType: "application/json; charset utf-8",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.d != "") {
+                    OpenDialog("#dialog", "ERRORS OCCURRED WHEN UPDATING THE DATABASE", msg.d);
+                }
+                //Regardless of whether or not an error occurred, refresh what is displayed to the user.
+                //This is important, because even though an error occurred, remember each row in the table is
+                //processed by the server seperately, so some of the rows may have been processed.
+                AJAX_GetInvPNDetail(id);
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
+            }
+        }) //ajax
+    } catch (err) {
+        alert("Error in saveINVInfo_Click: " + err.message);
+    }
+}
+
+function cancelINVInfo_Click() {
+    try {
+        //disable this button, enable the others
+        id = $(this).attr('id').split("_")[1];
+        //StopINVButtonEditMode(id);
+        AJAX_GetInvPNDetail(id);
+    } catch (err) {
+        alert("Error in cancelOTSInfo_Click: " + err.message);
+    }
+}
+
+function StopINVButtonEditMode(id) {
+    try {
+        $(".editinv." + id).prop('disabled', '');
+        $(".saveinv." + id).prop('disabled', 'true');
+        $(".cancelinv." + id).prop('disabled', 'true');
+        $(".btnAddLoc." + id).prop('disabled', 'true');
+        //Change the colors
+        $(".editinv." + id).removeClass('disabledButton');
+        $(".saveinv." + id).removeClass('activeSaveButton');
+        $(".cancelinv." + id).removeClass('activeCancelButton');
+        $(".btnAddLoc." + id).removeClass('activeAddButton');
+        $(".editinv." + id).addClass('activeEditButton');
+        $(".saveinv." + id).addClass('disabledButton');
+        $(".cancelinv." + id).addClass('disabledButton');
+        $(".btnAddLoc." + id).addClass('disabledButton');
+        //disable fields
+        $("#divPNInvInfo_" + id).find(".toggle").each(function (index, value) {
+            $(this).removeClass("activeInputField");
+            $(this).addClass("inactiveInputField");
+            if ($(this).hasClass("txtinput")) {
+                $(this).prop('readonly', 'true');
+            } else {
+                $(this).prop('disabled', 'true');
+            }
+        });
+    } catch (err) {
+        alert("Error in StopINVButtonEditMode: " + err.message);
+    }
+}
+
+function FormatINVPNDetail(divSelector) {
+    try {
+        if (divSelector == null) {
+            return;
+        }
+        var id = divSelector.split("_")[1];
+        //alert($(divSelector).html());
+        //Set button colors
+        $(".editinv." + id).addClass("activeEditButton");
+
+        //Bind button functions
+        $(".editinv." + id).on("click", editINVInfo_Click);
+        $(".saveinv." + id).on("click", saveINVInfo_Click);
+        $(".cancelinv." + id).on("click", cancelINVInfo_Click);
+        $(".btnAddLoc." + id).on("click", AddRowToInventoryTable)
+        $(".btnAddLoc." + id).addClass("activeAddButton");
+
+        //hide columns that aren't visible until user presses edit-
+        $(".toggleCol." + id).addClass('hidden');
+        //Take are of the comment section
+        $("#divInvCmt_" + id).addClass('hidden');
+        $("#txtInvCmt_" + id).addClass('invCommentInput')
+        $("#lblInvCmt_" + id).addClass('invCommentLabel')
+
+        //Set up so color goes to yellow after user leaves a cell
+        $(".txtinput.inv." + id).blur(function () {
+            setFieldInvalid("#" + $(this).attr('id'),false);           
+        })
+        $(".cboinput.inv." + id).change(function () {
+            setFieldInvalid("#" + $(this).attr('id'),false); 
+        })
+
+        //Synch the value of the Inventory Cell in the main table (i.e., for otsParts.ID) to the updated value in this html's header
+        $(".onhand." + id).html($("#invhdr_" + id).text().split(":")[1].trim());
+    } catch (err) {
+        alert("Error in FormatINVPNDetail: " + err.message);
+    }
+}
+
+/*Executes an AJAX event to get inventory data from the database.
+id is required, as it tells us which section of the page will accept the data*/
+function AJAX_GetInvPNDetail(id) {
+    try {
+        //The ID is the only data we need to send to the server.
+        var obj = new Object();
+        obj.input = id;
+        var strData = JSON.stringify(obj);
+        //make an AJAX Call
+        $.ajax({
+            type: "POST",
+            url: "OTSPN.aspx/getHTMLForPartNumberIDInventory",
+            data: strData,
+            contentType: "application/json; charset utf-8",
+            dataType: "json",
+            success: function (msg) {
+                //The result goes in...
+                $("#divPNInvInfo_" + id).html(msg.d);
+                //Format this
+                FormatINVPNDetail("#divPNInvInfo_" + id);
+                //alert(msg.d);
+                //Initialize the returned HTML
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
+            }
+        }) //ajax
+    } catch (err) {
+        alert("Error in GetOTSPNDetail: " + err.message);
+    }
+}
+
+/*Executes an AJAX event to get inventory history table from the database.
+id is required, as it tells us which section of the page will accept the data*/
+function AJAX_GetInvPNHistory(id) {
+    try {
+        //The ID is the only data we need to send to the server.
+        var obj = new Object();
+        obj.input = id;
+        var strData = JSON.stringify(obj);
+        //make an AJAX Call
+        $.ajax({
+            type: "POST",
+            url: "OTSPN.aspx/MakePartNumberInventoryHistoryTable",
+            data: strData,
+            contentType: "application/json; charset utf-8",
+            dataType: "json",
+            success: function (msg) {
+                //The result goes in...
+                $("#divPNTransactions_" + id).html(msg.d);
+                //Format required??
+
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
+            }
+        }) //ajax
+    } catch (err) {
+        alert("Error in AJAX_GetInvPNHistory: " + err.message);
+    }
+}
+
+//Sets a field valid or invalid
+//id: css Selector; Remember to include "#", "." etc as prefix
+//blSetInvalidField:
+//true: field will be marked invalid
+//false: field will be marked active
+function setFieldInvalid(id, blSetInvalidField) {
+    try {
+        if (blSetInvalidField == true) {
+            $(id).removeClass("activeInputField").addClass("invalidField");
+        } else {
+            $(id).removeClass("invalidField").addClass("activeInputField");
+        }
+        
+    } catch (err) {
+        alert("Error in setFieldInvalid: " + err.message);
+    }
+}
+
+//Insert a row object that is the *clone* of the selected row in the table:
+//addFromRowID should be of the form base_[vpnID]_[pnID]_[invBulkID]
+function AddRowToInventoryTable() {
+    try {
+        vpnID = $(this).attr('id').split("_")[1];
+        pnID = $(this).attr('id').split("_")[2];
+        invBulkID = $(this).attr('id').split("_")[3];
+        //Make a clone of the current row and change is vpnID:
+        //The structure of the id is [vpnID]_[ID]_[invBulkID].
+        //Since we are adding a new invBulkID, we will make our invBulkID be the next available *negative* number.
+        newRowID = vpnID + "_" + pnID + "_" + insertedRowIndex;
+        $("#invrow_" + vpnID + "_" + pnID + "_" + invBulkID).after(
+            $("#invrow_" + vpnID + "_" + pnID + "_" + invBulkID).clone(true, true).
+                attr('id',"invrow_" + newRowID)
+            );
+        //Update insertedRowIndex
+        insertedRowIndex = insertedRowIndex - 1;
+
+        // Change the ID of all the input fields in this last row
+        $("#invrow_" + newRowID + " td").eq(0).children().first().attr('id', "invVendor_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(1).children().first().attr('id', "invVendorPN_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(2).children().first().attr('id', "invQty_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(3).children().first().attr('id', "invSign_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(4).children().first().attr('id', "invDelta_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(5).children().first().attr('id', "invLocCode_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(6).children().first().attr('id', "invContactCode_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(7).children().first().attr('id', "btnRemoveRow_" + newRowID);
+
+        //Replace the html for btnRemoveRow with
+        $("#btnRemoveRow_" + newRowID).off();
+        $("#btnRemoveRow_" + newRowID).removeClass("btnAddLocInv");
+        $("#btnRemoveRow_" + newRowID).removeClass("activeAddButton");
+        $("#btnRemoveRow_" + newRowID).addClass("btnRemoveLocInv");
+        $("#btnRemoveRow_" + newRowID).prop('value', 'Remove');
+        $("#btnRemoveRow_" + newRowID).click(function () {
+            $("#btnRemoveRow_" + newRowID).parents("tr").first().remove();
+        })
+        $("#btnRemoveRow_" + newRowID).prop('title', 'Cancel the addition of this row.');
+        //Reset some values
+        $("#invLocCode_" + newRowID).val('');
+        $("#invContactCode_" + newRowID).val('');
+        //The only action is ADD for a new row...
+        $("#invSign_" + newRowID).val('2');
+        $("#invSign_" + newRowID).removeClass('activeInputField');
+        $("#invSign_" + newRowID).addClass('inactiveInputField');
+        $("#invSign_" + newRowID).prop('disabled', 'true');
+        $("#invQty_" + newRowID).val('0');
+        $("#invDelta_" + newRowID).val('');
+
+        //Only the Vendor and Vendor PN fields are editable, because the part they are adding may already exist, and we don't want
+        //users to inadvertently overwrite existing part information.  Instead, let them add the part; they will see what, if any
+        //data exists for the part after it is added.  At that time, they can decide if they want to change any information for the given part.
+        //revert fields
+        //Start by shutting all fields down
+        //$("#row_" + insertedRowIndex + "_" + id).find(".toggle").each(function (index, value) {
+        //    $(this).removeClass("activeInputField");
+        //    $(this).addClass("inactiveInputField");
+        //    if ($(this).hasClass("txtinput")) {
+        //        $(this).prop('readonly', 'true');
+        //        $(this).val('');
+        //    } else {
+        //        $(this).prop('disabled', 'true');
+        //        $(this).val('1');
+        //    }
+        //});
+        ////Only let Vendor, Vendor part number be active
+        //$("#txtinput_0_" + insertedRowIndex + "_" + id).removeClass("inactiveInputField");
+        //$("#txtinput_0_" + insertedRowIndex + "_" + id).val('');
+        //$("#txtinput_2_" + insertedRowIndex + "_" + id).removeClass("inactiveInputField");
+        //$("#txtinput_0_" + insertedRowIndex + "_" + id).addClass("activeAddButton");
+        //$("#txtinput_2_" + insertedRowIndex + "_" + id).addClass("activeAddButton");
+        //$("#txtinput_0_" + insertedRowIndex + "_" + id).prop('readonly', '');
+        //$("#txtinput_2_" + insertedRowIndex + "_" + id).prop('readonly', '');
+
+
+
+        alert($("#invrow_" + newRowID).html());
+    } catch (err) {
+        alert("Error in AddRowToInventoryTable: " + err.message);
+    }
+}
 

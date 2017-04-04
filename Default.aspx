@@ -7,6 +7,7 @@
     <p><a href="./CustomPN.aspx">Custom Part Numbers</a></p>
     <p><a href="./OTSPN.aspx">Off the Shelf (OTS) Part Numbers</a></p>
     <p><a href="./BOMViewUpload.aspx">View/Upload Bill of Material (BOM)</a></p>
+    <p><a href="./Admin.aspx">Admin</a></p>
 </asp:Content>
 <asp:Content ID="MainLeft" ContentPlaceHolderID="ContentPlaceHolder2" runat="server">
 

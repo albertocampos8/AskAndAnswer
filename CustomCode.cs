@@ -214,6 +214,53 @@ namespace AskAndAnswer
 
         //END OTS DATABASE ENTRIES
 
+        //LOCATION DATABASE TABLES/COLUMNS
+        public const string locCOUNTRY = AAAK.locCOUNTRY;
+        public const string strCOUNTRY = AAAK.strCOUNTRY;
+
+        public const string locPOSTALCODE = AAAK.locPOSTALCODE;
+        public const string strPOSTALCODE = AAAK.strPOSTALCODE;
+
+        public const string locSTATEPROVINCE = AAAK.locSTATEPROVINCE;
+        public const string strSTATEPROVINCE = AAAK.strSTATEPROVINCE;
+
+        public const string locCITY = AAAK.locCITY;
+        public const string strCITY = AAAK.strCITY;
+
+        public const string locADDRESS = AAAK.locADDRESS;
+        public const string strADDRESS = AAAK.strADDRESS;
+
+        public const string locDETAIL = AAAK.locDETAIL;
+        public const string strDETAIL = AAAK.strDETAIL;
+
+        public const string locLOCATION = AAAK.locLOCATION;
+        public const string strFLOOR = AAAK.strFLOOR;
+        public const string dtDEFINED = AAAK.dtDEFINED;
+        public const string keyCOUNTRY = AAAK.keyCOUNTRY;
+        public const string keySTATEPROVINCE = AAAK.keySTATEPROVINCE;
+        public const string keyCITY = AAAK.keyCITY;
+        public const string keyADDRESS = AAAK.keyADDRESS;
+        public const string keyDETAIL = AAAK.keyDETAIL;
+        public const string keyDEFINEDBY = AAAK.keyDEFINEDBY;
+        public const string keyPOSTALCODE = AAAK.keyPOSTALCODE;
+
+        //END LOCATION DATABASE ENTRIES
+
+        //Inventory DATABASE ENTRIES
+        public const string invBULK = AAAK.invBULK;
+        public const string keyLOCATIONBULK = AAAK.keyLOCATIONBULK;
+        public const string keyBULKITEM = AAAK.keyBULKITEM;
+        public const string keyOWNER = AAAK.keyOWNER;
+
+        public const string invHISTORY = AAAK.invHISTORY;
+        public const string keyCHANGEDBY = AAAK.keyCHANGEDBY;
+        public const string dtTRANSACTION = AAAK.dtTRANSACTION;
+        public const string intDELTA = AAAK.intDELTA;
+        public const string strCOMMENT = AAAK.strCOMMENT;
+        public const string keyTRANSACTIONTYPE = AAAK.keyTRANSACTIONTYPE;
+
+        //End Inventory DATABASE ENTRIES
+
         //Stored Procedures
         public partial class SP {
             public const string spOTSGETBASEPARTNUMBER = AAAK.spOTSGETBASEPARTNUMBER;
@@ -231,6 +278,8 @@ namespace AskAndAnswer
             public const string spGETKVPENVIRONCODE = AAAK.spGETKVPENVIRONCODE;
             public const string spGETKVPVENDORSTATUS = AAAK.spGETKVPVENDORSTATUS;
             public const string spGETKVPPARTSTATUS = AAAK.spGETKVPPARTSTATUS;
+            public const string spGETKVPFULLADDRESS = AAAK.spGETKVPFULLADDRESS;
+            public const string spGETKVPUSERINFO = AAAK.spGETKVPUSERINFO;
             public const string spOTSFINDBYBU = AAAK.spOTSFINDBYBU;
             public const string spOTSFINDBYDATE = AAAK.spOTSFINDBYDATE;
             public const string spOTSFINDBYDESCRIPTION = AAAK.spOTSFINDBYDESCRIPTION;
@@ -239,7 +288,18 @@ namespace AskAndAnswer
             public const string spOTSFINDBYREQUESTOR = AAAK.spOTSFINDBYREQUESTOR;
             public const string spOTSFINDBYVENDOR = AAAK.spOTSFINDBYVENDOR;
             public const string spOTSFINDBYVENDORPARTNUMBER = AAAK.spOTSFINDBYVENDORPARTNUMBER;
+
+            public const string spOTSFINDBYBUWITHINV = AAAK.spOTSFINDBYBUWITHINV;
+            public const string spOTSFINDBYDATEWITHINV = AAAK.spOTSFINDBYDATEWITHINV;
+            public const string spOTSFINDBYDESCRIPTIONWITHINV = AAAK.spOTSFINDBYDESCRIPTIONWITHINV;
+            public const string spOTSFINDBYPARTNUMBERWITHINV = AAAK.spOTSFINDBYPARTNUMBERWITHINV;
+            public const string spOTSFINDBYPRODUCTWITHINV = AAAK.spOTSFINDBYPRODUCTWITHINV;
+            public const string spOTSFINDBYREQUESTORWITHINV = AAAK.spOTSFINDBYREQUESTORWITHINV;
+            public const string spOTSFINDBYVENDORWITHINV = AAAK.spOTSFINDBYVENDORWITHINV;
+            public const string spOTSFINDBYVENDORPARTNUMBERWITHINV = AAAK.spOTSFINDBYVENDORPARTNUMBERWITHINV;
+
             public const string spOTSGETPNINFO = AAAK.spOTSGETPNINFO;
+            public const string spOTSGETPNINVENTORYINFO = AAAK.spOTSGETPNINVENTORYINFO;
             public const string spOTSUPDATEPARTSTABLE = AAAK.spOTSUPDATEPARTSTABLE;
             public const string spOTSRECONCILEPARTSTABLE = AAAK.spOTSRECONCILEPARTSTABLE;
             public const string spOTSUPDATE_ADDVENDORPNTOOTSPARTNUMBER = AAAK.spOTSUPDATE_ADDVENDORPNTOOTSPARTNUMBER;
@@ -268,6 +328,18 @@ namespace AskAndAnswer
             public const string spGETASSYHISTORY = AAAK.spGETASSYHISTORY;
             public const string spEDITRELEASENOTE = AAAK.spEDITRELEASENOTE;
             public const string spEDITRELEASENOTE_RESET = AAAK.spEDITRELEASENOTE_RESET;
+            public const string spLOCADDLOCATION = AAAK.spLOCADDLOCATION;
+            public const string spLOCLOOKUPADDRESSBYSTREET = AAAK.spLOCLOOKUPADDRESSBYSTREET;
+            public const string spAC_LOCADDRESS = AAAK.spAC_LOCADDRESS;
+            public const string spAC_LOCCITY = AAAK.spAC_LOCCITY;
+            public const string spAC_LOCSTATEPROVINCE = AAAK.spAC_LOCSTATEPROVINCE;
+            public const string spAC_LOCPOSTALCODE = AAAK.spAC_LOCPOSTALCODE;
+            public const string spAC_LOCCOUNTRY = AAAK.spAC_LOCCOUNTRY;
+
+            public const string spINVGETINFOFORINVBULKID = AAAK.spINVGETINFOFORINVBULKID;
+            public const string spINVREMOVEBULKINVENTRY = AAAK.spINVREMOVEBULKINVENTRY;
+            public const string spINVUPSERTINVBULKENTRY = AAAK.spINVUPSERTINVBULKENTRY;
+            public const string spINVGETPARTHISTORY = AAAK.spINVGETPARTHISTORY;
         }
 
         public partial class SPVar
@@ -287,6 +359,11 @@ namespace AskAndAnswer
             public const string VENDORPNID = AAAK.SP_COLALIAS.VENDORPNID;
             public const string PN = AAAK.SP_COLALIAS.PN;
             public const string USERNAME = AAAK.SP_COLALIAS.USERNAME;
+            public const string ONHAND = AAAK.SP_COLALIAS.ONHAND;
+            public const string INVBULKID = AAAK.SP_COLALIAS.INVBULKID;
+            public const string CHANGEDBY = AAAK.SP_COLALIAS.CHANGEDBY;
+            public const string FULLADDRESS = AAAK.SP_COLALIAS.FULLADDRESS;
+            public const string CONTACT = AAAK.SP_COLALIAS.CONTACT;
         }
 
         /// <summary>
@@ -957,44 +1034,44 @@ namespace AskAndAnswer
             switch (searchMethod)
             {
                 case OTSINDK.SEARCHMETHOD_BYPRODUCT:
-                    sp = DBK.SP.spOTSFINDBYPRODUCT;
+                    sp = DBK.SP.spOTSFINDBYPRODUCTWITHINV;
                     ps.Add(new SqlParameter(DBK.SPVar.searchString, "%" + searchText + "%"));
                     fldName = "Requested for Product";
                     break;
                 case OTSINDK.SEARCHMETHOD_BYBU:
-                    sp = DBK.SP.spOTSFINDBYBU;
+                    sp = DBK.SP.spOTSFINDBYBUWITHINV;
                     ps.Add(new SqlParameter(DBK.SPVar.searchID, Convert.ToByte(searchText)));
                     fldName = "BU";
                     break;
                 case OTSINDK.SEARCHMETHOD_BYREQUESTOR:
-                    sp = DBK.SP.spOTSFINDBYREQUESTOR;
+                    sp = DBK.SP.spOTSFINDBYREQUESTORWITHINV;
                     ps.Add(new SqlParameter(DBK.SPVar.searchID, Convert.ToByte(searchText)));
                     //TEST ONLY
                     HttpContext.Current.Session[SESSIONKEYS.UID] = Convert.ToInt64(searchText);
                     fldName = "Requestor";
                     break;
                 case OTSINDK.SEARCHMETHOD_BYVENDOR:
-                    sp = DBK.SP.spOTSFINDBYVENDOR;
+                    sp = DBK.SP.spOTSFINDBYVENDORWITHINV;
                     ps.Add(new SqlParameter(DBK.SPVar.searchString, "%" + searchText + "%"));
                     fldName = "Vendor";
                     break;
                 case OTSINDK.SEARCHMETHOD_BYVENDORPN:
-                    sp = DBK.SP.spOTSFINDBYVENDORPARTNUMBER;
+                    sp = DBK.SP.spOTSFINDBYVENDORPARTNUMBERWITHINV;
                     ps.Add(new SqlParameter(DBK.SPVar.searchString, "%" + searchText + "%"));
                     fldName = "Vendor Part Number";
                     break;
                 case OTSINDK.SEARCHMETHOD_BYPN:
-                    sp = DBK.SP.spOTSFINDBYPARTNUMBER;
+                    sp = DBK.SP.spOTSFINDBYPARTNUMBERWITHINV;
                     ps.Add(new SqlParameter(DBK.SPVar.searchString, "%" + searchText + "%"));
                     fldName = "Part Number";
                     break;
                 case OTSINDK.SEARCHMETHOD_BYDATE:
-                    sp = DBK.SP.spOTSFINDBYDATE;
+                    sp = DBK.SP.spOTSFINDBYDATEWITHINV;
                     ps.Add(new SqlParameter(DBK.SPVar.searchDate, DateTime.Parse(searchText)));
                     fldName = "Date Requested";
                     break;
                 case OTSINDK.SEARCHMETHOD_BYDESCRIPTION:
-                    sp = DBK.SP.spOTSFINDBYDESCRIPTION;
+                    sp = DBK.SP.spOTSFINDBYDESCRIPTIONWITHINV;
                     ps.Add(new SqlParameter(DBK.SPVar.searchString, "%" + searchText + "%"));
                     fldName = "Description";
                     break;
@@ -1029,6 +1106,7 @@ namespace AskAndAnswer
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","STATUS",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","PART NUMBER",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","DESCRIPTION",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","INV",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","VENDOR",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","VENDOR PART NUMBER",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","REQUESTED BY",1,true),
@@ -1040,7 +1118,6 @@ namespace AskAndAnswer
                                                          );
                                     break;
                                 default:
-                                    //This includes a Column for Vendor and Vendor PN
                                     tblRows.Add(new HTMLStrings.TableRow(
                                                 "otsFindResultsHeader",
                                                 "clsHeaderRow",
@@ -1049,6 +1126,7 @@ namespace AskAndAnswer
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","STATUS",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","PART NUMBER",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","DESCRIPTION",1,true),
+                                                                    new HTMLStrings.TableCell("","clsHeaderRow","INV",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","REQUESTED BY",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","BU",1,true),
                                                                     new HTMLStrings.TableCell("","clsHeaderRow","REQUESTED FOR",1,true),
@@ -1069,6 +1147,7 @@ namespace AskAndAnswer
                             string vendor = "";
                             string vendorpn = "";
                             string pnID = "";
+                            string onhand = "";
                             while (dR.Read())
                             {
                                 //Format the text in the data reader
@@ -1080,6 +1159,8 @@ namespace AskAndAnswer
                                 bu = Convert.ToString(dR[DBK.valDISPLAYEDVALUE]);
                                 reqfor = Convert.ToString(dR[DBK.strPRODUCT]);
                                 dtreq = Convert.ToString(dR[DBK.dtREQUESTED]);
+                                onhand = Convert.ToString(dR[DBK.SP_COLALIAS.ONHAND]);
+                                //Button to expand the row...
                                 string buttonhtml = DynControls.html_button_string("otsbtnFoundExpand_" + pnID, "Expand", "otsbtnFoundExpand",
                                     true, AAAK.DISPLAYTYPES.BLOCK, "Expand to get more information about the Part Number");
                                 //Handle the fact that certain search methods show special fields
@@ -1141,6 +1222,7 @@ namespace AskAndAnswer
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",status,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",pn,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",desc,1,false),
+                                                                    new HTMLStrings.TableCell("","otsFindResultsCell",onhand,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",vendor,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",vendorpn,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",reqby,1,false),
@@ -1160,6 +1242,7 @@ namespace AskAndAnswer
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",status,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",pn,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",desc,1,false),
+                                                                    new HTMLStrings.TableCell("","otsFindResultsCell onhand " + pnID,onhand,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",reqby,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",bu,1,false),
                                                                     new HTMLStrings.TableCell("","otsFindResultsCell",reqfor,1,false),
@@ -1230,6 +1313,8 @@ namespace AskAndAnswer
             string htmlForDataTab = "";
             string htmlForVendorPNTab = "";
             string htmlForWhereUsedTab = "";
+            string htmlForInvTab = "";
+            string htmlForTransactionTab = "";
             string partNumberForTitle = "";
             using (myDB.OpenConnection())
             {
@@ -1264,8 +1349,13 @@ namespace AskAndAnswer
 
             //Obtaining 'where used' info for the id is handled by a different function, which we'll call now
             htmlForWhereUsedTab = WhereUsedForPN(pnID.ToString());
+            //Obtaining inventory info for the id is also handled by a different fucntion, which we'll also call now
+            htmlForInvTab = InvForPN(pnID.ToString());
+            htmlForTransactionTab = MakePartNumberInventoryHistoryTable(pnID);
+
             //Title of this section
-            string bookmarkurl = "Bookmark this URL to get back to this page: " + DynControls.html_hyperlink_string("", HttpContext.Current.Request.Url.AbsoluteUri + ".aspx?ID=" + pnID,
+            string bookmarkurl = "Bookmark this URL to get back to this page: " + DynControls.html_hyperlink_string("", 
+                HttpContext.Current.Request.Url.AbsoluteUri.Split('?')[0] + ".aspx?ID=" + pnID,
                     "bkmk_" + pnID, "bkmkID", "_blank");
 
             string sectionTitle = HTMLStrings.HTMLHeading(partNumberForTitle, "h1", HTMLStrings.ALIGN.LEFT, "otsviewheader") +
@@ -1287,12 +1377,26 @@ namespace AskAndAnswer
             divPNWhereUsedInfo.ID = "divPNWhereUsedInfo_" + pnID;
             divPNWhereUsedInfo.Controls.Add(new LiteralControl(htmlForWhereUsedTab));
             divPNWhereUsedInfo.Style.Add(HtmlTextWriterStyle.OverflowX, "auto");
+
+            Panel divPNInvInfo = new Panel();
+            divPNInvInfo.ID = "divPNInvInfo_" + pnID;
+            divPNInvInfo.Controls.Add(new LiteralControl(htmlForInvTab));
+            divPNInvInfo.Style.Add(HtmlTextWriterStyle.OverflowX, "auto");
+
+            Panel divPNTransactions = new Panel();
+            divPNTransactions.ID = "divPNTransactions_" + pnID;
+            divPNTransactions.Controls.Add(new LiteralControl("<p>Please wait... querying database...</p>"));
+            //divPNTransactions.Controls.Add(new LiteralControl(htmlForTransactionTab));
+            divPNTransactions.Style.Add(HtmlTextWriterStyle.OverflowX, "auto");
+
             //Set up the unordered list for the tabs.
             StringBuilder sB = new StringBuilder();
             sB.Append("<ul>");
             sB.Append("<li>" + DynControls.html_hyperlink_string("Part Properties", "#" + divPNInfo.ID));
             sB.Append("<li>" + DynControls.html_hyperlink_string("AVL (Approved Vendor List)", "#" + divPNVendorInfo.ID));
             sB.Append("<li>" + DynControls.html_hyperlink_string("Where Used", "#" + divPNWhereUsedInfo.ID));
+            sB.Append("<li>" + DynControls.html_hyperlink_string("Inventory", "#" + divPNInvInfo.ID));
+            sB.Append("<li>" + DynControls.html_hyperlink_string("Transaction History", "#" + divPNTransactions.ID));
             sB.Append("</ul>");
             return sectionTitle +
                     "<div " + DynControls.encodeProperty("id", "pnsummary_" + pnID) +
@@ -1303,6 +1407,8 @@ namespace AskAndAnswer
                     DynControls.GetHTMLText(divPNInfo) +
                     DynControls.GetHTMLText(divPNVendorInfo) +
                     DynControls.GetHTMLText(divPNWhereUsedInfo) +
+                    DynControls.GetHTMLText(divPNInvInfo) +
+                    DynControls.GetHTMLText(divPNTransactions) +
                     "</div>";
         }
 
@@ -3093,5 +3199,547 @@ namespace AskAndAnswer
                 return DynControls.renderLiteralControlErrorString(ex, "");
             }
         }
+
+        /// <summary>
+        /// Takes the contents of input and puts in invLocationBulk
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public string registerLocation(string input)
+        {
+            try
+            {
+                string[] arr = input.Split(m_dlim, StringSplitOptions.None);
+                string addr = arr[0].Trim().ToUpper().
+                    Replace(" STREET"," ST").
+                    Replace(" AVENUE"," AVE").
+                    Replace(" BOULEVARD"," BLVD").
+                    Replace(" SUITE"," STE").
+                    Replace(" COURT"," CT").
+                    Replace(" ST.", " ST").
+                    Replace(" AVE.", " AVE").
+                    Replace(" BLVD.", " BLVD").
+                    Replace(" STE.", " STE").
+                    Replace(" CT.", " CT");
+
+                string city = arr[1].Trim().ToUpper();
+                string state = arr[2].Trim().ToUpper().
+                    Replace("ALABAMA", "AL").
+                    Replace("ALASKA", "AK").
+                    Replace("ARIZONA", "AZ").
+                    Replace("ARKANSAS", "AR").
+                    Replace("CALIFORNIA", "CA").
+                    Replace("COLORADO", "CO").
+                    Replace("CONNECTICUT", "CT").
+                    Replace("DELAWARE", "DE").
+                    Replace("FLORIDA", "FL").
+                    Replace("GEORGIA", "GA").
+                    Replace("HAWAII", "HI").
+                    Replace("IDAHO", "ID").
+                    Replace("ILLINOIS", "IL").
+                    Replace("INDIANA", "IN").
+                    Replace("IOWA", "IA").
+                    Replace("KANSAS", "KS").
+                    Replace("KENTUCKY", "KY").
+                    Replace("LOUISIANA", "LA").
+                    Replace("MAINE", "ME").
+                    Replace("MARYLAND", "MD").
+                    Replace("MASSACHUSETTS", "MA").
+                    Replace("MICHIGAN", "MI").
+                    Replace("MINNESOTA", "MN").
+                    Replace("MISSISSIPPI", "MI").
+                    Replace("MISSOURI", "MO").
+                    Replace("MONTANA", "MT").
+                    Replace("NEBRASKA", "NE").
+                    Replace("NEVADA", "NV").
+                    Replace("NEW HAMPSHIRE", "NH").
+                    Replace("NEW JERSEY", "NJ").
+                    Replace("NEW MEXICO","NM").
+                    Replace("NEW YORK", "NY").
+                    Replace("NORTH CAROLINA", "NC").
+                    Replace("NORTH DAKOTA", "ND").
+                    Replace("OHIO", "OH").
+                    Replace("OKLAHOMA", "OK").
+                    Replace("OREGON", "OR").
+                    Replace("PENNSYLVANIA", "PA").
+                    Replace("RHODE ISLAND", "RI").
+                    Replace("SOUTH CAROLINA", "SC").
+                    Replace("SOUTH DAKOTA", "SD").
+                    Replace("TENNESSEE", "TN").
+                    Replace("TEXAS", "TX").
+                    Replace("UTAH", "UT").
+                    Replace("VERMONT", "VT").
+                    Replace("VIRGINIA", "VA").
+                    Replace("WASHINGTON", "WA").
+                    Replace("WEST VIRGINIA", "WV").
+                    Replace("WISCONSIN", "WI").
+                    Replace("WYOMING", "WY").
+                    Replace("PUERTO RICO", "PR");
+
+                string postalCode = arr[3].Trim().ToUpper();
+                string country = arr[4].Trim().ToUpper();
+                string floor = arr[5].Trim();
+                string detail = arr[6].Trim();
+
+                Int64 uid = 1; //REPLACE WITH ACTUAL USER ID IN REAL APPLICATION!!!
+                CustomCode u = new CustomCode();
+                clsDB xDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strCOUNTRY, country));
+                ps.Add(new SqlParameter("@" + DBK.strPOSTALCODE, postalCode));
+                ps.Add(new SqlParameter("@" + DBK.strSTATEPROVINCE, state));
+                ps.Add(new SqlParameter("@" + DBK.strCITY, city));
+                ps.Add(new SqlParameter("@" + DBK.strADDRESS, addr));
+                ps.Add(new SqlParameter("@" + DBK.strDETAIL, detail));
+                ps.Add(new SqlParameter("@" + DBK.strFLOOR, floor));
+                ps.Add(new SqlParameter("@" + DBK.keyDEFINEDBY, uid));
+                ps.Add(new SqlParameter("@" + DBK.ID, -1));
+                ps[ps.Count - 1].Direction = System.Data.ParameterDirection.Output;
+                using (xDB.OpenConnection())
+                {
+                    xDB.ExecuteSP(DBK.SP.spLOCADDLOCATION, ps, clsDB.SPExMode.NONQUERY, ref cmd);
+                    if (int.Parse(cmd.Parameters["@" + DBK.ID].Value.ToString())>0)
+                    {
+                        return "<p>The following location is in the database:</p>" +
+                            "<p>" + addr + "</p>" +
+                            "<p>" + city + ", " + state + " " + postalCode + "</p>" +
+                            "<p>" + country + "</p>" +
+                            "<p>Floor: " + floor + "</p>" +
+                            "<p>Details: " + detail + "</p>" +
+                            "<p>The Confirmation ID is " + int.Parse(cmd.Parameters["@" + DBK.ID].Value.ToString());
+                    } else
+                    {
+                        return "<p>Unable to add address:</p>" +
+                            "<p>" + xDB.ErrMsg.Replace(AAAK.vbCRLF, DynControls.html_linebreak_string()) + "</p>";
+                    }
+
+                }
+
+            } catch (Exception ex)
+            {
+                return (ex.Message + AAAK.vbCRLF + ex.StackTrace).Replace(AAAK.vbCRLF, DynControls.html_linebreak_string());
+            }
+
+        }
+
+        public string autoCompleteAddress(string streetAddress)
+        {
+            try
+            {
+                clsDB xDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.strADDRESS, streetAddress));
+                using (xDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(DBK.SP.spLOCLOOKUPADDRESSBYSTREET, ps, clsDB.SPExMode.READER, ref cmd))
+                    {
+                        if (dR != null && dR.HasRows)
+                        {
+                            dR.Read();
+                            return dR[DBK.strADDRESS] +  AAAK.DELIM +
+                                dR[DBK.strCITY] + AAAK.DELIM +
+                                dR[DBK.strSTATEPROVINCE] + AAAK.DELIM +
+                                dR[DBK.strPOSTALCODE] + AAAK.DELIM +
+                                dR[DBK.strCOUNTRY] + AAAK.DELIM +
+                                dR[DBK.strFLOOR] + AAAK.DELIM +
+                                dR[DBK.strDETAIL] + AAAK.DELIM;
+
+                        }
+                    }
+                }
+                return "";
+            } catch (Exception ex)
+            {
+                return "";
+            }
+           
+        }
+
+        /// <summary>
+        /// Returns html that is displayed in the inventory tab of a part number
+        /// </summary>
+        /// <param name="input">otsParts.ID for the part number</param>
+        /// <returns></returns>
+        public string InvForPN(string input)
+        {
+            try
+            {
+                StringBuilder sB = new StringBuilder();
+                int qty = 0;
+                Int64 pnID = Int64.Parse(input);
+                clsDB myDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + "pnID", pnID));
+
+                string sp = DBK.SP.spOTSGETPNINVENTORYINFO;
+
+                using (myDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(sp, ps, clsDB.SPExMode.READER, ref cmd))
+                    {
+                        int resultSetIndex = 0;
+                        do
+                        {
+                            if (dR != null )
+                            {
+                                if (resultSetIndex == 0)
+                                {
+                                    if (dR.HasRows)
+                                    {
+                                        resultSetIndex++;
+                                        dR.Read();
+                                        qty = (int)dR[DBK.SP_COLALIAS.ONHAND];
+                                        sB.Append(DynControls.html_header_string("TOTAL ON-HAND INVENTORY: " + qty, 2,"invhdr_" + pnID) + "<hr>");
+                                        //Disable the following until I understand how to transfer formatting of a TAB to formatting a
+                                        //PAGE
+                                        //sB.Append( "<p>URL: " + DynControls.html_hyperlink_string("",
+                                        //    HttpContext.Current.Request.Url.AbsoluteUri + ".aspx?ID=" + pnID + "&INV=Y",
+                                        //    "bkmkinv_" + pnID, "bkmkID", "_blank") + "</p>");
+                                    } else
+                                    {
+                                        sB.Append("<p>Error: Unable to find Total Inventory of Part with database ID " +
+                                            pnID.ToString() + ".</p>");
+                                    }
+                                }
+                                else
+                                {
+                                    sB.Append(MakePartNumberInventoryTable(dR, pnID, myDB));
+                                    //Add divInvCmt_ID to allow the user to comment
+                                    sB.Append("<div id='divInvCmt_" + pnID + "'>");
+                                    sB.Append(DynControls.html_label_string("lblInvCmt_" + pnID, "Reason for Update (required):", dType: AAAK.DISPLAYTYPES.INLINEBLOCK));
+                                    sB.Append(DynControls.html_txtbox_string("txtInvCmt_" + pnID, "inv txtinput txtInvChangeCmt " + pnID));
+                                    sB.Append("</div>");
+                                }
+                            }
+                            else
+                            {
+                                sB.Append("<p>Error in InvForPN, ResultSet " + (resultSetIndex + 1) + ": NULL dataset.  " +
+                                    "This indicates a problem occurred when executing stored procedure " +
+                                    DBK.SP.spOTSGETPNINVENTORYINFO + ".</p>");
+                            }
+        
+                        } while (dR.NextResult());
+
+                    }
+                }
+                return sB.ToString();
+            }
+            catch (Exception ex)
+            {
+                return "<p>Error in InvForPN: " + ex.Message + "</p>";
+            }
+        }
+
+        /// <summary>
+        /// Returns the html for a table has all the inventory info for a given part number with part number
+        /// pnID
+        /// </summary>
+        /// <param name="dR">The data reader containing the data</param>
+        /// <param name="myDB">The clsDB object</param>
+        /// <param name="pnID">ID in table otsParts.ID for the Part Number in question. This is used in the uid field
+        /// of the input cells.</param>
+        /// <returns>
+        /// NOTE:
+        /// The table is given ID = tblInvInfo_[pnID]</returns>
+        /// Each row is given ID = invrow_[VPNID]_[pnID], where [VPNID] is the vendor part number ID taken from the database.
+        /// Each CONTROL in the cell in the row is given ID = [baseName]_[colInddex]_[VPNID]_[pnID]
+        /// where
+        /// basename = 
+        /// txtinput => Textbox
+        /// cboinput => Dropdown box
+        /// btninput => Button
+        /// Note the cells themselves do not get an ID
+        private string MakePartNumberInventoryTable(SqlDataReader dR, Int64 pnID, clsDB myDB)
+        {
+            try
+            {
+                //Column widths:
+                string qtyColWidth = "width:10px";
+                clsUtil helper = new clsUtil();
+                List<HTMLStrings.TableRow> tblRows = new List<HTMLStrings.TableRow>();
+                List<string> lstLoc = helper.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPFULLADDRESS);
+                List<string> lstUsers = helper.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPUSERINFO);
+                List<string> lstSign = new List<string>();
+                lstSign.Add("0");
+                lstSign.Add("");
+                lstSign.Add("1");
+                lstSign.Add("REMOVE");
+                lstSign.Add("2");
+                lstSign.Add("ADD");
+                tblRows.Add(new HTMLStrings.TableRow(
+                        "row_h",
+                        "clsHeaderRow",
+                        new HTMLStrings.TableCell[] {
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Vendor",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Vendor<br>Part<br>Number",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Current Qty",1,true,
+                                        displayStyle:qtyColWidth),
+                                        new HTMLStrings.TableCell("","clsHeaderRow toggleCol " + pnID,"Action",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow toggleCol " + pnID,"Delta",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Location",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Contact",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Add Location",1,true)
+                                                    }
+                                                         )
+                                 );
+                while (dR.Read())
+                {
+                    string vpnID = myDB.Fld2Str(dR[DBK.SP_COLALIAS.VENDORPNID]);
+                    string vendor = myDB.Fld2Str(dR[DBK.strVENDOR]);
+                    string vPN = myDB.Fld2Str(dR[DBK.strVENDORPARTNUMBER]);
+                    string qty = myDB.Fld2Str(dR[DBK.SP_COLALIAS.ONHAND]);
+                    string locID = myDB.Fld2Str(dR[DBK.keyLOCATIONBULK]);
+                    string contactID = myDB.Fld2Str(dR[DBK.keyOWNER]);
+                    string invBulkID = myDB.Fld2Str(dR[DBK.SP_COLALIAS.INVBULKID]);
+                    //Add an html table row to the list
+                    //No need to track the row ID in the unique ID, UID.  This is because
+                    //we expect a unique Vendor Part Number ID (vpnID) for each VPN.
+                    string uid = "_" + vpnID + "_" + pnID + "_" + invBulkID;
+
+                    string buttonAddLochtml = DynControls.html_button_string("btnAddLoc" + uid, "Add Location", "btnAddLoc " + pnID,
+                        true, AAAK.DISPLAYTYPES.BLOCK, "Add a new Location and/or SubInventory for this Vendor Part Number.",
+                        enabled:false);
+                    tblRows.Add(new HTMLStrings.TableRow(
+                    "invrow" + uid,
+                    "clsInvRow",
+                    new HTMLStrings.TableCell[] {
+                                                    new HTMLStrings.TableCell("","clsInvCell_" + pnID,vendor,1,false, true,
+                                                        "invVendor" + uid, null, "", "clsInvCellInfo " + pnID, false),
+                                                    new HTMLStrings.TableCell("","clsInvCell_" + pnID,vPN,1,false, true,
+                                                        "invVendorPN" + uid, null, "","clsInvCellInfo " + pnID, false),
+                                                    new HTMLStrings.TableCell("","clsInvCell_" + pnID,qty,1,false,true,
+                                                        "invQty" + uid, null, "",qtyColWidth, false),
+                                                    new HTMLStrings.TableCell("","toggleCol clsInvCell_" + pnID + " " + pnID,"",1,false,true,
+                                                        "invSign" + uid, lstSign, "", "inv cboinput toggle " + pnID, false,
+                                                        "Specify whether you are ADDING TO or REMOVING FROM inventory"),
+                                                    new HTMLStrings.TableCell("","toggleCol clsInvCell_" + pnID + " " + pnID,"0",1,false,true,
+                                                        "invDelta" + uid, null, "", "inv txtinput toggle " + pnID, false,
+                                                        "This is always a POSITIVE number!  Set 'Action' to ADD or REMOVE to add to or subtract from inventory."),
+                                                    new HTMLStrings.TableCell("","clsInvCell_" + pnID,locID,1,false,true,
+                                                        "invLocCode" + uid, lstLoc, "", "inv cboinput toggle " + pnID, false,"",true),
+                                                    new HTMLStrings.TableCell("","clsInvCell_" + pnID,contactID,1,false,true,
+                                                        "invContactCode" + uid, lstUsers, "", "inv cboinput toggle " + pnID, false,"",true),
+                                                    new HTMLStrings.TableCell("","clsInvCell_" + pnID,buttonAddLochtml,1,false,true,
+                                                        "",null,"Add Location","btnAddLocInv")
+                                                }
+                                                     )
+                             );
+                }
+                //End processing the data row
+
+                //Make buttons
+                //Text for tool tips.
+                string editTT = "Update the Qty, Location, and/or Contact Person for the given Vendor PN.";
+                string saveTT = "Save your changes; to remove a location, leave the Qty and Location blank.";
+                string cancelTT = "Cancel your changes; no data will change in the database.";
+                //Make Add, Edit, Save, and Cancel buttons
+                string btnEdit = DynControls.html_button_string("editinv_" + pnID, "Edit", "editinv " + pnID,
+                    true, AAAK.DISPLAYTYPES.INLINE, editTT, "", true);
+                string btnSave = DynControls.html_button_string("saveinv_" + pnID, "Save", "saveinv " + pnID,
+                    true, AAAK.DISPLAYTYPES.INLINE, saveTT, "", false);
+                string btnCancel = DynControls.html_button_string("cancelinv_" + pnID, "Cancel", "cancelinv " + pnID,
+                    true, AAAK.DISPLAYTYPES.INLINE, cancelTT, "", false);
+
+                HTMLStrings.Table tbl = new HTMLStrings.Table("tblInvInfo_" + pnID, "tblInvInfo", tblRows);
+                return btnEdit +  btnSave + btnCancel +
+                    "<p>Tip: If you don't see the scroll bars at the bottom of the window, use the left and " + 
+                    "right arrow keys to scroll through the full table width.</p><hr>" + 
+                    "<div id='divInvMsg_" + pnID + "' style='color:red;font-style:italic'></div>" + tbl.ToHTML();
+            }
+            catch (Exception ex)
+            {
+                return "<p>Method createHTMLStringForVendorPNInfo error: " + ex.Message + "</p>";
+            }
+        }
+
+        /// <summary>
+        /// UPdates invBulk with user information in input
+        /// </summary>
+        /// <param name="input">FORMAT:
+        /// [comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]...</param>
+        /// <returns></returns>
+        public string  UpdatePartInventory(string input)
+        {
+            StringBuilder sB = new StringBuilder();
+            try
+            {
+                string[] arr = input.Split(m_dlim, StringSplitOptions.None);
+                string cmt = arr[0].ToUpper();
+                for (int i =1;i<arr.Length;i=i+6)
+                {
+                    clsDB myDB = new clsDB();
+                    SqlCommand cmd = new SqlCommand();
+                    List<SqlParameter> ps = new List<SqlParameter>();
+                    string spName = "";
+                    string ID = arr[i];
+                    string Qty = arr[i + 1];
+                    string Delta = arr[i + 2];
+                    string Loc = arr[i + 3];
+                    string Owner = arr[i + 4];
+                    string VPNID = arr[i + 5];
+
+                    int oldQty = 0;
+                    int oldLoc = -1;
+                    Int64 oldOwner = -1;
+                    //Get the current location, qty, and owner for the given ID
+                    ps.Add(new SqlParameter("@" + DBK.ID, Int64.Parse(ID)));
+                    using (myDB.OpenConnection())
+                    {
+                        using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(DBK.SP.spINVGETINFOFORINVBULKID, ps, clsDB.SPExMode.READER, ref cmd))
+                        {
+                            if (dR !=null && dR.HasRows)
+                            {
+                                dR.Read();
+                                oldQty = (int)dR[DBK.intQTY];
+                                oldLoc = (int)dR[DBK.keyLOCATIONBULK];
+                                oldOwner = (Int64)dR[DBK.keyOWNER];
+                            }
+                        }
+                    }
+
+                    //Reset for next usage
+                    ps.Clear();
+
+                    if (Qty=="-1" && Int64.Parse(ID) > -1)
+                    {
+                        //User wants to remove this entry from invBulk
+                        ps.Add(new SqlParameter("@" + DBK.keyBULKITEM, VPNID));
+                        ps.Add(new SqlParameter("@" + DBK.keyCHANGEDBY, 1));
+                        ps.Add(new SqlParameter("@" + DBK.intDELTA, -oldQty));
+                        ps.Add(new SqlParameter("@" + DBK.strCOMMENT, cmt));
+                        ps.Add(new SqlParameter("@" + DBK.keyTRANSACTIONTYPE, 1));
+                        ps.Add(new SqlParameter("@" + DBK.keyLOCATIONBULK, oldLoc));
+                        ps.Add(new SqlParameter("@" + DBK.keyOWNER, oldOwner));
+                        ps.Add(new SqlParameter("@" + DBK.ID, ID));
+                        spName = DBK.SP.spINVREMOVEBULKINVENTRY;
+                    }
+                    else if (!clsUtil.IsInteger(Qty))
+                    {
+                        //Ignore this value, but alert user via email
+                    }
+                    else if (Qty != "" && Int64.Parse(Loc) > -1 && Int64.Parse(Owner)   > -1) {
+                        //Update Qty based on Delta; note the client has already determined if there is a minus or not in front of delta, so
+                        int newQty = int.Parse(Qty) + int.Parse(Delta);
+
+                        //Only continue if there is a change in the data
+                        if (oldLoc != int.Parse(Loc) || oldOwner != Int64.Parse(Owner) || oldQty != newQty)
+                        {
+                            //User wants to make a new/update an existing entry
+                            ps.Add(new SqlParameter("@" + DBK.keyBULKITEM, VPNID));
+                            ps.Add(new SqlParameter("@" + DBK.keyCHANGEDBY, 1));
+                            ps.Add(new SqlParameter("@" + DBK.intDELTA, Delta));
+                            ps.Add(new SqlParameter("@" + DBK.strCOMMENT, cmt));
+                            ps.Add(new SqlParameter("@" + DBK.keyTRANSACTIONTYPE, 1));
+                            ps.Add(new SqlParameter("@" + DBK.keyLOCATIONBULK, Loc));
+                            ps.Add(new SqlParameter("@" + DBK.keyOWNER, Owner));
+                            ps.Add(new SqlParameter("@" + DBK.intQTY, newQty));
+                            ps.Add(new SqlParameter("@" + DBK.ID, ID));
+                            spName = DBK.SP.spINVUPSERTINVBULKENTRY;
+                        }
+
+                    }
+                    if (spName != "")
+                    {
+                        using (myDB.OpenConnection())
+                        {
+                            myDB.ExecuteSP(spName, ps, clsDB.SPExMode.NONQUERY, ref cmd);
+                            {
+                                if (myDB.ErrMsg != "")
+                                {
+                                    sB.Append(myDB.ErrMsg);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return sB.ToString().Replace(AAAK.vbCRLF, DynControls.html_linebreak_string());
+            } catch (Exception ex)
+            {
+                return (ex.Message + AAAK.vbCRLF + ex.StackTrace).Replace(AAAK.vbCRLF, DynControls.html_linebreak_string());
+            }
+        }
+
+        /// <summary>
+        /// Returns the HTML for a table showing a Part's Inventory History
+        /// </summary>
+        /// <param name="id">Value of otsParts.ID for which we want the history</param>
+        /// <returns></returns>
+        public string MakePartNumberInventoryHistoryTable(Int64 id)
+        {
+            try
+            {
+
+                List<HTMLStrings.TableRow> tblRows = new List<HTMLStrings.TableRow>();
+                tblRows.Add(new HTMLStrings.TableRow(
+                        "row_h",
+                        "clsHeaderRow",
+                        new HTMLStrings.TableCell[] {
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Transaction<br />Date",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Vendor PN",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Transaction<br />Qty",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Comment",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Changed By",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","New Location",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","New Contact<br />Person",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Update<br />Method",1,true),
+                                                    }
+                                                         )
+                                 );
+
+                clsDB myDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                List<SqlParameter> ps = new List<SqlParameter>();
+                ps.Add(new SqlParameter("@" + DBK.ID, id));
+                using (myDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(DBK.SP.spINVGETPARTHISTORY,ps,clsDB.SPExMode.READER,ref cmd))
+                    {
+                        if (dR != null && dR.HasRows)
+                        {
+                            while (dR.Read())
+                            {
+                                tblRows.Add(new HTMLStrings.TableRow(
+                                        "row_" + id,
+                                        "rowInvHistory",
+                                        new HTMLStrings.TableCell[] {
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.dtTRANSACTION])),
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.strVENDORPARTNUMBER])),
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.intDELTA])),
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.strCOMMENT])),
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.SP_COLALIAS.CHANGEDBY])),
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.SP_COLALIAS.FULLADDRESS])),
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.SP_COLALIAS.CONTACT])),
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.strTYPE])),
+                                                                    }
+                                                                         )
+                                                 );
+                            }
+                        }
+
+                    }
+                }
+
+                HTMLStrings.Table tbl = new HTMLStrings.Table("tblInvHistory_" + id.ToString(), "tblInvHistory", tblRows);
+                //Disable the following until I understand how to transfer formatting of a TAB to formatting a
+                //PAGE
+                //return "<p>URL: " + DynControls.html_hyperlink_string("",
+                //                            HttpContext.Current.Request.Url.AbsoluteUri + ".aspx?ID=" + id + "&INVH=Y",
+                //                            "bkmkinvh_" + id, "bkmkID", "_blank")  + "</p>" +
+                //    tbl.ToHTML();
+                return tbl.ToHTML();
+
+            }
+            catch (Exception ex)
+            {
+                return (ex.Message + AAAK.vbCRLF + ex.StackTrace).Replace(AAAK.vbCRLF, DynControls.html_linebreak_string());
+            }
+        }
+
     }
+
+
 }

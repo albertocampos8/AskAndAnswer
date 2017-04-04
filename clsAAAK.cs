@@ -179,7 +179,52 @@ namespace AskAndAnswer
 
         //END OTS DATABASE ENTRIES
 
+        //LOCATION DATABASE TABLES/COLUMNS
+        public const string locCOUNTRY = "locCountry";
+        public const string strCOUNTRY = "strCountry";
 
+        public const string locPOSTALCODE = "locPostalCode";
+        public const string strPOSTALCODE = "strPostalCode";
+
+        public const string locSTATEPROVINCE = "locStateProvince";
+        public const string strSTATEPROVINCE = "strStateProvince";
+
+        public const string locCITY = "locCity";
+        public const string strCITY = "strCity";
+
+        public const string locADDRESS = "locAddress";
+        public const string strADDRESS = "strAddress";
+
+        public const string locDETAIL = "locDetail";
+        public const string strDETAIL = "strDetail";
+
+        public const string locLOCATION = "locLocation";
+        public const string strFLOOR = "strFloor";
+        public const string dtDEFINED = "dtDefined";
+        public const string keyCOUNTRY = "keyCountry";
+        public const string keySTATEPROVINCE = "keyStateProvince";
+        public const string keyCITY = "keyCity";
+        public const string keyADDRESS = "keyAddress";
+        public const string keyDETAIL = "keyDetail";
+        public const string keyDEFINEDBY = "keyDefinedBy";
+        public const string keyPOSTALCODE = "keyPostalCode";
+
+        //END LOCATION DATABASE ENTRIES
+
+        //Inventory DATABASE ENTRIES
+        public const string invBULK = "invBulk";
+        public const string keyLOCATIONBULK = "keyLocationBulk";
+        public const string keyBULKITEM = "keyBulkItem";
+        public const string keyOWNER = "keyOwner";
+
+        public const string invHISTORY = "invHistory";
+        public const string keyCHANGEDBY = "keyChangedBy";
+        public const string dtTRANSACTION = "dtTransaction";
+        public const string intDELTA = "intDelta";
+        public const string strCOMMENT = "strComment";
+        public const string keyTRANSACTIONTYPE = "keyTransactionType";
+         
+        //End Inventory DATABASE ENTRIES
         //public const string ID = "ID";
         //Stored Procdedures
         //The stored procedure that retrieves the key value pair for drop down boxes from the database
@@ -192,6 +237,8 @@ namespace AskAndAnswer
         public const string spGETKVPENVIRONCODE = "spGetKVPEnvironCode";
         public const string spGETKVPPARTSTATUS = "spGetKVPPartStatus";
         public const string spGETKVPVENDORSTATUS = "spGetKVPVendorStatus";
+        public const string spGETKVPFULLADDRESS = "spGetKVPFullAddress";
+        public const string spGETKVPUSERINFO = "spGetKVPUserInfo";
         public const string spOTSGETBASEPARTNUMBER = "spOTSGetBasePartNumber";
         public const string spOTSINSERTNEWPARTNUMBER = "spOTSInsertNewPartNumber";
         public const string spOTSINSERTNEWPARTNUMBER2 = "spOTSInsertNewPartNumber2";
@@ -203,7 +250,18 @@ namespace AskAndAnswer
         public const string spOTSFINDBYREQUESTOR = "spOTSFindByRequestor";
         public const string spOTSFINDBYVENDOR = "spOTSFindByVendor";
         public const string spOTSFINDBYVENDORPARTNUMBER = "spOTSFindByVendorPartNumber";
+
+        public const string spOTSFINDBYBUWITHINV = "spOTSFindByBUWithInv";
+        public const string spOTSFINDBYDATEWITHINV = "spOTSFindByDateWithInv";
+        public const string spOTSFINDBYDESCRIPTIONWITHINV = "spOTSFindByDescriptionWithInv";
+        public const string spOTSFINDBYPARTNUMBERWITHINV = "spOTSFindByPartNumberWithInv";
+        public const string spOTSFINDBYPRODUCTWITHINV = "spOTSFindByProductWithInv";
+        public const string spOTSFINDBYREQUESTORWITHINV = "spOTSFindByRequestorWithInv";
+        public const string spOTSFINDBYVENDORWITHINV = "spOTSFindByVendorWithInv";
+        public const string spOTSFINDBYVENDORPARTNUMBERWITHINV = "spOTSFindByVendorPartNumberWithInv";
+
         public const string spOTSGETPNINFO = "spOTSGetPNInfo";
+        public const string spOTSGETPNINVENTORYINFO = "spOTSGetPNInventoryInfo";
         public const string spOTSUPDATEPARTSTABLE = "spOTSUpdatePartsTable";
         public const string spOTSRECONCILEPARTSTABLE = "spOTSReconcilePartsTable";
         public const string spOTSUPDATE_ADDVENDORPNTOOTSPARTNUMBER = "spOTSUpdate_AddVendorPartNumberToOTSPartNumber";
@@ -233,6 +291,20 @@ namespace AskAndAnswer
         public const string spAC_OTSVENDOR = "spAC_OTSVendor";
         public const string spAC_OTSPRODUCT = "spAC_OTSProduct";
         public const string spAC_OTSPARTS = "spAC_OTSParts";
+
+        public const string spLOCADDLOCATION = "spLOCAddLocation";
+        public const string spLOCLOOKUPADDRESSBYSTREET = "spLOCLookUpAddressByStreet";
+
+        public const string spAC_LOCADDRESS = "spAC_LocAddress";
+        public const string spAC_LOCCITY = "spAC_LocCity";
+        public const string spAC_LOCSTATEPROVINCE = "spAC_LocStateProvince";
+        public const string spAC_LOCPOSTALCODE = "spAC_LocPostalCode";
+        public const string spAC_LOCCOUNTRY = "spAC_LocCountry";
+
+        public const string spINVGETINFOFORINVBULKID = "spInvGetInfoForInvBulkID";
+        public const string spINVREMOVEBULKINVENTRY = "spInvRemoveBulkInvEntry";
+        public const string spINVUPSERTINVBULKENTRY = "spInvUpsertInvBulkEntry";
+        public const string spINVGETPARTHISTORY = "spInvGetPartHistory";
         //COLUMN ALIAS NAMES Used in Stored Procs
         public class SP_COLALIAS
         {
@@ -242,6 +314,11 @@ namespace AskAndAnswer
             public const string VENDORPNID = "VendorPNID";
             public const string PN = "pn";
             public const string USERNAME = "USERNAME";
+            public const string ONHAND = "OnHand";
+            public const string INVBULKID = "invBulkID";
+            public const string CHANGEDBY = "ChangedBy";
+            public const string FULLADDRESS = "FullAddress";
+            public const string CONTACT = "Contact";
         }
         public enum DISPLAYTYPES { UNDEFINED, NONE, BLOCK, INLINE, FILL, INLINEBLOCK}
 

@@ -4,7 +4,6 @@ C:\WebProjects\Repository\AskAndAnswer\bin\AskAndAnswer.pdb
 C:\WebProjects\Repository\AskAndAnswer\obj\Debug\AskAndAnswer.csprojResolveAssemblyReference.cache
 C:\WebProjects\Repository\AskAndAnswer\obj\Debug\AskAndAnswer.dll
 C:\WebProjects\Repository\AskAndAnswer\obj\Debug\AskAndAnswer.pdb
-C:\WebProjects\Repository\AskAndAnswer\bin\EPPlus.dll
 C:\WebProjects\Repository\AskAndAnswer\bin\EPPlus.xml
 C:\WebProjects\Repository\AskAndAnswer\bin\Newtonsoft.Json.dll
 C:\WebProjects\Repository\AskAndAnswer\bin\Newtonsoft.Json.xml

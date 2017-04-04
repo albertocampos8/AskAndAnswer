@@ -1,0 +1,46 @@
+﻿body {
+    
+}
+#divAdminTabs { 
+    position: relative; 
+    padding-left: 6.5em; 
+} 
+#divAdminTabs .ui-tabs-nav { 
+    position: absolute; 
+    left: 0.25em; 
+    top: 0.25em; 
+    bottom: 0.25em; 
+    width: 6em; 
+    padding: 0.2em 0 0.2em 0.2em; 
+} 
+#divAdminTabs .ui-tabs-nav li { 
+    right: 1px; 
+    width: 100%; 
+    border-right: none; 
+    border-bottom-width: 1px !important; 
+    -moz-border-radius: 4px 0px 0px 4px; 
+    -webkit-border-radius: 4px 0px 0px 4px; 
+    border-radius: 4px 0px 0px 4px; 
+    overflow: hidden; 
+} 
+#divAdminTabs .ui-tabs-nav li.ui-tabs-selected, 
+#divAdminTabs .ui-tabs-nav li.ui-state-active { 
+    border-right: 1px solid transparent; 
+} 
+#divAdminTabs .ui-tabs-nav li a { 
+    float: right; 
+    width: 100%; 
+    text-align: right; 
+} 
+#divAdminTabs .ui-tabs-panel { 
+    height: 40em; 
+}
+
+.lblLocInput {
+    display:inline;
+}
+
+.txtLocInput {
+    display:inline-block;
+    width: 100%;
+}
