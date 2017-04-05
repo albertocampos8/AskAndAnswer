@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 
 /// <summary>
-/// Constatns for the AskAndAnswer module
+/// Constants for the AskAndAnswer module
 /// </summary>
 namespace AskAndAnswer
 {

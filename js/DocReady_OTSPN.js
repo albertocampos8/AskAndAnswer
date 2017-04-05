@@ -25,7 +25,7 @@
         //The following is needed if viewin PN history via an html string
         try {
             //Something is not getting formatted; issue has to do with the fact the original table is in a TAB...
-            $FormatTable_OTSStyle("#tblInvInfo_" + $(".getID").attr('id').split("_")[1]);
+            FormatTable_OTSStyle("#tblInvInfo_" + $(".getID").attr('id').split("_")[1]);
             FormatINVPNDetail($(".getID").attr('id'));
         } catch (err) {
         }

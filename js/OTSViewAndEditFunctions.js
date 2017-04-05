@@ -76,7 +76,7 @@ function AJAX_GetOTSPNDetail(id) {
                 FormatOTSPNDetail("pnsummary_" + id);
                 //alert(msg.d);
                 //Initialize the returned HTML
-                FormatINVPNDetail("#divPNInvInfo_" + id)
+                FormatINVPNDetail("#divPNInvInfo_" + id);
 
             },
             error: function (xhr, textStatus, errorThrown) {

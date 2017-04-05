@@ -70,7 +70,7 @@ namespace AskAndAnswer
                     return;
                 } catch (Exception ex)
                 {
-
+                    string x = ex.Message + ex.StackTrace;
                 }
             } 
             //Create three panels and add them to the existing div
