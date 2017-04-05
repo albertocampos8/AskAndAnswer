@@ -22,7 +22,7 @@ function InitializeOTSViewAndEdit() {
         $(".otsbtnFoundExpand").on("click", ShowOTSPNDetail);
 
     } catch (err) {
-        alert("Error in InitializeOTSSearchCSS: " + err.message);
+        alert("Error in InitializeOTSViewAndEdit: " + err.message);
     }
 }
 
@@ -567,6 +567,27 @@ function editINVInfo_Click() {
             }
         });
 
+        //Autocomplete handler for subinventory
+        $(".subinv." + id).autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    url: "OTSPN.aspx/GetSubInventory",
+                    //data: strValForTerm,
+                    data: "{'term':'" + $(this).val() + "'}",
+                    contentType: "application/json; charset utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        response(data.d);
+                    },
+                    error: function (response) {
+                        response("");
+                        alert("Error: " + res.responseText);
+                    }
+                }) //ajax
+            },
+            minLength: 1
+        });
     } catch (err) {
         alert("Error in editInvInfo_Click: " + err.message);
     }
@@ -585,7 +606,7 @@ function saveINVInfo_Click() {
 
         //we need to encode the data in the table.
         //Format is as follows:
-        //[comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]...
+        //[comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[SubInv]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]...
         data = ""
         $("#tblInvInfo_" + id + " tr").each(function (index, value) {
             if ($(this).attr('id').split('_').length > 2) {
@@ -602,7 +623,7 @@ function saveINVInfo_Click() {
                 if (owner == null) {
                     owner = -1;
                 }
-
+                subinv = $("#invSubInv_" + uid).val();
                 vpnid = $(this).attr('id').split('_')[1];
                 vpn = $("#invVendorPN_" + uid).val();
                 delta = $("#invDelta_" + uid).val();
@@ -662,7 +683,7 @@ function saveINVInfo_Click() {
                 }
 
                 //Add data
-                data = data + $(this).attr('id').split('_')[3] + DELIM + qty + DELIM + delta + DELIM +
+                data = data + $(this).attr('id').split('_')[3] + DELIM + qty + DELIM + delta + DELIM + subinv + DELIM +
                     loc + DELIM + owner + DELIM + vpnid + DELIM;
             }
 
@@ -687,24 +708,27 @@ function saveINVInfo_Click() {
             var unqpnid = $(this).attr('id').split("_")[2];
             var unqinvbulkid = $(this).attr('id').split("_")[3];
             var unquid = "_" + unqvpnid + "_" + unqpnid + "_" + unqinvbulkid;
-            var key = $("#invVendor" + unquid).val() +
-                      $("#invVendorPN" + unquid).val() +
-                      $("#invLocCode" + unquid).val() +
-                      $("#invContactCode" + unquid).val();
+            var key = $("#invVendor" + unquid).val() + "!!!" +
+                      $("#invVendorPN" + unquid).val() + "!!!" +
+                      $("#invLocCode" + unquid).val() + "!!!" +
+                      $("#invContactCode" + unquid).val() + "!!!" +
+                      $("#invSubInv" + unquid).val();
             if (dctUniqueEntries[key] == null) {
                 dctUniqueEntries[key] = unquid;
             } else {
                 $("#invLocCode" + unquid).addClass("duplicateField");
                 $("#invContactCode" + unquid).addClass("duplicateField");
+                $("#invSubInv" + unquid).addClass("duplicateField");
                 $("#invVendor" + unquid).removeClass("displayField").addClass("duplicateField");
                 $("#invVendorPN" + unquid).removeClass("displayField").addClass("duplicateField");
                 $("#invLocCode" + dctUniqueEntries[key]).addClass("duplicateField");
                 $("#invContactCode" + dctUniqueEntries[key]).addClass("duplicateField");
+                $("#invSubInv" + dctUniqueEntries[key]).addClass("duplicateField");
                 $("#invVendor" + dctUniqueEntries[key]).removeClass("displayField").addClass("duplicateField");
                 $("#invVendorPN" + dctUniqueEntries[key]).removeClass("displayField").addClass("duplicateField");
-                msg = msg + "<p>Location and Owner must be unique for " + $("#invVendor" + unquid).val() +
+                msg = msg + "<p>SubInventory, Location, and Owner must be unique for " + $("#invVendor" + unquid).val() +
                     " part number '" + $("#invVendorPN" + unquid).val() + "'.  "  + 
-                    "The offending rows have been highlighted orange.  Please change the values in one of the rows, or, if you have accidentally added a duplicate row, remove the duplicate value.</p>";
+                    "The offending rows have been highlighted orange.  Please change the relevant values in one of the rows, or, if you have accidentally added a duplicate row, remove the duplicate value.</p>";
             }
         });
 
@@ -822,6 +846,7 @@ function FormatINVPNDetail(divSelector) {
 
         //Synch the value of the Inventory Cell in the main table (i.e., for otsParts.ID) to the updated value in this html's header
         $(".onhand." + id).html($("#invhdr_" + id).text().split(":")[1].trim());
+
     } catch (err) {
         alert("Error in FormatINVPNDetail: " + err.message);
     }
@@ -932,9 +957,10 @@ function AddRowToInventoryTable() {
         $("#invrow_" + newRowID + " td").eq(2).children().first().attr('id', "invQty_" + newRowID);
         $("#invrow_" + newRowID + " td").eq(3).children().first().attr('id', "invSign_" + newRowID);
         $("#invrow_" + newRowID + " td").eq(4).children().first().attr('id', "invDelta_" + newRowID);
-        $("#invrow_" + newRowID + " td").eq(5).children().first().attr('id', "invLocCode_" + newRowID);
-        $("#invrow_" + newRowID + " td").eq(6).children().first().attr('id', "invContactCode_" + newRowID);
-        $("#invrow_" + newRowID + " td").eq(7).children().first().attr('id', "btnRemoveRow_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(5).children().first().attr('id', "invSubInv_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(6).children().first().attr('id', "invLocCode_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(7).children().first().attr('id', "invContactCode_" + newRowID);
+        $("#invrow_" + newRowID + " td").eq(8).children().first().attr('id', "btnRemoveRow_" + newRowID);
 
         //Replace the html for btnRemoveRow with
         $("#btnRemoveRow_" + newRowID).off();
@@ -949,6 +975,7 @@ function AddRowToInventoryTable() {
         //Reset some values
         $("#invLocCode_" + newRowID).val('');
         $("#invContactCode_" + newRowID).val('');
+        $("#invSubInv_" + newRowID).val('');
         //The only action is ADD for a new row...
         $("#invSign_" + newRowID).val('2');
         $("#invSign_" + newRowID).removeClass('activeInputField');
@@ -957,34 +984,7 @@ function AddRowToInventoryTable() {
         $("#invQty_" + newRowID).val('0');
         $("#invDelta_" + newRowID).val('');
 
-        //Only the Vendor and Vendor PN fields are editable, because the part they are adding may already exist, and we don't want
-        //users to inadvertently overwrite existing part information.  Instead, let them add the part; they will see what, if any
-        //data exists for the part after it is added.  At that time, they can decide if they want to change any information for the given part.
-        //revert fields
-        //Start by shutting all fields down
-        //$("#row_" + insertedRowIndex + "_" + id).find(".toggle").each(function (index, value) {
-        //    $(this).removeClass("activeInputField");
-        //    $(this).addClass("inactiveInputField");
-        //    if ($(this).hasClass("txtinput")) {
-        //        $(this).prop('readonly', 'true');
-        //        $(this).val('');
-        //    } else {
-        //        $(this).prop('disabled', 'true');
-        //        $(this).val('1');
-        //    }
-        //});
-        ////Only let Vendor, Vendor part number be active
-        //$("#txtinput_0_" + insertedRowIndex + "_" + id).removeClass("inactiveInputField");
-        //$("#txtinput_0_" + insertedRowIndex + "_" + id).val('');
-        //$("#txtinput_2_" + insertedRowIndex + "_" + id).removeClass("inactiveInputField");
-        //$("#txtinput_0_" + insertedRowIndex + "_" + id).addClass("activeAddButton");
-        //$("#txtinput_2_" + insertedRowIndex + "_" + id).addClass("activeAddButton");
-        //$("#txtinput_0_" + insertedRowIndex + "_" + id).prop('readonly', '');
-        //$("#txtinput_2_" + insertedRowIndex + "_" + id).prop('readonly', '');
-
-
-
-        alert($("#invrow_" + newRowID).html());
+        //alert($("#invrow_" + newRowID).html());
     } catch (err) {
         alert("Error in AddRowToInventoryTable: " + err.message);
     }

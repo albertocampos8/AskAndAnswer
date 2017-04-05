@@ -251,6 +251,7 @@ namespace AskAndAnswer
         public const string keyLOCATIONBULK = AAAK.keyLOCATIONBULK;
         public const string keyBULKITEM = AAAK.keyBULKITEM;
         public const string keyOWNER = AAAK.keyOWNER;
+        public const string keySUBINV = AAAK.keySUBINV;
 
         public const string invHISTORY = AAAK.invHISTORY;
         public const string keyCHANGEDBY = AAAK.keyCHANGEDBY;
@@ -259,6 +260,8 @@ namespace AskAndAnswer
         public const string strCOMMENT = AAAK.strCOMMENT;
         public const string keyTRANSACTIONTYPE = AAAK.keyTRANSACTIONTYPE;
 
+        public const string invSUBINV = AAAK.invSUBINV;
+        public const string strSUBINV = AAAK.strSUBINV;
         //End Inventory DATABASE ENTRIES
 
         //Stored Procedures
@@ -340,6 +343,8 @@ namespace AskAndAnswer
             public const string spINVREMOVEBULKINVENTRY = AAAK.spINVREMOVEBULKINVENTRY;
             public const string spINVUPSERTINVBULKENTRY = AAAK.spINVUPSERTINVBULKENTRY;
             public const string spINVGETPARTHISTORY = AAAK.spINVGETPARTHISTORY;
+
+            public const string spAC_INVSUBINVENTORY = AAAK.spAC_INVSUBINVENTORY;
         }
 
         public partial class SPVar
@@ -1351,7 +1356,7 @@ namespace AskAndAnswer
             htmlForWhereUsedTab = WhereUsedForPN(pnID.ToString());
             //Obtaining inventory info for the id is also handled by a different fucntion, which we'll also call now
             htmlForInvTab = InvForPN(pnID.ToString());
-            htmlForTransactionTab = MakePartNumberInventoryHistoryTable(pnID);
+            //htmlForTransactionTab = MakePartNumberInventoryHistoryTable(pnID);
 
             //Title of this section
             string bookmarkurl = "Bookmark this URL to get back to this page: " + DynControls.html_hyperlink_string("", 
@@ -3475,13 +3480,15 @@ namespace AskAndAnswer
                         new HTMLStrings.TableCell[] {
                                         new HTMLStrings.TableCell("","clsHeaderRow","Vendor",1,true),
                                         new HTMLStrings.TableCell("","clsHeaderRow","Vendor<br>Part<br>Number",1,true),
-                                        new HTMLStrings.TableCell("","clsHeaderRow","Current Qty",1,true,
+                                        new HTMLStrings.TableCell("","clsHeaderRow autofitcell","Current<br>Qty",1,true,
                                         displayStyle:qtyColWidth),
                                         new HTMLStrings.TableCell("","clsHeaderRow toggleCol " + pnID,"Action",1,true),
                                         new HTMLStrings.TableCell("","clsHeaderRow toggleCol " + pnID,"Delta",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Sub Inv",1,true,
+                                            toolTip:"Use this column if you wish to further sub-divide Part Number Inventory."),
                                         new HTMLStrings.TableCell("","clsHeaderRow","Location",1,true),
                                         new HTMLStrings.TableCell("","clsHeaderRow","Contact",1,true),
-                                        new HTMLStrings.TableCell("","clsHeaderRow","Add Location",1,true)
+                                        new HTMLStrings.TableCell("","clsHeaderRow","Add<br>Partition",1,true)
                                                     }
                                                          )
                                  );
@@ -3491,6 +3498,7 @@ namespace AskAndAnswer
                     string vendor = myDB.Fld2Str(dR[DBK.strVENDOR]);
                     string vPN = myDB.Fld2Str(dR[DBK.strVENDORPARTNUMBER]);
                     string qty = myDB.Fld2Str(dR[DBK.SP_COLALIAS.ONHAND]);
+                    string subinv = myDB.Fld2Str(dR[DBK.strSUBINV]);
                     string locID = myDB.Fld2Str(dR[DBK.keyLOCATIONBULK]);
                     string contactID = myDB.Fld2Str(dR[DBK.keyOWNER]);
                     string invBulkID = myDB.Fld2Str(dR[DBK.SP_COLALIAS.INVBULKID]);
@@ -3499,8 +3507,8 @@ namespace AskAndAnswer
                     //we expect a unique Vendor Part Number ID (vpnID) for each VPN.
                     string uid = "_" + vpnID + "_" + pnID + "_" + invBulkID;
 
-                    string buttonAddLochtml = DynControls.html_button_string("btnAddLoc" + uid, "Add Location", "btnAddLoc " + pnID,
-                        true, AAAK.DISPLAYTYPES.BLOCK, "Add a new Location and/or SubInventory for this Vendor Part Number.",
+                    string buttonAddLochtml = DynControls.html_button_string("btnAddLoc" + uid, "Add", "btnAddLoc " + pnID,
+                        true, AAAK.DISPLAYTYPES.BLOCK, "Add a new SubInventory/Location/Contact partition for this Vendor Part Number.",
                         enabled:false);
                     tblRows.Add(new HTMLStrings.TableRow(
                     "invrow" + uid,
@@ -3510,7 +3518,7 @@ namespace AskAndAnswer
                                                         "invVendor" + uid, null, "", "clsInvCellInfo " + pnID, false),
                                                     new HTMLStrings.TableCell("","clsInvCell_" + pnID,vPN,1,false, true,
                                                         "invVendorPN" + uid, null, "","clsInvCellInfo " + pnID, false),
-                                                    new HTMLStrings.TableCell("","clsInvCell_" + pnID,qty,1,false,true,
+                                                    new HTMLStrings.TableCell("","autofitcell clsInvCell_" + pnID,qty,1,false,false,
                                                         "invQty" + uid, null, "",qtyColWidth, false),
                                                     new HTMLStrings.TableCell("","toggleCol clsInvCell_" + pnID + " " + pnID,"",1,false,true,
                                                         "invSign" + uid, lstSign, "", "inv cboinput toggle " + pnID, false,
@@ -3518,12 +3526,14 @@ namespace AskAndAnswer
                                                     new HTMLStrings.TableCell("","toggleCol clsInvCell_" + pnID + " " + pnID,"0",1,false,true,
                                                         "invDelta" + uid, null, "", "inv txtinput toggle " + pnID, false,
                                                         "This is always a POSITIVE number!  Set 'Action' to ADD or REMOVE to add to or subtract from inventory."),
+                                                    new HTMLStrings.TableCell("","clsInvCell_" + pnID,subinv,1,false,true,
+                                                        "invSubInv" + uid, null, "", "inv txtinput toggle subinv " + pnID, false,""),
                                                     new HTMLStrings.TableCell("","clsInvCell_" + pnID,locID,1,false,true,
                                                         "invLocCode" + uid, lstLoc, "", "inv cboinput toggle " + pnID, false,"",true),
                                                     new HTMLStrings.TableCell("","clsInvCell_" + pnID,contactID,1,false,true,
                                                         "invContactCode" + uid, lstUsers, "", "inv cboinput toggle " + pnID, false,"",true),
                                                     new HTMLStrings.TableCell("","clsInvCell_" + pnID,buttonAddLochtml,1,false,true,
-                                                        "",null,"Add Location","btnAddLocInv")
+                                                        "",null,"Add","btnAddLocInv")
                                                 }
                                                      )
                              );
@@ -3559,7 +3569,7 @@ namespace AskAndAnswer
         /// UPdates invBulk with user information in input
         /// </summary>
         /// <param name="input">FORMAT:
-        /// [comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]...</param>
+        /// [comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[SubInv]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]......</param>
         /// <returns></returns>
         public string  UpdatePartInventory(string input)
         {
@@ -3568,7 +3578,7 @@ namespace AskAndAnswer
             {
                 string[] arr = input.Split(m_dlim, StringSplitOptions.None);
                 string cmt = arr[0].ToUpper();
-                for (int i =1;i<arr.Length;i=i+6)
+                for (int i =1;i<arr.Length;i=i+7)
                 {
                     clsDB myDB = new clsDB();
                     SqlCommand cmd = new SqlCommand();
@@ -3577,14 +3587,17 @@ namespace AskAndAnswer
                     string ID = arr[i];
                     string Qty = arr[i + 1];
                     string Delta = arr[i + 2];
-                    string Loc = arr[i + 3];
-                    string Owner = arr[i + 4];
-                    string VPNID = arr[i + 5];
+                    string SubInv = arr[i + 3].ToUpper();
+                    string Loc = arr[i + 4];
+                    string Owner = arr[i + 5];
+                    string VPNID = arr[i + 6];
 
                     int oldQty = 0;
                     int oldLoc = -1;
                     Int64 oldOwner = -1;
-                    //Get the current location, qty, and owner for the given ID
+                    string oldSubInv = "";
+                    int oldKeySubInv = -1;
+                    //Get the current subinv, location, qty, and owner for the given ID
                     ps.Add(new SqlParameter("@" + DBK.ID, Int64.Parse(ID)));
                     using (myDB.OpenConnection())
                     {
@@ -3596,6 +3609,8 @@ namespace AskAndAnswer
                                 oldQty = (int)dR[DBK.intQTY];
                                 oldLoc = (int)dR[DBK.keyLOCATIONBULK];
                                 oldOwner = (Int64)dR[DBK.keyOWNER];
+                                oldKeySubInv = (int)dR[DBK.keySUBINV];
+                                oldSubInv = (string)dR[DBK.strSUBINV];
                             }
                         }
                     }
@@ -3613,6 +3628,7 @@ namespace AskAndAnswer
                         ps.Add(new SqlParameter("@" + DBK.keyTRANSACTIONTYPE, 1));
                         ps.Add(new SqlParameter("@" + DBK.keyLOCATIONBULK, oldLoc));
                         ps.Add(new SqlParameter("@" + DBK.keyOWNER, oldOwner));
+                        ps.Add(new SqlParameter("@" + DBK.keySUBINV, oldKeySubInv));
                         ps.Add(new SqlParameter("@" + DBK.ID, ID));
                         spName = DBK.SP.spINVREMOVEBULKINVENTRY;
                     }
@@ -3625,7 +3641,7 @@ namespace AskAndAnswer
                         int newQty = int.Parse(Qty) + int.Parse(Delta);
 
                         //Only continue if there is a change in the data
-                        if (oldLoc != int.Parse(Loc) || oldOwner != Int64.Parse(Owner) || oldQty != newQty)
+                        if (oldLoc != int.Parse(Loc) || oldOwner != Int64.Parse(Owner) || oldQty != newQty || oldSubInv != SubInv)
                         {
                             //User wants to make a new/update an existing entry
                             ps.Add(new SqlParameter("@" + DBK.keyBULKITEM, VPNID));
@@ -3637,6 +3653,7 @@ namespace AskAndAnswer
                             ps.Add(new SqlParameter("@" + DBK.keyOWNER, Owner));
                             ps.Add(new SqlParameter("@" + DBK.intQTY, newQty));
                             ps.Add(new SqlParameter("@" + DBK.ID, ID));
+                            ps.Add(new SqlParameter("@" + DBK.strSUBINV, SubInv));
                             spName = DBK.SP.spINVUPSERTINVBULKENTRY;
                         }
 
@@ -3682,6 +3699,7 @@ namespace AskAndAnswer
                                         new HTMLStrings.TableCell("","clsHeaderRow","Vendor PN",1,true),
                                         new HTMLStrings.TableCell("","clsHeaderRow","Transaction<br />Qty",1,true),
                                         new HTMLStrings.TableCell("","clsHeaderRow","Comment",1,true),
+                                        new HTMLStrings.TableCell("","clsHeaderRow","SubInv",1,true),
                                         new HTMLStrings.TableCell("","clsHeaderRow","Changed By",1,true),
                                         new HTMLStrings.TableCell("","clsHeaderRow","New Location",1,true),
                                         new HTMLStrings.TableCell("","clsHeaderRow","New Contact<br />Person",1,true),
@@ -3710,6 +3728,7 @@ namespace AskAndAnswer
                                         new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.strVENDORPARTNUMBER])),
                                         new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.intDELTA])),
                                         new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.strCOMMENT])),
+                                        new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.strSUBINV])),
                                         new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.SP_COLALIAS.CHANGEDBY])),
                                         new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.SP_COLALIAS.FULLADDRESS])),
                                         new HTMLStrings.TableCell("","clsInvHistCell",myDB.Fld2Str(dR[DBK.SP_COLALIAS.CONTACT])),

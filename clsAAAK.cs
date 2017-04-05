@@ -216,6 +216,7 @@ namespace AskAndAnswer
         public const string keyLOCATIONBULK = "keyLocationBulk";
         public const string keyBULKITEM = "keyBulkItem";
         public const string keyOWNER = "keyOwner";
+        public const string keySUBINV = "keySubInv";
 
         public const string invHISTORY = "invHistory";
         public const string keyCHANGEDBY = "keyChangedBy";
@@ -223,7 +224,9 @@ namespace AskAndAnswer
         public const string intDELTA = "intDelta";
         public const string strCOMMENT = "strComment";
         public const string keyTRANSACTIONTYPE = "keyTransactionType";
-         
+
+        public const string invSUBINV = "invSubInv";
+        public const string strSUBINV = "strSubInv"; 
         //End Inventory DATABASE ENTRIES
         //public const string ID = "ID";
         //Stored Procdedures
@@ -305,6 +308,8 @@ namespace AskAndAnswer
         public const string spINVREMOVEBULKINVENTRY = "spInvRemoveBulkInvEntry";
         public const string spINVUPSERTINVBULKENTRY = "spInvUpsertInvBulkEntry";
         public const string spINVGETPARTHISTORY = "spInvGetPartHistory";
+
+        public const string spAC_INVSUBINVENTORY = "spAC_InvSubInventory";
         //COLUMN ALIAS NAMES Used in Stored Procs
         public class SP_COLALIAS
         {

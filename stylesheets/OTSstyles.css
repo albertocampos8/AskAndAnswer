@@ -149,3 +149,8 @@ th, td {
     width:100%;
     height:100%;
 }
+
+.autofitcell {
+    width:1%;
+    white-space:nowrap;
+}

@@ -305,5 +305,23 @@ namespace AskAndAnswer
             return x.MakePartNumberInventoryHistoryTable(Int64.Parse(input));
         }
 
+        [System.Web.Services.WebMethod]
+        public static string[] GetSubInventory(string term)
+        {
+            try
+            {
+                clsUtil u = new clsUtil();
+                List<SqlParameter> ps = new List<SqlParameter>();
+
+                string[] x = u.GetJSONFromDB(DBK.SP.spAC_INVSUBINVENTORY, "%" + term + "%", DBK.strSUBINV);
+                return x;
+            }
+            catch (Exception ex)
+            {
+                string strErr = ex.Message + ex.StackTrace;
+                return new string[0];
+            }
+        }
+
     }
 }
