@@ -313,6 +313,7 @@ namespace AskAndAnswer
             public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR = AAAK.spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR;
             public const string spOTSFINDUNDEFINEDPARTTYPES = AAAK.spOTSFINDUNDEFINEDPARTTYPES;
             public const string spOTSUPDATEPARTSBASEDINAVL = AAAK.spOTSUPDATEPARTSBASEDINAVL;
+            public const string spOTSGETVENDORPNID = AAAK.spOTSGETVENDORPNID;
             public const string spOTSGETPNIDS = AAAK.spOTSGETPNIDS;
             public const string spUPSERTASSYBOMENTRY = AAAK.spUPSERTASSYBOMENTRY;
             public const string spDELETEASSYBOMPARTS = AAAK.spDELETEASSYBOMPARTS;
@@ -345,6 +346,10 @@ namespace AskAndAnswer
             public const string spINVGETPARTHISTORY = AAAK.spINVGETPARTHISTORY;
 
             public const string spAC_INVSUBINVENTORY = AAAK.spAC_INVSUBINVENTORY;
+            public const string spGETSUBINVID = AAAK.spGETSUBINVID;
+            public const string spGETOTSUSERID = AAAK.spGETOTSUSERID;
+            public const string spGETINVBULKID = AAAK.spGETINVBULKID;
+            public const string spGETINVBULKIDWITHVPNANDSUBINVIDONLY = AAAK.spGETINVBULKIDWITHVPNANDSUBINVIDONLY;
         }
 
         public partial class SPVar

@@ -22,6 +22,51 @@ namespace AskAndAnswer {
         protected global::System.Web.UI.WebControls.Panel otsUploadTabs;
         
         /// <summary>
+        /// lblImportType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblImportType;
+        
+        /// <summary>
+        /// rdbOTSImport control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdbOTSImport;
+        
+        /// <summary>
+        /// rdbOTSInventory control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdbOTSInventory;
+        
+        /// <summary>
+        /// lblInvComment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblInvComment;
+        
+        /// <summary>
+        /// txtInvComment control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtInvComment;
+        
+        /// <summary>
         /// divManualImport control.
         /// </summary>
         /// <remarks>

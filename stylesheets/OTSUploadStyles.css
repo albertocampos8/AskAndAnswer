@@ -15,3 +15,11 @@
     display:block;
     margin-bottom:5px;
 }
+
+#lblImportType, #lblInvComment, .uploadOpts {
+    display:block;
+}
+
+#txtInvComment {
+    width:100%;
+}

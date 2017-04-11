@@ -66,7 +66,15 @@ namespace AskAndAnswer
                     clsOTSUploader cOU = new clsOTSUploader();
                     for (int i= 0;i< lstFileNames.Count();i++)
                     {
-                        string processResult = cOU.ProcessFile(resp, fd, fn);
+                        if (rdbOTSImport.Checked)
+                        {
+                            string processResult = cOU.ProcessFile(resp, fd, fn);
+                        } else
+                        {
+                            string processResult = cOU.ProcessFileForInventory(resp, fd, fn, 1, txtInvComment.Text.ToUpper());
+                        }
+                                
+                        
                     }
                     
                 }
@@ -100,5 +108,6 @@ namespace AskAndAnswer
 
             }
         }
+
     }
 }

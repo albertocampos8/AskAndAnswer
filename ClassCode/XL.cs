@@ -16,6 +16,24 @@ namespace AskAndAnswer.ClassCode
         private object m_app = null;
         private object m_wkbk = null;
         private object m_wksht = null;
+        public object Worksheet
+        {
+            get { return m_wksht; }
+            set { m_wksht = value; }
+        }
+        private object m_wkshts = null;
+        /// <summary>
+        /// The NPOI object does not have a natural object to represent worksheets.
+        /// If you want to access each worksheet, you will need to do something like 
+        /// for i = 0 to workbook.getNumberOfSheets - 1
+        ///     sht = workbook.getSheetAt(i)
+        /// Therefore, this property is only valid when the underlying object is OfficOpenXml (xlsx file)
+        /// </summary>
+        public object Worksheets
+        {
+            get { return m_wkshts; }
+            set { m_wkshts = value; }
+        }
         private xType m_type = xType.none;
         private string m_errMsg = "";
         public string ErrMsg
@@ -86,13 +104,14 @@ namespace AskAndAnswer.ClassCode
                             //Note NPOI has no 'application' equivalent object, so m_app stays null.
                             //We start directly from a workbook object
                             HSSFWorkbook wb = new HSSFWorkbook(fstream);
-                            m_wkbk = wb;
+                            m_wkbk = wb;                        
                         }
                         break;
                     case xType.xlsx:
                         ExcelPackage xlsx = new ExcelPackage(f);
                         m_app = xlsx;
                         m_wkbk = ((ExcelPackage)m_app).Workbook;
+                        m_wkshts = ((OfficeOpenXml.ExcelWorkbook)m_wkbk).Worksheets;
                         break;
                     default:
                         m_app = null;

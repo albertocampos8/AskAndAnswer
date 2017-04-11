@@ -9,9 +9,19 @@
     <asp:Panel ID="otsUploadTabs" runat="server">
         <ul>
             <li><a href="#divManualImport">Manual Import</a></li>
-            <li><a href="#divAuotImport">Auto Import</a></li>
+            <li><a href="#divAutoImport">Auto Import</a></li>
         </ul>
+        <asp:Label ID="lblImportType" runat="server" Text="Select the File Type that defines this Import." CssClass="lblinput"></asp:Label>
+        <asp:RadioButton ID="rdbOTSImport" GroupName="rblFTypes" CssClass="uploadOpts" ClientIDMode="Static" runat="server" Text="Update OTS Part Database" />
+        <asp:RadioButton ID="rdbOTSInventory" GroupName="rblFTypes" CssClass="uploadOpts" ClientIDMode="Static" runat="server" Text="Upload Inventory Updates" />
+        <div id="divForError" style="color:red"></div>
+        <div id="divForInventory" style="display:none">
+            <asp:Label ID="lblInvComment" runat="server" 
+                Text="Enter the comment that will be used for the Inventory Transaction (note this will apply to ALL successful transactions that result from reading the file)."></asp:Label>
+            <asp:TextBox ID="txtInvComment" CssClass="txtinput" runat="server"></asp:TextBox>
+        </div>
         <asp:Panel ID="divManualImport" runat="server">
+            
              <asp:Panel ID="divBrowse" runat="server">
                     <asp:Label ID="lblFileUpload" runat="server" Text="Select a file and press Upload to insert its contents into the database." CssClass="lblinput"></asp:Label>
                     <asp:FileUpload ID="filFileUpload" runat="server" CssClass="filControl" BackColor="Black" ForeColor="White" />

@@ -6,6 +6,7 @@ using DB;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Text;
+using OfficeOpenXml;
 
 namespace AskAndAnswer.ClassCode
 {
@@ -164,6 +165,18 @@ namespace AskAndAnswer.ClassCode
         {
 
         }
+        /// <summary>
+        /// For inventory upload; maps a user name to otsUsers.ID
+        /// </summary>
+        private Dictionary<string, string> m_dctUserToID = new Dictionary<string, string>();
+        /// <summary>
+        /// For inventory upload; maps a location string to locLocation.ID
+        /// </summary>
+        private Dictionary<string, string> m_dctLocationToID = new Dictionary<string, string>();
+        /// <summary>
+        /// For inventory upload; maps a sub inventory lot code to invSubInv.ID
+        /// </summary>
+        private Dictionary<string, string> m_dctSubInvToID = new Dictionary<string, string>();
 
         private enum uploadType { BULK, REPORT };
 
@@ -180,7 +193,6 @@ namespace AskAndAnswer.ClassCode
         /// <param name="fn">Uploaded file name</param>
         public string ProcessFile(SSERelay resp, string fd, string fn)
         {
-
             //lists to hold changed parts
             List<string> lstNewParts = new List<string>();
             List<string> lstAdjParts = new List<string>();
@@ -737,7 +749,15 @@ namespace AskAndAnswer.ClassCode
                     ps.Add(new SqlParameter("@" + DBK.strDESCRIPTION, opi.Description));
                     ps.Add(new SqlParameter("@" + DBK.strDESCRIPTION2, opi.Description2));
                     ps.Add(new SqlParameter("@" + DBK.strTYPE, opi.PartType));
-                    ps.Add(new SqlParameter("@" + DBK.strNAME, opi.Requestor));
+                    if (opi.Requestor == "UNKNOWN")
+                    {
+                        //Re-use the current requestor value
+                        ps.Add(new SqlParameter("@" + DBK.strNAME, currentPNInfo.Requestor));
+                    } else
+                    {
+                        ps.Add(new SqlParameter("@" + DBK.strNAME, opi.Requestor));
+                    }
+                    
                     ps.Add(myDB.makeOutputParameter("@changed", System.Data.SqlDbType.Bit));
                     using (myDB.OpenConnection())
                     {
@@ -1060,6 +1080,571 @@ namespace AskAndAnswer.ClassCode
             {
                 string errMsg = ex.Message + ex.StackTrace;
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Process the file to import its contents into the OTS database (Updates Bulk Inventory).
+        /// Progress is written to a response object, which can be used for real-time updates if client
+        /// processes server-sent events.
+        /// The method also returns an html string that can be used to summarize what happened during logging.
+        /// </summary>
+        /// <param name="resp">SSE Response Object</param>
+        /// <param name="fd">Uploaded file directory</param>
+        /// <param name="fn">Uploaded file name</param>
+        public string ProcessFileForInventory(SSERelay resp, string fd, string fn, Int64 changedByID, string comment,
+            string defaultLocation = "", string defaultContact = "")
+        {
+            //Holds the html result of the function
+            string functionOutput = "";
+            //Variables to hold the values we will extract from the excel file
+            int currR = -1;
+            string lastloc = "";
+            string lastowner = "";
+
+            XL x = null;
+            clsFileUtil f = new clsFileUtil("");
+            string fullServerFileName = "";
+            //Define some Excel column numbers
+            int colPN = -1;
+            int colMfrName = -1;
+            int colMfrPN = -1;
+            int colDelta = -1;
+            int colNewQty = -1;
+            int colLoc = -1;
+            int colLotCode = -1;
+            int colOwner = -1;
+
+            int colResult = -1; //this column will hold the result of the operation;
+            clsDB xDB = new clsDB();
+            List<SqlParameter> ps = new List<SqlParameter>();
+            SqlCommand cmd = new SqlCommand();
+
+            try
+            {
+
+                //The location ID dictionary cannot be obtained from a simple SP call, so use the AppObject to init that dictionary now.
+                //Ensure the location app object is initialized...
+                clsUtil u = new clsUtil();
+                u.PutKVPInDictionary("kvpl_" + DBK.SP.spGETKVPFULLADDRESS);
+                //...and transfer contents to our dictionary (we know items in the list are unique because of the index on the table)
+                for (int i = 0; i < ((List<string>)HttpContext.Current.Application["kvpl_" + DBK.SP.spGETKVPFULLADDRESS]).Count; i = i + 2)
+                {
+                    m_dctLocationToID.Add(
+                        ((List<string>)HttpContext.Current.Application["kvpl_" + DBK.SP.spGETKVPFULLADDRESS])[i + 1],
+                        ((List<string>)HttpContext.Current.Application["kvpl_" + DBK.SP.spGETKVPFULLADDRESS])[i]
+                        );
+                }
+
+                f.MakeDirectory(fd + "\\");
+                fullServerFileName = fd + "\\" + fn;
+                resp.send("Start Processing File '" + fn + "'...");
+
+                //If the extension is .xls, force user to save as .xlsx (currently unable to iterate over worksheets with NPOI for .xls files)
+                if (fn.Split('.')[fn.Split('.').GetUpperBound(0)] == "xls")
+                {
+                    resp.send("You must use a .xlsx file when auto-uploading inventory information.  Please save your file as an .xlsx file.");
+                    return resp.GetMessageBlock();
+                }
+                //create a New XL object
+                x = new XL(fullServerFileName, false);
+
+
+                if (x == null)
+                {
+                    resp.send("Could not read file.  Please make sure you provided a valid file.");
+                    return resp.GetMessageBlock();
+                }
+                else if (x.ErrMsg != "")
+                {
+                    resp.send("An Error was encountered with the file you uploaded: " +
+                        x.ErrMsg.Replace(AAAK.vbCRLF, DynControls.html_linebreak_string()));
+                    return resp.GetMessageBlock();
+                }
+
+                //Continue with upload if no errors happened during initialization
+
+                x.SetWorkSheet("");
+                //Determine the positions of certain columns by inspecting the header row
+                //Since the input may have several worksheets, we must check each sheet
+                foreach (ExcelWorksheet w in (ExcelWorksheets)x.Worksheets)
+                {
+                    currR = x.FirstRow;
+                    x.SetWorkSheet(w.Name);
+                    while (x.GetCellValue(currR, x.FirstCol) == "")
+                    {
+                        currR++;
+                    }
+                    //We are at the first (therefore, header) row of this sheet; determine the column indices based on the values
+                    //Below, first case indicates we are dealing with a REPORT File
+                    //second case indicates we are dealing with a substandard file (becuase it is missing information)
+                    int c = x.FirstCol;
+
+                    while (x.GetCellValue(currR, c) != "")
+                    {
+                        //NOTE: The if (colIndex < 0) statements guarantee we take the first Column Header
+                        string temp = x.GetCellValue(currR, c).ToLower();
+                        switch (x.GetCellValue(currR, c).ToLower().Trim().Replace("_", "").Replace(" ", ""))
+                        {
+                            case "partnumber":
+                            case "number":
+                                if (colPN < 0)
+                                {
+                                    colPN = c;
+                                }
+                                break;
+                            case "manufp/n":
+                                if (colMfrPN < 0)
+                                {
+                                    colMfrPN = c;
+                                }
+                                break;
+                            case "vendor":
+                                if (colMfrName < 0)
+                                {
+                                    colMfrName = c;
+                                }
+                                break;
+                            case "delta":
+                                if (colDelta < 0)
+                                {
+                                    colDelta = c;
+                                }
+                                break;
+                            case "qty":
+                            case "quantity":
+                                if (colNewQty < 0)
+                                {
+                                    colNewQty = c;
+                                }
+                                break;
+                            case "location":
+                                if (colLoc < 0)
+                                {
+                                    colLoc = c;
+                                }
+                                break;
+                            case "contact":
+                                if (colOwner < 0)
+                                {
+                                    colOwner = c;
+                                }
+                                break;
+                            case "lotcode":
+                            case "subinv":
+                                if (colLotCode < 0)
+                                {
+                                    colLotCode = c;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        c++;
+                    }
+                    Boolean invalid = false;
+                    //The value of the column indexes tells us if we have a valid file
+                    if (colPN == -1 || colMfrPN == -1 || colMfrName == -1)
+                    {
+                        invalid = true;
+                        resp.send("File '" + fn + "' is missing at least one element in the header to identify column indexes.  Current index values:" + DynControls.html_linebreak_string() +
+                            "Part Number Column Index: " + colPN.ToString() + DynControls.html_linebreak_string() +
+                            "Manufacturer Column Index: " + colMfrName.ToString() + DynControls.html_linebreak_string() +
+                            "Manufacturer PN Column Index: " + colMfrPN.ToString() + DynControls.html_linebreak_string() +
+                            "Data from this file cannot be imported.");
+                    }
+                    if (colLoc == -1 || colOwner == -1) {
+                        //This condition generates an error in the following circumstances:
+                        if (colLoc == -1 && defaultLocation == "")
+                        {
+                            invalid = true;
+                            resp.send("File '" + fn + "' does not have a column that specifies the Location of the Part, and no default Location is specified." + DynControls.html_linebreak_string() +
+                                "Data from this file cannot be imported.");
+                        }
+                        if (colOwner == -1 && defaultContact == "")
+                        {
+                            invalid = true;
+                            resp.send("File '" + fn + "' does not have a column that specifies the Owner of the Part, and no default Owner is specified." + DynControls.html_linebreak_string() +
+                                "Data from this file cannot be imported.");
+                        }
+                        return resp.GetMessageBlock();
+                    }
+                    if (colNewQty == -1 && colDelta == -1)
+                    {
+                        invalid = true;
+                        resp.send("File '" + fn + "' does NOT contain a column containing either the Delta (expected Column Header = 'Delta') or " +
+                            "current total number of parts (expected Column Header = 'Qty')." + DynControls.html_linebreak_string() +
+                            "Data from this file cannot be imported.");
+                    }
+                    if (colNewQty != -1 && colDelta != -1)
+                    {
+                        invalid = true;
+                        resp.send("File '" + fn + "' contains columns for BOTH the Delta (olumn Header = 'Delta') AND " +
+                            "current total number of parts (Column Header = 'Qty')." + DynControls.html_linebreak_string() +
+                            "You can only have a 'Delta' OR 'Qty' column, not both.  Data from this file cannot be imported.");
+                    }
+                    if (invalid)
+                    {
+                        return resp.GetMessageBlock();
+                    } else
+                    {
+                        //Set the value for the result column
+                        colResult = c;
+                        //...set the worksheet
+                        x.Worksheet = w;
+                        //Add to the header result
+                        x.SetCellValue(currR, colResult, "Operation Result");
+
+                        //Advance to next row
+                        currR++;
+
+                        //...and break out of the for loop
+                        break;
+                    }
+                }
+
+                //Start iterating over the rows to import data
+                while (x.GetCellValue(currR, colPN) != "")
+                {
+                    //initialize variables for this row
+                    string pn = "";
+                    string mfrname = "";
+                    string mfrpn = "";
+                    int delta = -1;
+                    int newqty = -1;
+                    int oldqty = 0;
+                    string loc = "";
+                    string lotcode = "";
+                    string owner = "";
+
+                    int id_loc = -1;
+                    Int64 id_owner = -1;
+                    int id_subinv = 1;  //Because a blank subinvID is given ID==1 in the database
+                    Int64 invBulkID = -2;   //-2 means we did not search.  -1 means we searched, but found nothing.
+
+                    //Can we get an otsVendorPN.ID?
+                    pn = x.GetCellValue(currR, colPN);
+                    mfrpn = x.GetCellValue(currR, colMfrPN);
+                    mfrname = x.GetCellValue(currR, colMfrName);
+                    Int64 vpnid = -1;
+                    using (xDB.OpenConnection())
+                    {
+                        ps.Clear();
+                        ps.Add(new SqlParameter("@" + DBK.strPARTNUMBER, pn));
+                        ps.Add(new SqlParameter("@" + DBK.strVENDORPARTNUMBER, mfrpn));
+                        ps.Add(new SqlParameter("@" + DBK.strVENDOR, mfrname));
+                        using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(DBK.SP.spOTSGETVENDORPNID, ps, clsDB.SPExMode.READER, ref cmd))
+                        {
+                            if (dR != null && dR.HasRows)
+                            {
+                                dR.Read();
+                                vpnid = (Int64)dR[DBK.ID];
+                            }
+
+                        }
+                    }
+                    if (vpnid == -1)
+                    {
+                        x.SetCellValue(currR, colResult, "ERR: Illegal PN/Vendor PN/Vendor Combination");
+                        resp.send("Unable to process Excel Row " + currR + ": Could not locate a database ID for " + DynControls.html_linebreak_string() +
+                            "Part Number = " + pn + DynControls.html_linebreak_string() +
+                            "Vendor Part Number = " + mfrpn + DynControls.html_linebreak_string() +
+                            "Vendor = " + mfrname);
+                    } else
+                    {
+                        //Continue-- We have a valid vendor pn id
+                        //We need a value for locID, ownerID, and subInvID so that we get BulkID
+                        if (colLotCode > -1)
+                        {
+                            lotcode = x.GetCellValue(currR, colLotCode);
+                            id_subinv = int.Parse(u.GetDBValueFromDictionary(ref m_dctSubInvToID,
+                                  lotcode,
+                                  DBK.SP.spGETSUBINVID,
+                                  DBK.strSUBINV,
+                                  DBK.ID,
+                                  "1"));
+                        }
+
+                        if (colLoc == -1 || colOwner == -1 && (loc == "" || owner == ""))
+                        {
+                            //All we have is keyBulkItem and keySubInv.  If there is EXACTLY one row in invBulk that matches this condition, we can continue.
+                            ps.Clear();
+                            ps.Add(new SqlParameter("@" + DBK.keyBULKITEM, vpnid));
+                            ps.Add(new SqlParameter("@" + DBK.keySUBINV, id_subinv));
+                            using (xDB.OpenConnection())
+                            {
+                                using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(DBK.SP.spGETINVBULKIDWITHVPNANDSUBINVIDONLY,
+                                    ps, clsDB.SPExMode.READER, ref cmd))
+                                {
+                                    if (dR != null && dR.HasRows)
+                                    {
+                                        int nRecords = 0;
+                                        Int64 lastID = -1;
+                                        int lastLocID = -1;
+                                        Int64 lastOwnerID = -1;
+                                        while (dR.Read())
+                                        {
+                                            lastID = (Int64)dR[DBK.ID];
+                                            lastLocID = (int)dR[DBK.keyLOCATIONBULK];
+                                            lastOwnerID = (Int64)dR[DBK.keyOWNER];
+                                            nRecords++;
+                                        }
+                                        if (nRecords != 1)
+                                        {
+                                            x.SetCellValue(currR, colResult, "ERR: Location/Owner information required.");
+                                            resp.send("Unable to process Excel Row " + currR + ": Searching by Vendor PN and Lot Code alone " +
+                                                "yielded more than one record.  You must supply a Location and Owner to resolve the ambiguity.");
+                                        } else
+                                        {
+                                            invBulkID = lastID;
+                                            id_loc = lastLocID;
+                                            id_owner = lastOwnerID;
+                                        }
+                                    } else
+                                    {
+                                        //This is undefined.  New entry
+                                        invBulkID = -1;
+                                    }
+                                }
+                            }
+                        } else
+                        {
+                            if (colLoc > -1)
+                            {
+                                loc = x.GetCellValue(currR, colLoc);
+                                if (loc == "")
+                                {
+                                    loc = lastloc;
+                                }
+                                if (loc == "")
+                                {
+                                    loc = defaultLocation;
+                                }
+                                lastloc = loc;
+                            } else
+                            {
+                                loc = defaultLocation;
+                            }
+                            if (colOwner > -1)
+                            {
+                                owner = x.GetCellValue(currR, colOwner);
+                                if (owner == "")
+                                {
+                                    owner = lastowner;
+                                }
+                                if (loc == "")
+                                {
+                                    owner = defaultContact;
+                                }
+                                lastowner = owner;
+                            }
+                            else
+                            {
+                                owner = defaultContact;
+                            }
+
+                            if (m_dctLocationToID.ContainsKey(loc))
+                            {
+                                id_loc = int.Parse(m_dctLocationToID[loc]);
+                                id_owner = int.Parse(u.GetDBValueFromDictionary(ref m_dctUserToID,
+                                    owner,
+                                    DBK.SP.spGETOTSUSERID,
+                                    DBK.strNAME,
+                                    DBK.ID,
+                                    "-1"));
+
+                                if (id_owner != -1)
+                                {
+                                    //We have everythnig we need to find invBulkID
+
+                                    ps.Clear();
+                                    ps.Add(new SqlParameter("@" + DBK.keyBULKITEM, vpnid));
+                                    ps.Add(new SqlParameter("@" + DBK.keySUBINV, id_subinv));
+                                    ps.Add(new SqlParameter("@" + DBK.keyLOCATIONBULK, id_loc));
+                                    ps.Add(new SqlParameter("@" + DBK.keyOWNER, id_owner));
+                                    using (xDB.OpenConnection())
+                                    {
+                                        using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(DBK.SP.spGETINVBULKID,
+                                            ps, clsDB.SPExMode.READER, ref cmd))
+                                        {
+                                            if (dR != null && dR.HasRows)
+                                            {
+                                                dR.Read();
+                                                invBulkID = (Int64)dR[DBK.ID];
+                                            } else
+                                            {
+                                                //No match, which means we need to make a new entry.
+                                                invBulkID = -1;
+                                            }
+                                        }
+                                    }
+                                } else
+                                {
+                                    x.SetCellValue(currR, colResult, "ERR: Owner Not registered in Database");
+                                    resp.send("Unable to process Excel Row " + currR + ": User Name '" + owner +
+                                        "' not defined in OTS User database.");
+                                }
+
+                            } else
+                            {
+                                x.SetCellValue(currR, colResult, "ERR: Location Not registered in Database");
+                                resp.send("Unable to process Excel Row " + currR + ": Location '" + loc +
+                                    "' not defined in database.");
+                            }
+                        }
+
+                        if (invBulkID > -2)
+                        {
+                            //Continue-- we are either going to add or edit.
+                            //But first, we need the quantity for the given invBulkID
+                            oldqty = -1;
+                            ps.Clear();
+                            ps.Add(new SqlParameter("@" + DBK.ID, invBulkID));
+                            using (xDB.OpenConnection())
+                            {
+                                using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(DBK.SP.spINVGETINFOFORINVBULKID, ps, clsDB.SPExMode.READER, ref cmd))
+                                {
+                                    if (dR != null && dR.HasRows)
+                                    {
+                                        dR.Read();
+                                        oldqty = (int)dR[DBK.intQTY];
+                                    } else
+                                    {
+                                        oldqty = 0;
+                                    }
+                                }
+                            }
+
+                            if (oldqty > -1)
+                            {
+                                //Do qty calculations
+                                //To begin, we will need the current quantity
+                                string calcErr = "";
+
+                                if (colDelta > -1)
+                                {
+                                    try
+                                    {
+                                        delta = int.Parse(x.GetCellValue(currR, colDelta));
+                                        newqty = oldqty + delta;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        calcErr = "Value in Column " + colDelta.ToString() + " (Delta) must be an integer.";
+                                    }
+
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        newqty = int.Parse(x.GetCellValue(currR, colNewQty));
+                                        delta = newqty - oldqty;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        calcErr = "Value in Column  " + colNewQty.ToString() + " (Qty) must be an integer.";
+                                    }
+                                }
+
+                                if (calcErr != "")
+                                {
+                                    x.SetCellValue(currR, colResult, "ERR: Non-integer Qty.");
+                                    resp.send("Unable to process Excel Row " + currR +
+                                        ": " + calcErr);
+                                }
+                                else if (colDelta > -1 && (delta + oldqty < 0))
+                                {
+                                    x.SetCellValue(currR, colResult, "ERR: Calculation would result in negative qty.");
+                                    resp.send("Unable to process Excel Row " + currR +
+                                        ": The database says there are " + oldqty.ToString() + " parts in inventory.  Adding a delta of " +
+                                        delta.ToString() + " would result in a negative quantity.");
+                                } else if (colNewQty>-1 && newqty < 0)
+                                {
+                                    x.SetCellValue(currR, colResult, "ERR: You specified a negative qty.");
+                                    resp.send("Unable to process Excel Row " + currR +
+                                        ": You specified a qty of " + newqty + ", which is negative.  Quantities must be positive numbers.");
+                                } else
+                                {
+                                    //We can do the upsert!
+                                    //To avoid conflicts, we will use the sync-locked clsSynch object, where the input string is
+                                    //[comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[SubInv]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]
+                                    clsSynch s = new clsSynch();
+                                    string input = comment + AAAK.DELIM +
+                                                   invBulkID + AAAK.DELIM +
+                                                   oldqty + AAAK.DELIM +
+                                                   delta + AAAK.DELIM +
+                                                   lotcode + AAAK.DELIM +
+                                                   id_loc + AAAK.DELIM +
+                                                   id_owner + AAAK.DELIM +
+                                                   vpnid + AAAK.DELIM +
+                                                   "2";
+                                    string[] tmpDelim = { AAAK.DELIM };
+                                    string upsertResult = s.UpdatePartInventory(input, tmpDelim);
+                                    if (upsertResult != "")
+                                    {
+                                        x.SetCellValue(currR, colResult, "WARNING: Processing error during upsert.");
+                                        resp.send("Database error detected when processing Excel Row " + currR +
+                                            ": " + upsertResult);
+                                    } else
+                                    {
+                                        x.SetCellValue(currR, colResult, "OK");
+                                        string lcode = "";
+                                        if (lotcode !="")
+                                        {
+                                            lcode = " [Lot Code " + lotcode + "]";
+                                        }
+                                        resp.send("Successfully processed Excel Row " + currR + ": " +
+                                            "Added " + delta + " to existing qty of " + oldqty + " for new qty value of " +
+                                            newqty + " (PN/MFGPN = " + pn + "/" + mfrpn + lcode + ", keyBulkID = " + invBulkID + ".");
+                                    }
+
+                                }
+                            } else
+                            {
+                                x.SetCellValue(currR, colResult, "ERR: Unable to obtain qty from database.");
+                                resp.send("Unable to process Excel Row " + currR +
+                                    ": Should have retrieved a quantity of 0 or more from database, but did not.  This is a bug!");
+                            }
+                        }
+
+                    }
+                    currR++;
+                }
+                resp.send("Finished processing file '" + fn + "'.");
+                functionOutput= resp.GetMessageBlock();
+                return functionOutput;
+            }
+
+            catch (Exception ex)
+            {
+                string errMsg = ex.GetType().ToString() + ex.Message + ex.StackTrace;
+                resp.send("data: " + errMsg.Replace(AAAK.vbCRLF, DynControls.html_linebreak_string()));
+                functionOutput = resp.GetMessageBlock();
+                return functionOutput;
+            }
+            finally
+            {
+                try
+                {
+                    x.SaveWorkbook(fullServerFileName);
+                    x.CloseDispose();
+                }
+                catch (Exception eM)
+                {
+                    string errM = eM.Message + eM.StackTrace;
+                }
+                try
+                {
+                    //Email the file to user before deleting.
+                    System.IO.FileInfo fl = new System.IO.FileInfo(fullServerFileName);
+                    fl.Delete();
+                }
+                catch (Exception eM)
+                {
+                    string errM = eM.Message + eM.StackTrace;
+                }
+
             }
         }
     }

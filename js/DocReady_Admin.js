@@ -126,6 +126,41 @@ $(function () {
             })
         }
 
+        //Set up tabs
+        $("#locationTabs").tabs({
+            activate: function (event, ui) {
+                try {
+                    var activePanelName = ui.newPanel.attr('id');
+                    //We only need to worry if the user selected the divPNTransactions_ID panel, since we need to refresh the
+                    //transaction log with an AJAX Call...
+                    var obj = new Object();
+                    obj.input = "x";
+                    var strData = JSON.stringify(obj);
+                    if (activePanelName.indexOf("viewLoc") > -1) {
+                        //make an AJAX Call
+                        $.ajax({
+                            type: "POST",
+                            url: "Admin.aspx/getAddressList",
+                            data: strData,
+                            contentType: "application/json; charset utf-8",
+                            dataType: "json",
+                            success: function (msg) {
+                                //The result goes in...
+                                $("#viewLoc").html(msg.d);
+                            },
+                            error: function (xhr, textStatus, errorThrown) {
+                                alert("Error Thrown: " + errorThrown + "\nStatus: " + textStatus + "\nResponse: " + xhr.responseText);
+                            }
+                        }) //ajax
+                    }
+
+
+                } catch (err) {
+                    alert(err.message);
+                }
+
+            }
+        });
         $(".txtLocInput").focus(function() {
             $(this).css({ "background-color": "yellow" });
         });

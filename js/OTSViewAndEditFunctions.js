@@ -519,7 +519,7 @@ function AJAX_DoVPNWhereUsed() {
             dataType: "json",
             success: function (msg) {
                 //The result goes in a dialog box
-                alert(msg.d);
+                //alert(msg.d);
                 OpenDialog("#dialog","WHERE USED FOR ", msg.d);
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -606,7 +606,8 @@ function saveINVInfo_Click() {
 
         //we need to encode the data in the table.
         //Format is as follows:
-        //[comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[SubInv]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]...
+        //[comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[SubInv]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]DELIM[TransTypeID]...
+        //(where TransTypeID == 1 for Manual updates, which is what we're doing here)
         data = ""
         $("#tblInvInfo_" + id + " tr").each(function (index, value) {
             if ($(this).attr('id').split('_').length > 2) {
@@ -684,7 +685,8 @@ function saveINVInfo_Click() {
 
                 //Add data
                 data = data + $(this).attr('id').split('_')[3] + DELIM + qty + DELIM + delta + DELIM + subinv + DELIM +
-                    loc + DELIM + owner + DELIM + vpnid + DELIM;
+                    loc + DELIM + owner + DELIM + vpnid + DELIM + "1" + DELIM;
+                //NOTE: We must end with DELIM here because we don't know if another row will be appended
             }
 
         });
@@ -740,9 +742,9 @@ function saveINVInfo_Click() {
         }
 
         //If we did not return, then contiue.
-        //Remove last delim
+        //remove the last DELIM
         data = data.substring(0, data.length - DELIM.length);
-
+        alert(data);
         var obj = new Object();
         obj.input = data;
         var strData = JSON.stringify(obj);

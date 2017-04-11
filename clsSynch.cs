@@ -52,7 +52,7 @@ namespace AskAndAnswer
         /// Updates invBulk with user information in input
         /// </summary>
         /// <param name="input">FORMAT:
-        /// [comment]DELIM[invBulk.ID]DELIM[QTY]DELIM[DELTA]DELIM[SubInv]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]......</param>
+        /// [comment]DELIM[invBulk.ID]DELIM[EXISTING QTY]DELIM[DELTA]DELIM[SubInv]DELIM[LocationID]DELIM[OwnerID]DELIM[VPNID]DELIM[TransactionType ID]......</param>
         /// <returns></returns>
         public string UpdatePartInventory(string input, string[] m_dlim)
         {
@@ -63,7 +63,7 @@ namespace AskAndAnswer
                 string cmt = arr[0].ToUpper();
                 lock (lockUpdateInvObj)
                 {
-                    for (int i = 1; i < arr.Length; i = i + 7)
+                    for (int i = 1; i < arr.Length; i = i + 8)
                     {
                         clsDB myDB = new clsDB();
                         SqlCommand cmd = new SqlCommand();
@@ -76,6 +76,7 @@ namespace AskAndAnswer
                         string Loc = arr[i + 4];
                         string Owner = arr[i + 5];
                         string VPNID = arr[i + 6];
+                        string TransTypeID = arr[i + 7];
 
                         int oldQty = 0;
                         int oldLoc = -1;
@@ -107,7 +108,7 @@ namespace AskAndAnswer
                         {
                             //User wants to remove this entry from invBulk
                             ps.Add(new SqlParameter("@" + DBK.keyBULKITEM, VPNID));
-                            ps.Add(new SqlParameter("@" + DBK.keyCHANGEDBY, 1));
+                            ps.Add(new SqlParameter("@" + DBK.keyCHANGEDBY, AAAK.CHANGEDBY));
                             ps.Add(new SqlParameter("@" + DBK.intDELTA, -oldQty));
                             ps.Add(new SqlParameter("@" + DBK.strCOMMENT, cmt));
                             ps.Add(new SqlParameter("@" + DBK.keyTRANSACTIONTYPE, 1));
@@ -131,10 +132,10 @@ namespace AskAndAnswer
                             {
                                 //User wants to make a new/update an existing entry
                                 ps.Add(new SqlParameter("@" + DBK.keyBULKITEM, VPNID));
-                                ps.Add(new SqlParameter("@" + DBK.keyCHANGEDBY, 1));
+                                ps.Add(new SqlParameter("@" + DBK.keyCHANGEDBY, AAAK.CHANGEDBY));
                                 ps.Add(new SqlParameter("@" + DBK.intDELTA, Delta));
                                 ps.Add(new SqlParameter("@" + DBK.strCOMMENT, cmt));
-                                ps.Add(new SqlParameter("@" + DBK.keyTRANSACTIONTYPE, 1));
+                                ps.Add(new SqlParameter("@" + DBK.keyTRANSACTIONTYPE, TransTypeID));
                                 ps.Add(new SqlParameter("@" + DBK.keyLOCATIONBULK, Loc));
                                 ps.Add(new SqlParameter("@" + DBK.keyOWNER, Owner));
                                 ps.Add(new SqlParameter("@" + DBK.intQTY, newQty));

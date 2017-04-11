@@ -193,6 +193,73 @@ namespace AskAndAnswer.ClassCode
                 return new string[0];
             }
         }
+        
+        /// <summary>
+        /// Looks for searchVal in d; if not found, looks in database.  If found, records value in d; if not, returns default value
+        /// </summary>
+        /// <param name="d">Dictionary that we search for first.  </param>
+        /// <param name="searchVal">The value (key) in the dictionary we are searching for; if found, we get d(key)</param>
+        /// <param name="spName">The stored proc to use if searchVal is not in the dictionary</param>
+        /// <param name="fldName_key">The database field name to use as the dictionary key</param>
+        /// <param name="fldName_value">The database field name to use as the dictionary value</param>
+        /// <param name="defaultValue">The default value to return if not searchVal not found in either the dictioanry 
+        /// or the database</param>
+        /// <param name="spParamName">Name of the parameter in the stored procedure.  Leave this blank, and the function will use
+        /// @[fldName_key]</param>
+        /// <param name="putDefaultInDictionary">If not found in the dictionary or in the database, then if this set TRUE, searchVal
+        /// is put in the database with the default value, so that you don't query the database for the same searchVal next time this
+        /// function is called</param>
+        /// <returns></returns>
+        public string GetDBValueFromDictionary(ref Dictionary<string, string> d,
+                                        string searchVal,
+                                        string spName,
+                                        string fldName_key,
+                                        string fldName_value,
+                                        string defaultValue,
+                                        string spParamName = "",
+                                        Boolean putDefaultInDictionary = true)
+        {
+            try
+            {
+                if (d.ContainsKey(searchVal))
+                {
+                    return d[searchVal];
+                } else
+                {
+                    clsDB xDB = new clsDB();
+                    List<SqlParameter> ps = new List<SqlParameter>();
+                    SqlCommand cmd = new SqlCommand();
+                    if (spParamName == "")
+                    {
+                        spParamName = "@" + fldName_key;
+                    }
+                    ps.Add(new SqlParameter(spParamName, searchVal));
+                    using (xDB.OpenConnection())
+                    {
+                        using (SqlDataReader dR = (SqlDataReader)xDB.ExecuteSP(spName,ps,clsDB.SPExMode.READER, ref cmd))
+                        {
+                            if (dR!=null && dR.HasRows)
+                            {
+                                dR.Read();
+                                string foundVal = xDB.Fld2Str(dR[fldName_value]);
+                                d.Add(searchVal, foundVal);
+                                return foundVal;
+                            }
+                        }
+                    }
+                }
+                //if we made it this far, we should return the default value. BUT:
+                if (putDefaultInDictionary)
+                {
+                    d.Add(searchVal, defaultValue);
+                }
+                return defaultValue;
+
+            } catch (Exception ex)
+            {
+                return defaultValue;
+            }
+        }
 
     }
 }

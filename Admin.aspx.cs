@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using AskAndAnswer.ClassCode;
+using DB;
 using System.Text;
 using System.Data.SqlClient;
 namespace AskAndAnswer
@@ -137,6 +138,39 @@ namespace AskAndAnswer
             {
                 string strErr = ex.Message + ex.StackTrace;
                 return new string[0];
+            }
+        }
+
+        [System.Web.Services.WebMethod]
+        ///Returns list of all addresses in the database
+        public static string getAddressList(string input)
+        {
+            try
+            {
+                clsDB myDB = new clsDB();
+                SqlCommand cmd = new SqlCommand();
+                StringBuilder sB = new StringBuilder();
+                using (myDB.OpenConnection())
+                {
+                    using (SqlDataReader dR = (SqlDataReader)myDB.ExecuteSP(DBK.SP.spGETKVPFULLADDRESS, new List<SqlParameter>(), clsDB.SPExMode.READER, ref cmd))
+                    {
+                        if (dR != null && dR.HasRows) {
+                            while (dR.Read())
+                            {
+                                sB.Append("<p>" + myDB.Fld2Str(dR[DBK.valDISPLAYEDVALUE]) + "</p>");
+                            }
+                        }
+                        else
+                        {
+                            sB.Append("<p>No addresses found when executing stored procedure " + DBK.SP.spGETKVPFULLADDRESS + " in WebMethod getAddressList.</p>");
+                        }
+                    }
+                }
+                return sB.ToString();
+
+            } catch (Exception ex)
+            {
+                return (ex.Message + ex.StackTrace).Replace(AAAK.vbCRLF,DynControls.html_linebreak_string());
             }
         }
 

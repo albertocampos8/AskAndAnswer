@@ -13,6 +13,9 @@ namespace AskAndAnswer
     /// </summary>
     public class AAAK
     {
+        public const int CHANGEDBY = 1;
+        //Default ID used as the ChangedBy (user) ID.  THIS SHOULD NOT BE USED IN PRODUCTION, since expectation is true user ID will
+        //be obtained from database with a login procedure
         public const string ver = "0.001";
         /// <summary>
         /// Returns a string with a Query Parameter, v = version.
@@ -274,6 +277,7 @@ namespace AskAndAnswer
         public const string spOTSUPDATEPARTSBASEDINAVL = "spOTSUpdatePartsBasedOnAVL";
         public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRING = "spOTSWhereUsedForVendorPartNumberString";
         public const string spOTSWHEREUSEDFORVENDORPARTNUMBERSTRINGANDVENDOR = "spOTSWhereUsedForVendorPartNumberStringAndVendor";
+        public const string spOTSGETVENDORPNID = "spOTSGetVendorPNID";
         public const string spOTSGETPNIDS = "spOTSGetPNIDs";
         public const string spOTSFINDUNDEFINEDPARTTYPES = "spOTSFindUndefinedPartTypes";
         public const string spUPSERTASSYBOMENTRY = "spUpsertAssyBOMEntry";
@@ -310,6 +314,10 @@ namespace AskAndAnswer
         public const string spINVGETPARTHISTORY = "spInvGetPartHistory";
 
         public const string spAC_INVSUBINVENTORY = "spAC_InvSubInventory";
+        public const string spGETSUBINVID = "spGetSubInvID";
+        public const string spGETOTSUSERID = "spGetOTSUserID";
+        public const string spGETINVBULKID = "spGetInvBulkID";
+        public const string spGETINVBULKIDWITHVPNANDSUBINVIDONLY = "spGetInvBulkIDWithVPNandSubInvIDOnly";
         //COLUMN ALIAS NAMES Used in Stored Procs
         public class SP_COLALIAS
         {
